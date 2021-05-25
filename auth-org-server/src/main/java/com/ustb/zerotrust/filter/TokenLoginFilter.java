@@ -7,6 +7,7 @@ import com.ustb.zerotrust.domain.ResponseResult;
 import com.ustb.zerotrust.domain.SysRole;
 import com.ustb.zerotrust.domain.SysUser;
 import com.ustb.zerotrust.utils.JwtUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,10 +33,12 @@ import java.util.Map;
 public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
     private RsaKeyProperties prop;
+    private RedisTemplate redisTemplate;
 
-    public TokenLoginFilter(AuthenticationManager authenticationManager, RsaKeyProperties prop) {
+    public TokenLoginFilter(AuthenticationManager authenticationManager, RsaKeyProperties prop,RedisTemplate redisTemplate) {
         this.authenticationManager = authenticationManager;
         this.prop = prop;
+        this.redisTemplate = redisTemplate;
     }
 
     //接收并解析用户凭证，出現错误时，返回json数据前端
@@ -71,8 +74,12 @@ public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
         user.setRoles((List<SysRole>) authResult.getAuthorities());
         //json web token构建
         String token = JwtUtils.generateTokenExpireInMinutes(user, prop.getPrivateKey(), 24 * 60);
-        //返回token
-        response.addHeader("Authorization","Bearer "+token);
+//        //将token保存在header中返回token
+//        response.addHeader("Authorization","Bearer "+token);
+
+        //将token保存在redis中
+        redisTemplate.opsForHash().put("tokenHash","token",token);
+
         //登录成功后，返回json格式进行提示
         response.setContentType("application/json;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);

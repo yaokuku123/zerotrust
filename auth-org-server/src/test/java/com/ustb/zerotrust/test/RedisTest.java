@@ -21,8 +21,14 @@ public class RedisTest {
     private RedisTemplate redisTemplate;
 
     @Test
-    public void testRedis(){
+    public void testRedisValue(){
         redisTemplate.opsForValue().set("name","yorick");
         System.out.println(redisTemplate.opsForValue().get("name"));
+    }
+
+    @Test
+    public void testRedisHash(){
+        redisTemplate.opsForHash().put("tokenHash","token","1234");
+        System.out.println(redisTemplate.opsForHash().get("tokenHash", "token"));
     }
 }

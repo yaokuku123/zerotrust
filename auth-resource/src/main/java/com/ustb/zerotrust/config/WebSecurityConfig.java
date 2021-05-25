@@ -4,6 +4,7 @@ package com.ustb.zerotrust.config;
 import com.ustb.zerotrust.filter.TokenVerifyFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,6 +24,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private RsaKeyProperties prop;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -33,7 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/product").hasAnyRole("USER")
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(new TokenVerifyFilter(authenticationManager(),prop))
+                .addFilter(new TokenVerifyFilter(authenticationManager(),prop,redisTemplate))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 }
