@@ -2,6 +2,8 @@ package com.ustb.zerotrust.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ustb.zerotrust.config.RsaKeyProperties;
+import com.ustb.zerotrust.domain.ResponseCodeEnum;
+import com.ustb.zerotrust.domain.ResponseResult;
 import com.ustb.zerotrust.domain.SysRole;
 import com.ustb.zerotrust.domain.SysUser;
 import com.ustb.zerotrust.utils.JwtUtils;
@@ -49,10 +51,8 @@ public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
                 response.setContentType("application/json;charset=utf-8");
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 PrintWriter out = response.getWriter();
-                Map<String,Object> map = new HashMap<>();
-                map.put("code",HttpServletResponse.SC_UNAUTHORIZED);
-                map.put("msg","账号或密码错误");
-                out.write(new ObjectMapper().writeValueAsString(map));
+                ResponseResult result = ResponseResult.error(ResponseCodeEnum.LOGIN_ERROR.getCode(), "账号或密码错误");
+                out.write(new ObjectMapper().writeValueAsString(result));
                 out.flush();
                 out.close();
             } catch (Exception e1) {
@@ -77,10 +77,8 @@ public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setContentType("application/json;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         PrintWriter out = response.getWriter();
-        Map<String,Object> map = new HashMap<>();
-        map.put("code",HttpServletResponse.SC_OK);
-        map.put("msg","登录成功");
-        out.write(new ObjectMapper().writeValueAsString(map));
+        ResponseResult result = ResponseResult.success();
+        out.write(new ObjectMapper().writeValueAsString(result));
         out.flush();
         out.close();
     }
