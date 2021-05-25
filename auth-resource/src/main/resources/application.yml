@@ -15,6 +15,12 @@ mybatis:
   type-aliases-package: com.ustb.zerotrust.domain
   configuration:
     map-underscore-to-camel-case: true
+eureka:
+  client:
+    serviceUrl: # eureka server的路径
+      defaultZone: http://localhost:7001/eureka/
+  instance:
+    prefer-ip-address: true #使用ip注册
 logging:
   level:
     com.ustb: debug

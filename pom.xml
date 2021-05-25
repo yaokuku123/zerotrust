@@ -11,6 +11,8 @@
         <module>common</module>
         <module>auth-resource</module>
         <module>auth-org-server</module>
+        <module>eureka-server</module>
+        <module>gateway</module>
     </modules>
     <packaging>pom</packaging>
 
