@@ -1,0 +1,26 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+      - id: auth-org-server
+        uri: lb://auth-org-server # lb代表从注册中心获取服务
+        predicates:
+        - Path=/auth-org-server/**
+        filters:
+        - RewritePath=/auth-org-server/(?<segment>.*), /$\{segment}
+      - id: auth-resource
+        uri: lb://auth-resource # lb代表从注册中心获取服务
+        predicates:
+        - Path=/auth-resource/**
+        filters:
+        - RewritePath=/auth-resource/(?<segment>.*), /$\{segment}
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka/
+  instance:
+    prefer-ip-address: true
