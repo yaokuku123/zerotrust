@@ -1,0 +1,19 @@
+server:
+  port: 9001
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql:///security_authority
+    username: root
+    password: 199748
+mybatis:
+  type-aliases-package: com.ustb.domain
+  configuration:
+    map-underscore-to-camel-case: true
+logging:
+  level:
+    com.yqj: debug
+ustb:
+  key:
+    privateKeyPath: D:\\temp\\auth_key
+    publicKeyPath: D:\\temp\\auth_key.pub
