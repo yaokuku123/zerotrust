@@ -3,6 +3,8 @@ package com.ustb.zerotrust.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ustb.zerotrust.config.RsaKeyProperties;
 import com.ustb.zerotrust.domain.Payload;
+import com.ustb.zerotrust.domain.ResponseCodeEnum;
+import com.ustb.zerotrust.domain.ResponseResult;
 import com.ustb.zerotrust.domain.SysUser;
 import com.ustb.zerotrust.utils.JwtUtils;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,8 +43,9 @@ public class TokenVerifyFilter extends BasicAuthenticationFilter {
             String header = request.getHeader("Authorization");
             //Authorization中是否包含Bearer，不包含直接返回
             if (header == null || !header.startsWith("Bearer ")) {
+                ResponseResult result = ResponseResult.error(ResponseCodeEnum.TOKEN_MISSION.getCode(), ResponseCodeEnum.TOKEN_MISSION.getMessage());
+                responseJson(response,result);
                 chain.doFilter(request, response);
-                responseJson(response);
                 return;
             }
             //获取权限失败，会抛出异常
@@ -51,22 +54,20 @@ public class TokenVerifyFilter extends BasicAuthenticationFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             chain.doFilter(request, response);
         } catch (Exception e) {
-            responseJson(response);
+            ResponseResult result = ResponseResult.error(ResponseCodeEnum.TOKEN_INVALID.getCode(), ResponseCodeEnum.TOKEN_INVALID.getMessage());
+            responseJson(response,result);
             e.printStackTrace();
         }
     }
 
     //未登录提示
-    private void responseJson(HttpServletResponse response) {
+    private void responseJson(HttpServletResponse response,ResponseResult result) {
         try {
             //未登录提示
             response.setContentType("application/json;charset=utf-8");
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             PrintWriter out = response.getWriter();
-            Map<String, Object> map = new HashMap<>();
-            map.put("code", HttpServletResponse.SC_FORBIDDEN);
-            map.put("message", "请登录！");
-            out.write(new ObjectMapper().writeValueAsString(map));
+            out.write(new ObjectMapper().writeValueAsString(result));
             out.flush();
             out.close();
         } catch (Exception e1) {
