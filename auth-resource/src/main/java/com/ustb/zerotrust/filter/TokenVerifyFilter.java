@@ -7,6 +7,7 @@ import com.ustb.zerotrust.domain.ResponseCodeEnum;
 import com.ustb.zerotrust.domain.ResponseResult;
 import com.ustb.zerotrust.domain.SysUser;
 import com.ustb.zerotrust.utils.JwtUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,10 +28,12 @@ import java.io.PrintWriter;
  */
 public class TokenVerifyFilter extends BasicAuthenticationFilter {
     private RsaKeyProperties prop;
+    private RedisTemplate redisTemplate;
 
-    public TokenVerifyFilter(AuthenticationManager authenticationManager, RsaKeyProperties prop) {
+    public TokenVerifyFilter(AuthenticationManager authenticationManager, RsaKeyProperties prop, RedisTemplate redisTemplate) {
         super(authenticationManager);
         this.prop = prop;
+        this.redisTemplate = redisTemplate;
     }
 
     //过滤请求
@@ -38,16 +41,25 @@ public class TokenVerifyFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
             //请求体的头中是否包含Authorization
-            String header = request.getHeader("Authorization");
+//            String header = request.getHeader("Authorization");
             //Authorization中是否包含Bearer，不包含直接返回
-            if (header == null || !header.startsWith("Bearer ")) {
+//            if (header == null || !header.startsWith("Bearer ")) {
+//                ResponseResult result = ResponseResult.error(ResponseCodeEnum.TOKEN_MISSION.getCode(), ResponseCodeEnum.TOKEN_MISSION.getMessage());
+//                responseJson(response,result);
+//                chain.doFilter(request, response);
+//                return;
+//            }
+
+            //从redis中获取token信息
+            String token = (String) redisTemplate.opsForHash().get("tokenHash", "token");
+            if (token == null){
                 ResponseResult result = ResponseResult.error(ResponseCodeEnum.TOKEN_MISSION.getCode(), ResponseCodeEnum.TOKEN_MISSION.getMessage());
                 responseJson(response,result);
                 chain.doFilter(request, response);
                 return;
             }
             //获取权限失败，会抛出异常
-            UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
+            UsernamePasswordAuthenticationToken authentication = getAuthentication(token);
             ////获取后，将Authentication写入SecurityContextHolder中供后序使用
             SecurityContextHolder.getContext().setAuthentication(authentication);
             chain.doFilter(request, response);
@@ -74,11 +86,10 @@ public class TokenVerifyFilter extends BasicAuthenticationFilter {
     }
 
     //获取token，并得到用户信息
-    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        String token = request.getHeader("Authorization");
+    private UsernamePasswordAuthenticationToken getAuthentication(String token) {
         if (token != null) {
             //通过token解析出载荷信息
-            Payload<SysUser> payload = JwtUtils.getInfoFromToken(token.replace("Bearer ", ""), prop.getPublicKey(), SysUser.class);
+            Payload<SysUser> payload = JwtUtils.getInfoFromToken(token, prop.getPublicKey(), SysUser.class);
             SysUser user = payload.getUserInfo();
             //不为null，返回
             if (user != null) {

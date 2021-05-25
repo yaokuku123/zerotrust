@@ -6,6 +6,7 @@ import com.ustb.zerotrust.filter.TokenVerifyFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,6 +32,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private RsaKeyProperties prop;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
     @Bean
     public BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -55,9 +59,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 //增加自定义认证过滤器
-                .addFilter(new TokenLoginFilter(authenticationManager(),prop))
+                .addFilter(new TokenLoginFilter(authenticationManager(),prop,redisTemplate))
                 //增加自定义验证认证过滤器
-                .addFilter(new TokenVerifyFilter(authenticationManager(),prop))
+                .addFilter(new TokenVerifyFilter(authenticationManager(),prop,redisTemplate))
                 //前后端分离是无状态的，不用session了，直接禁用。
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
