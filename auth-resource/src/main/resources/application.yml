@@ -8,9 +8,6 @@ spring:
     url: jdbc:mysql:///security_authority
     username: root
     password: 199748
-  redis:
-    host: localhost
-    port: 6379
 mybatis:
   type-aliases-package: com.ustb.zerotrust.domain
   configuration:
@@ -24,6 +21,3 @@ eureka:
 logging:
   level:
     com.ustb: debug
-ustb:
-  key:
-    publicKeyPath: D:\\temp\\auth_key.pub

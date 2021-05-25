@@ -2,7 +2,6 @@ package com.ustb.zerotrust.config;
 
 
 import com.ustb.zerotrust.filter.TokenLoginFilter;
-import com.ustb.zerotrust.filter.TokenVerifyFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -53,15 +52,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
-                //允许不登陆就可以访问的方法，多个用逗号分隔
-                .antMatchers("/product").hasAnyRole("USER")
                 //其他的需要授权后访问
                 .anyRequest().authenticated()
                 .and()
                 //增加自定义认证过滤器
                 .addFilter(new TokenLoginFilter(authenticationManager(),prop,redisTemplate))
-                //增加自定义验证认证过滤器
-                .addFilter(new TokenVerifyFilter(authenticationManager(),prop,redisTemplate))
                 //前后端分离是无状态的，不用session了，直接禁用。
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
