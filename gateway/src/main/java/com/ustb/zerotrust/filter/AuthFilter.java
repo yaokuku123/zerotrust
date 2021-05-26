@@ -53,7 +53,8 @@ public class AuthFilter implements GlobalFilter, Ordered {
         ServerHttpResponse response = exchange.getResponse();
         String uri = request.getURI().getPath();
         //放行路径的白名单
-        if (uri.indexOf("/auth-org-server/login") >= 0) {
+        if (uri.indexOf("/auth-org-server/login") >= 0 ||
+                uri.indexOf("/auth-org-server/user")>=0) {
             return chain.filter(exchange);
         }
         //尝试获取token

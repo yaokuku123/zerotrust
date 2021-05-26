@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ustb.zerotrust.mapper.UserMapper">
+
+    <!--根据课程id查询课程信息-->
+    <select id="findByName" resultType="com.ustb.zerotrust.domain.SysUser">
+        select * from `user` where username=#{username}
+    </select>
+
+    <!--添加用户-->
+    <insert id="addUser" parameterType="com.ustb.zerotrust.domain.SysUser">
+        insert into `user`(username,password,card_id,gender) values (#{username},#{password},#{cardId},#{gender})
+    </insert>
+
+</mapper>

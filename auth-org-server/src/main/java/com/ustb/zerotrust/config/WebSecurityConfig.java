@@ -57,7 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 //其他的需要授权后访问
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and()
                 //增加自定义认证过滤器
                 .addFilter(new TokenLoginFilter(authenticationManager(),prop,redisTemplate,userMapper))

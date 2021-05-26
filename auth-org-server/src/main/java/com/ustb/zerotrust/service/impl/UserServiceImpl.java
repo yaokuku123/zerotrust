@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     /**
      * 从数据库中获取用户数据
      * @param username
@@ -35,5 +39,20 @@ public class UserServiceImpl implements UserService {
         SysUser user = userMapper.findByName(username);
         return User.withUsername(user.getUsername()).password(user.getPassword())
                 .authorities((GrantedAuthority) () -> "GUEST").build();
+    }
+
+    /**
+     * 添加用户
+     * @param sysUser
+     */
+    @Override
+    public Boolean addUser(SysUser sysUser){
+        //密码加密
+        sysUser.setPassword(passwordEncoder.encode(sysUser.getPassword()));
+        Integer flag = userMapper.addUser(sysUser);
+        if (flag !=null){
+            return true;
+        }
+        return false;
     }
 }
