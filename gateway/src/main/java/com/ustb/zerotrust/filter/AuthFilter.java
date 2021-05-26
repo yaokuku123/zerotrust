@@ -58,7 +58,9 @@ public class AuthFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange);
         }
         //尝试获取token
-        String token = (String) redisTemplate.opsForHash().get("userToken", "token");
+        //TODO 之后尝试从body中获取信息
+        String tokenName = request.getHeaders().getFirst("tokenName");
+        String token = (String) redisTemplate.opsForHash().get(tokenName, "userToken");
         //没有获得token,重定向至用户认证中心
         //TODO 修改重定向路径至认证中心的登录页面
         if (StringUtils.isEmpty(token)) {
