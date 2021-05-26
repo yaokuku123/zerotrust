@@ -1,5 +1,6 @@
 package com.ustb.zerotrust.service;
 
+import com.ustb.zerotrust.domain.SysUser;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
@@ -9,4 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
  * Date: 2021/2/24 10:18
  */
 public interface UserService extends UserDetailsService {
+
+    //添加用户
+    public Boolean addUser(SysUser sysUser);
 }

@@ -2,12 +2,6 @@ package com.ustb.zerotrust.mapper;
 
 
 import com.ustb.zerotrust.domain.SysUser;
-import org.apache.ibatis.annotations.Many;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-
-import java.util.List;
 
 /**
  * Copyright(C),2019-2021,XXX公司
@@ -17,6 +11,9 @@ import java.util.List;
  */
 public interface UserMapper {
 
-    @Select("select * from user where username=#{username}")
+    //根据用户名查询
     public SysUser findByName(String username);
+
+    //添加用户信息
+    public Integer addUser(SysUser sysUser);
 }
