@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ustb.zerotrust.config.RsaKeyProperties;
 import com.ustb.zerotrust.domain.ResponseCodeEnum;
 import com.ustb.zerotrust.domain.ResponseResult;
-import com.ustb.zerotrust.domain.SysRole;
 import com.ustb.zerotrust.domain.SysUser;
+import com.ustb.zerotrust.mapper.UserMapper;
 import com.ustb.zerotrust.utils.JwtUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,9 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Copyright(C),2019-2021,XXX公司
@@ -34,11 +32,13 @@ public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
     private RsaKeyProperties prop;
     private RedisTemplate redisTemplate;
+    private UserMapper userMapper;
 
-    public TokenLoginFilter(AuthenticationManager authenticationManager, RsaKeyProperties prop,RedisTemplate redisTemplate) {
+    public TokenLoginFilter(AuthenticationManager authenticationManager, RsaKeyProperties prop,RedisTemplate redisTemplate,UserMapper userMapper) {
         this.authenticationManager = authenticationManager;
         this.prop = prop;
         this.redisTemplate = redisTemplate;
+        this.userMapper = userMapper;
     }
 
     //接收并解析用户凭证，出現错误时，返回json数据前端
@@ -69,16 +69,15 @@ public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         //得到当前认证的用户对象
-        SysUser user = new SysUser();
-        user.setUsername(authResult.getName());
-        user.setRoles((List<SysRole>) authResult.getAuthorities());
+        SysUser user = userMapper.findByName(authResult.getName());
+        user.setPassword(null); //删除密码
         //json web token构建
         String token = JwtUtils.generateTokenExpireInMinutes(user, prop.getPrivateKey(), 24 * 60);
 //        //将token保存在header中返回token
 //        response.addHeader("Authorization","Bearer "+token);
 
         //将token保存在redis中
-        redisTemplate.opsForHash().put("tokenHash","token",token);
+        redisTemplate.opsForHash().put("userToken","token",token);
 
         //登录成功后，返回json格式进行提示
         response.setContentType("application/json;charset=utf-8");

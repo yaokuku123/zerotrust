@@ -17,11 +17,6 @@ import java.util.List;
  */
 public interface UserMapper {
 
-    @Select("select * from sys_user where username=#{username}")
-    @Results({
-            @Result(id = true, property = "id", column = "id"),
-            @Result(property = "roles", column = "id", javaType = List.class,
-                    many = @Many(select = "com.ustb.zerotrust.mapper.RoleMapper.findByUid"))
-    })
+    @Select("select * from user where username=#{username}")
     public SysUser findByName(String username);
 }
