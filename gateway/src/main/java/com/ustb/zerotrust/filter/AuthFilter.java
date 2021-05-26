@@ -13,6 +13,7 @@ import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -57,10 +58,13 @@ public class AuthFilter implements GlobalFilter, Ordered {
         }
         //尝试获取token
         String token = (String) redisTemplate.opsForHash().get("userToken", "token");
-        //没有获得token
+        //没有获得token,重定向至用户认证中心
+        //TODO 修改重定向路径至认证中心的登录页面
         if (StringUtils.isEmpty(token)) {
-            response.setStatusCode(HttpStatus.UNAUTHORIZED);
-            return getVoidMono(response, ResponseCodeEnum.TOKEN_MISSION);
+            String url = "http://www.baidu.com";
+            response.setStatusCode(HttpStatus.SEE_OTHER);
+            response.getHeaders().set(HttpHeaders.LOCATION,url);
+            return response.setComplete();
         }
         //验证token
         String username = null;
