@@ -2,6 +2,7 @@ package com.ustb.zerotrust.config;
 
 
 import com.ustb.zerotrust.filter.TokenLoginFilter;
+import com.ustb.zerotrust.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,6 +35,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @Bean
     public BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -56,7 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 //增加自定义认证过滤器
-                .addFilter(new TokenLoginFilter(authenticationManager(),prop,redisTemplate))
+                .addFilter(new TokenLoginFilter(authenticationManager(),prop,redisTemplate,userMapper))
                 //前后端分离是无状态的，不用session了，直接禁用。
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }

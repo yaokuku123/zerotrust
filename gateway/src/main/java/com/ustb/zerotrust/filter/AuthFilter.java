@@ -4,6 +4,7 @@ import com.ustb.zerotrust.config.RsaKeyProperties;
 import com.ustb.zerotrust.domain.Payload;
 import com.ustb.zerotrust.domain.ResponseCodeEnum;
 import com.ustb.zerotrust.domain.ResponseResult;
+import com.ustb.zerotrust.domain.SysUser;
 import com.ustb.zerotrust.utils.JsonUtils;
 import com.ustb.zerotrust.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
 
     /**
      * gateway过滤器
+     *
      * @param exchange
      * @param chain
      * @return
@@ -54,30 +56,35 @@ public class AuthFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange);
         }
         //尝试获取token
-        //TODO 修改redis中的命名
-        String token = (String) redisTemplate.opsForHash().get("tokenHash", "token");
+        String token = (String) redisTemplate.opsForHash().get("userToken", "token");
         //没有获得token
         if (StringUtils.isEmpty(token)) {
             response.setStatusCode(HttpStatus.UNAUTHORIZED);
-            return getVoidMono(response,ResponseCodeEnum.TOKEN_MISSION);
+            return getVoidMono(response, ResponseCodeEnum.TOKEN_MISSION);
         }
         //验证token
-        String userId = null;
-        try{
-            //TODO 增加从token中获取数据的操作，目前只获取userId信息
-            Payload<Object> info = JwtUtils.getInfoFromToken(token, prop.getPublicKey());
-            userId = info.getId();
-        }catch (Exception e){
-            return getVoidMono(response,ResponseCodeEnum.TOKEN_INVALID);
+        String username = null;
+        String cardId = null;
+        Integer gender = null;
+        try {
+            //从token中获取关键数据，传递给后面的资源模块
+            Payload<SysUser> info = JwtUtils.getInfoFromToken(token, prop.getPublicKey(), SysUser.class);
+            username = info.getUserInfo().getUsername();
+            cardId = info.getUserInfo().getCardId();
+            gender = info.getUserInfo().getGender();
+        } catch (Exception e) {
+            return getVoidMono(response, ResponseCodeEnum.TOKEN_INVALID);
         }
         //添加关键信息到header中，根据资源模块的需求而定
-        ServerHttpRequest mutableReq = request.mutate().header("userId", userId).build();
+        ServerHttpRequest mutableReq = request.mutate().header("username", username)
+                .header("cardId", cardId).header("gender", gender.toString()).build();
         ServerWebExchange mutableExchange = exchange.mutate().request(mutableReq).build();
         return chain.filter(mutableExchange);
     }
 
     /**
      * 错误处理方法
+     *
      * @param serverHttpResponse
      * @param responseCodeEnum
      * @return

@@ -17,9 +17,11 @@ import javax.servlet.http.HttpServletRequest;
 public class ProductController {
 
     @GetMapping("/findAll")
-    public String findAll(HttpServletRequest request){
+    public String findAll(HttpServletRequest request) {
         //从Header中获取gateway中传递过来的参数
-        String userId = request.getHeader("userId");
-        return "9002 success findAll..." + userId;
+        String username = request.getHeader("username");
+        String cardId = request.getHeader("cardId");
+        String gender = request.getHeader("gender");
+        return "9002 success findAll... username:" + username + " cardId:" + cardId + " gender:" + gender;
     }
 }
