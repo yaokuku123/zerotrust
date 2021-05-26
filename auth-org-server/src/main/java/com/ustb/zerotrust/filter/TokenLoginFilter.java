@@ -77,7 +77,7 @@ public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
 //        response.addHeader("Authorization","Bearer "+token);
 
         //将token保存在redis中
-        redisTemplate.opsForHash().put("userToken","token",token);
+        redisTemplate.opsForHash().put(user.getUsername(),"userToken",token);
 
         //登录成功后，返回json格式进行提示
         response.setContentType("application/json;charset=utf-8");
