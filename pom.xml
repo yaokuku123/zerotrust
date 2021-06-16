@@ -13,6 +13,7 @@
         <module>auth-org-server</module>
         <module>eureka-server</module>
         <module>gateway</module>
+        <module>soft-test-center</module>
     </modules>
     <packaging>pom</packaging>
 
