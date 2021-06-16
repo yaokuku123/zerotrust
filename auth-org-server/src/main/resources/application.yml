@@ -24,7 +24,7 @@ eureka:
     prefer-ip-address: true #使用ip注册
 logging:
   level:
-    com.yqj: debug
+    com.ustb: debug
 ustb:
   key:
     privateKeyPath: D:\\temp\\auth_key
