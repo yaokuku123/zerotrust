@@ -1,18 +1,23 @@
 package com.ustb.zerotrust.domain;
 
+import java.io.Serializable;
+
 /**
  * Copyright(C),2019-2021,XXX公司
  * FileName: ResponseResult
  * Author: yaoqijun
  * Date: 2021/5/25 14:10
  */
-public class ResponseResult<T> {
+public class ResponseResult<T> implements Serializable {
 
     private int code = 0;
 
     private String msg;
 
     private T data;
+
+    public ResponseResult() {
+    }
 
     public ResponseResult(int code, String msg) {
         this.code = code;

@@ -13,14 +13,14 @@ import java.security.PublicKey;
  * Author: yaoqijun
  * Date: 2021/2/25 11:04
  */
-@Data
-@ConfigurationProperties("ustb.key")
-public class RsaKeyProperties {
-    private String publicKeyPath;
-    private PublicKey publicKey;
-
-    @PostConstruct
-    public void loadKey() throws Exception {
-        publicKey = RsaUtils.getPublicKey(publicKeyPath);
-    }
-}
+//@Data
+//@ConfigurationProperties("ustb.key")
+//public class RsaKeyProperties {
+//    private String publicKeyPath;
+//    private PublicKey publicKey;
+//
+//    @PostConstruct
+//    public void loadKey() throws Exception {
+//        publicKey = RsaUtils.getPublicKey(publicKeyPath);
+//    }
+//}
