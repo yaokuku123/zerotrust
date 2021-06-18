@@ -1,16 +1,21 @@
 package com.ustb.zerotrust.service;
 
+import com.google.gson.JsonObject;
 import com.ustb.zerotrust.dao.ChainDAO;
+import com.ustb.zerotrust.util.LinkDataBase;
 import edu.ustb.shellchainapi.bean.ChainParam;
 import edu.ustb.shellchainapi.shellchain.command.ShellChainException;
 import edu.ustb.utils.PropertiesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.sql.SQLException;
+import java.util.Map;
 import java.util.Properties;
 
 public class ChainService {
 
-    private ChainDAO ObjChainDAO;
+    private LinkDataBase linkDataBase;
+    private ChainDAO objChainDAO;
     boolean isMock;
     private String res = "";
 
@@ -18,7 +23,7 @@ public class ChainService {
     public ChainService() {
         try {
             ChainParam chainParam = loadShellchainConfig();
-            ObjChainDAO = new ChainDAO(chainParam);
+            objChainDAO = new ChainDAO(chainParam);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -42,12 +47,18 @@ public class ChainService {
     }
 
     public String getChainInfo() throws ShellChainException {
-        res = ObjChainDAO.getInfo();
+        res = objChainDAO.getInfo();
         return res;
     }
 
-    public String sendChainCustom(String AppName) throws ShellChainException {
-        res = ObjChainDAO.sendCustom(AppName);
+    public String sendCertificate(String toAddress, float amount, Map<String,Object> attributes) throws ShellChainException, SQLException, ClassNotFoundException {
+        res = objChainDAO.sendCustom(toAddress, amount, attributes);
+        linkDataBase.insertData(attributes.get("appName").toString(), res);
+        return res;
+    }
+
+    public String getCertificate(String txid) throws ShellChainException{
+        res = objChainDAO.getCertificate(txid);
         return res;
     }
 }
