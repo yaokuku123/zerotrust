@@ -15,6 +15,7 @@
         <module>gateway</module>
         <module>soft-test-center</module>
         <module>control-system</module>
+        <module>Daemon</module>
     </modules>
     <packaging>pom</packaging>
 
