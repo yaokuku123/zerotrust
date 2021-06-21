@@ -1,11 +1,13 @@
 package com.ustb.zerotrust.service.impl;
 
-import com.ustb.zerotrust.BlindVerify.Check;
+import com.alibaba.fastjson.JSONObject;
 import com.ustb.zerotrust.BlindVerify.Sign;
-import com.ustb.zerotrust.BlindVerify.Verify;
+import com.ustb.zerotrust.service.ChainService;
 import com.ustb.zerotrust.service.FileSignService;
 import com.ustb.zerotrust.service.FileStoreService;
+import com.ustb.zerotrust.util.LinkDataBase;
 import com.ustb.zerotrust.utils.FileUtil;
+import edu.ustb.shellchainapi.shellchain.command.ShellChainException;
 import it.unisa.dia.gas.jpbc.Element;
 import it.unisa.dia.gas.jpbc.ElementPowPreProcessing;
 import it.unisa.dia.gas.jpbc.Pairing;
@@ -17,7 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HashMap;
 
 /**
  * Copyright(C),2019-2021,XXX公司
@@ -31,6 +37,9 @@ public class FileSignServiceImpl implements FileSignService {
     @Autowired
     private FileStoreService fileStoreService; //保存文件服务
 
+    private ChainService chainService = new ChainService();
+    private LinkDataBase linkDataBase = new LinkDataBase();
+
     /**
      * 对被测软件进行签名
      *
@@ -38,7 +47,7 @@ public class FileSignServiceImpl implements FileSignService {
      * @return 是否签名成功
      */
     @Override
-    public boolean signFile(String filePath) {
+    public boolean signFile(String filePath) throws UnsupportedEncodingException, ShellChainException, SQLException, ClassNotFoundException {
         //初始化配置 默认规定为 100块，每块有10片
         File file = new File(filePath);
         long originFileSize = file.length();
@@ -60,6 +69,25 @@ public class FileSignServiceImpl implements FileSignService {
             ElementPowPreProcessing u = pairing.getG1().newRandomElement().getImmutable().getElementPowPreProcessing();
             uLists.add(u);
         }
+
+        // 参数上链
+        Base64.Encoder encoder = Base64.getEncoder();
+        byte[] gByte1 = encoder.encode(g.toBytes());
+        byte[] vByte1 = encoder.encode(v.toBytes());
+        String gString = new String(gByte1, "UTF-8");
+        String vString = new String(vByte1, "UTF-8");
+        System.out.println(gString);
+
+        HashMap<String, Object> attributes = new HashMap<>();
+        attributes.put("g", gString);
+        attributes.put("v", vString);
+
+        String toAddress = "1UAarmYDCCD1UQ6gtuyrWEyi25FoNQMvM8ojYe";
+        String txid = chainService.send2Sub(toAddress, 0, attributes);
+
+        String res = chainService.getFromObj(txid);
+        // JSONObject jsonObject = JSONObject.parseObject(res);
+        linkDataBase.insertData("calculator", txid);
 
         //签名阶段
         ArrayList<Element> signLists;

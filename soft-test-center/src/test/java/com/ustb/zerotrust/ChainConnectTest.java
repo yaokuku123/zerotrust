@@ -7,7 +7,6 @@ import com.ustb.zerotrust.dao.ChainDAO;
 import com.ustb.zerotrust.service.ChainService;
 import com.ustb.zerotrust.util.LinkDataBase;
 import edu.ustb.shellchainapi.shellchain.command.ShellChainException;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -46,14 +45,14 @@ public class ChainConnectTest {
 
         float amount = (float) 0.0;
 
-        String res = chainService.sendCertificate(address, amount, appInfo);
+        String res = chainService.send2Obj(address, amount, appInfo);
         System.out.println(res);
     }
 
     @Test
     public void testGetCertificate() throws ShellChainException {
         txid = "c10f12ae8fc86fd2869f6616c7e77ddb06de0fe33579dd0870d10776388cf442";
-        String res = chainService.getCertificate(txid);
+        String res = chainService.getFromObj(txid);
         JSONObject jsonObject = JSONObject.parseObject(res);
         System.out.println(jsonObject.get("appName"));
     }

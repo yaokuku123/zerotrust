@@ -1,11 +1,9 @@
 package com.ustb.zerotrust;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
+import com.ustb.zerotrust.BlindVerify.Verify;
 import com.ustb.zerotrust.service.ChainService;
+import com.ustb.zerotrust.util.LinkDataBase;
 import edu.ustb.shellchainapi.shellchain.command.ShellChainException;
 import it.unisa.dia.gas.jpbc.Element;
 import it.unisa.dia.gas.jpbc.ElementPowPreProcessing;
@@ -27,6 +25,8 @@ public class ConvertTest {
     @Autowired
     public ChainService chainService = new ChainService();
 
+    private LinkDataBase linkDataBase = new LinkDataBase();
+
     @Test
     public void convert() throws ShellChainException, SQLException, ClassNotFoundException, UnsupportedEncodingException {
         //密码协议部分准备
@@ -39,37 +39,64 @@ public class ConvertTest {
         Element g = pairing.getG1().newRandomElement().getImmutable();     //生成生成元
         Element x = pairing.getZr().newRandomElement().getImmutable();
         Element v = g.powZn(x);
+
         //生成U
         ArrayList<ElementPowPreProcessing> uLists = new ArrayList<>();
+        ArrayList<String> uStringList = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             ElementPowPreProcessing u = pairing.getG1().newRandomElement().getImmutable().getElementPowPreProcessing();
+            String uString = new String(u.toBytes(), "UTF-8");
+            uStringList.add(uString);
             uLists.add(u);
         }
 
-        HashMap<String, Object> attributes = new HashMap<>();
-        attributes.put("g", g);
-        attributes.put("v", v);
-        attributes.put("uList", uLists);
-
-        JSONObject jsonObject = new JSONObject(attributes);
+        // JSONObject jsonObject = new JSONObject(attributes);
         // System.out.println(jsonObject.toString());//输出出错
 
+        // 转化参数
         Base64.Encoder encoder = Base64.getEncoder();
         byte[] gByte1 = encoder.encode(g.toBytes());
         byte[] vByte1 = encoder.encode(v.toBytes());
         String gString = new String(gByte1, "UTF-8");
         String vString = new String(vByte1, "UTF-8");
-        System.out.println(gString);
+        HashMap<String, Object> attributes = new HashMap<>();
+        attributes.put("g", gString);
+        attributes.put("v", vString);
+        // attributes.put("uStringList", uStringList);
 
-        byte[] gByte = gString.getBytes();
+        // 上链
+        String toAddress = "1UAarmYDCCD1UQ6gtuyrWEyi25FoNQMvM8ojYe";
+        String txid = chainService.send2Sub(toAddress, 0, attributes);
+
+        // 从链上取回结果
+        String res = chainService.getFromSub(txid);
+        JSONObject jsonObject = JSONObject.parseObject(res);
+        linkDataBase.insertData("calculator", txid);
+
+        // 还原参数
+        byte[] gEnByte = jsonObject.get("g").toString().getBytes();
+        byte[] vEnByte = jsonObject.get("v").toString().getBytes();
+
+        /*
+        byte[] gEnByte = gString.getBytes();
+        byte[] vEnByte = vString.getBytes();
+        */
 
         Base64.Decoder decoder = Base64.getDecoder();
-        byte[] decodeSig = decoder.decode(gByte);
+        byte[] gDeByte = decoder.decode(gEnByte);
+        byte[] vDeByte = decoder.decode(vEnByte);
+        Element g1 = pairing.getG1().newElementFromBytes(gDeByte);
+        Element v1 = pairing.getG1().newElementFromBytes(vDeByte);
+        ArrayList<ElementPowPreProcessing> uNewStringList = new ArrayList<>();
+        for(int i = 0; i< uStringList.size(); i++) {
+            ElementPowPreProcessing u = pairing.getG1().newRandomElement().getField().getElementPowPreProcessingFromBytes(uStringList.get(i).getBytes());
+            uNewStringList.add(u);
+        }
 
-        Element ele = pairing.getG1().newElementFromBytes(decodeSig);
-
-        /*String toAddress = "1UAarmYDCCD1UQ6gtuyrWEyi25FoNQMvM8ojYe";
-        String res = chainService.send2Sub(toAddress, 0, attributes);*/
+        // 验证
+        /*Verify verify = new Verify();
+        boolean result = verify.verifyResult(pairing, g, uLists, v, sigmasValues, viLists, signLists, miuLists);
+        System.out.println(result);*/
 
     }
 
