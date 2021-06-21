@@ -55,8 +55,10 @@ public class ConvertTest {
         // System.out.println(jsonObject.toString());//输出出错
 
         Base64.Encoder encoder = Base64.getEncoder();
-        byte[] encodeSig = encoder.encode(g.toBytes());
-        String gString = new String(encodeSig, "UTF-8");
+        byte[] gByte1 = encoder.encode(g.toBytes());
+        byte[] vByte1 = encoder.encode(v.toBytes());
+        String gString = new String(gByte1, "UTF-8");
+        String vString = new String(vByte1, "UTF-8");
         System.out.println(gString);
 
         byte[] gByte = gString.getBytes();
