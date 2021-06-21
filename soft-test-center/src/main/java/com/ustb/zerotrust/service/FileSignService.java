@@ -1,5 +1,10 @@
 package com.ustb.zerotrust.service;
 
+import edu.ustb.shellchainapi.shellchain.command.ShellChainException;
+
+import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
+
 /**
  * Copyright(C),2019-2021,XXX公司
  * FileName: FileSignService
@@ -13,5 +18,5 @@ public interface FileSignService {
      * @param filePath 被测软件存储路径
      * @return 是否签名成功
      */
-    public boolean signFile(String filePath);
+    public boolean signFile(String filePath) throws UnsupportedEncodingException, ShellChainException, SQLException, ClassNotFoundException;
 }

@@ -1,14 +1,21 @@
 package com.ustb.zerotrust.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.JsonObject;
 import com.ustb.zerotrust.dao.ChainDAO;
 import com.ustb.zerotrust.util.LinkDataBase;
 import edu.ustb.shellchainapi.bean.ChainParam;
 import edu.ustb.shellchainapi.shellchain.command.ShellChainException;
 import edu.ustb.utils.PropertiesUtil;
+import it.unisa.dia.gas.jpbc.Element;
+import it.unisa.dia.gas.jpbc.Pairing;
+import it.unisa.dia.gas.jpbc.PairingParameters;
+import it.unisa.dia.gas.plaf.jpbc.pairing.PairingFactory;
+import it.unisa.dia.gas.plaf.jpbc.pairing.a.TypeACurveGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
+import java.util.Base64;
 import java.util.Map;
 import java.util.Properties;
 
@@ -54,15 +61,38 @@ public class ChainService {
         return res;
     }
 
-    public String sendCertificate(String toAddress, float amount, Map<String,Object> attributes) throws ShellChainException, SQLException, ClassNotFoundException {
+    public String send2Obj(String toAddress, float amount, Map<String,Object> attributes) throws ShellChainException, SQLException, ClassNotFoundException {
         res = objChainDAO.sendCustom(toAddress, amount, attributes);
         linkDataBase.insertData(attributes.get("appName").toString(), res);
         return res;
     }
 
-    public String getCertificate(String txid) throws ShellChainException{
+    public String getFromObj(String txid) throws ShellChainException{
         res = objChainDAO.getCertificate(txid);
         return res;
+    }
+
+    public boolean verify(JSONObject jsonObject) {
+        boolean result = false;
+
+        //密码协议部分准备
+        int rbits = 53;
+        int qbits = 1024;
+        TypeACurveGenerator pg = new TypeACurveGenerator(rbits, qbits);
+        PairingParameters typeAParams = pg.generate();
+        Pairing pairing = PairingFactory.getPairing(typeAParams);
+
+        byte[] gByte = jsonObject.get("g").toString().getBytes();
+        byte[] vByte = jsonObject.get("v").toString().getBytes();
+        Base64.Decoder decoder = Base64.getDecoder();
+        Element g = pairing.getG1().newElementFromBytes(decoder.decode(gByte));
+        Element v = pairing.getZr().newElementFromBytes(decoder.decode(vByte));
+
+
+
+
+
+        return result;
     }
 
     public String send2Sub(String toAddress, float amount, Map<String,Object> attributes) throws ShellChainException, SQLException, ClassNotFoundException {
