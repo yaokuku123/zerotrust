@@ -14,32 +14,35 @@ import java.util.Properties;
 
 public class ChainService {
 
-    private LinkDataBase linkDataBase;
+    private LinkDataBase linkDataBase = new LinkDataBase();
     private ChainDAO objChainDAO;
+    private ChainDAO subChainDAO;
     boolean isMock;
     private String res = "";
 
     @Autowired
     public ChainService() {
         try {
-            ChainParam chainParam = loadShellchainConfig();
-            objChainDAO = new ChainDAO(chainParam);
+            ChainParam objChainParam = loadShellchainConfig("OBJ");
+            ChainParam subChainParam = loadShellchainConfig("SUB");
+            subChainDAO = new ChainDAO(subChainParam);
+            objChainDAO = new ChainDAO(objChainParam);
         }
         catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    ChainParam loadShellchainConfig() {
+    ChainParam loadShellchainConfig(String chain) {
         Properties shellchainProperties = PropertiesUtil.getProperties("chain.properties");
         String enableMock = shellchainProperties.getProperty("ENABLE_MOCK");
         if (enableMock!=null || Boolean.valueOf(enableMock)==Boolean.FALSE) {
             isMock = false;
-            String chainName = shellchainProperties.getProperty("OBJ_SERVER_CHAINNAME");
-            String serverIP = shellchainProperties.getProperty("OBJ_SERVER_IP");
-            String serverPort = shellchainProperties.getProperty("OBJ_SERVER_PORT");
-            String loginUser = shellchainProperties.getProperty("OBJ_SERVER_LOGIN");
-            String loginPass = shellchainProperties.getProperty("OBJ_SERVER_PWD");
+            String chainName = shellchainProperties.getProperty(chain + "_SERVER_CHAINNAME");
+            String serverIP = shellchainProperties.getProperty(chain + "_SERVER_IP");
+            String serverPort = shellchainProperties.getProperty(chain + "_SERVER_PORT");
+            String loginUser = shellchainProperties.getProperty(chain + "_SERVER_LOGIN");
+            String loginPass = shellchainProperties.getProperty(chain + "_SERVER_PWD");
             return new ChainParam(1, chainName, serverIP, serverPort, loginUser, loginPass);
         }
         isMock = true;
@@ -59,6 +62,17 @@ public class ChainService {
 
     public String getCertificate(String txid) throws ShellChainException{
         res = objChainDAO.getCertificate(txid);
+        return res;
+    }
+
+    public String send2Sub(String toAddress, float amount, Map<String,Object> attributes) throws ShellChainException, SQLException, ClassNotFoundException {
+        res = subChainDAO.sendCustom(toAddress, amount, attributes);
+        // linkDataBase.insertData(attributes.get("appName").toString(), res);
+        return res;
+    }
+
+    public String getFromSub(String txid) throws ShellChainException{
+        res = subChainDAO.getCertificate(txid);
         return res;
     }
 }
