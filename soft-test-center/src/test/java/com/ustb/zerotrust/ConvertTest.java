@@ -16,8 +16,10 @@ import it.unisa.dia.gas.plaf.jpbc.pairing.a.TypeACurveGenerator;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 
 public class ConvertTest {
@@ -26,7 +28,7 @@ public class ConvertTest {
     public ChainService chainService = new ChainService();
 
     @Test
-    public void convert() throws ShellChainException, SQLException, ClassNotFoundException {
+    public void convert() throws ShellChainException, SQLException, ClassNotFoundException, UnsupportedEncodingException {
         //密码协议部分准备
         int rbits = 53;
         int qbits = 1024;
@@ -50,7 +52,19 @@ public class ConvertTest {
         attributes.put("uList", uLists);
 
         JSONObject jsonObject = new JSONObject(attributes);
-        System.out.println(jsonObject.toString());
+        // System.out.println(jsonObject.toString());//输出出错
+
+        Base64.Encoder encoder = Base64.getEncoder();
+        byte[] encodeSig = encoder.encode(g.toBytes());
+        String gString = new String(encodeSig, "UTF-8");
+        System.out.println(gString);
+
+        byte[] gByte = gString.getBytes();
+
+        Base64.Decoder decoder = Base64.getDecoder();
+        byte[] decodeSig = decoder.decode(gByte);
+
+        Element ele = pairing.getG1().newElementFromBytes(decodeSig);
 
         /*String toAddress = "1UAarmYDCCD1UQ6gtuyrWEyi25FoNQMvM8ojYe";
         String res = chainService.send2Sub(toAddress, 0, attributes);*/
