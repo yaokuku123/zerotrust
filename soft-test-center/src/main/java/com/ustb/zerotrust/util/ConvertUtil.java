@@ -1,9 +1,15 @@
 package com.ustb.zerotrust.util;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import it.unisa.dia.gas.jpbc.Element;
+
+import java.io.*;
+import java.util.*;
 
 public class ConvertUtil {
+
+    private String filePath = "C:\\Users\\KangXi\\zerotrust\\";
 
     public static Map<String,Object> getStringToMap(String str){
         if (str.startsWith("{")) {
@@ -32,4 +38,90 @@ public class ConvertUtil {
         }
         return map;
     }
+
+    // write ulist to json
+    public boolean write2JsonFile(HashMap<Integer, String> eMap, String fileName) throws FileNotFoundException, UnsupportedEncodingException {
+
+        // 标记文件生成是否成功
+        boolean flag = true;
+
+        OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(filePath + fileName),"UTF-8");
+        // 生成json格式文件
+        try {
+            // 保证创建一个新文件
+            File file = new File(filePath);
+            if (!file.getParentFile().exists()) { // 如果父目录不存在，创建父目录
+                file.getParentFile().mkdirs();
+            }
+            if (file.exists()) { // 如果已存在,删除旧文件
+                file.delete();
+            }
+
+            file.createNewFile();
+            // 将格式化后的字符串写入文件
+            osw.write(JSON.toJSON(eMap).toString());
+            osw.flush();
+            osw.close();
+
+
+        } catch (Exception e) {
+            flag = false;
+            e.printStackTrace();
+        }
+
+        return flag;
+    }
+
+    public ArrayList<String> readfromJsonFile(String fileName) {
+        String jsonStr = "";
+        try {
+            File jsonFile = new File(filePath + fileName);
+            FileReader fileReader = new FileReader(jsonFile);
+            Reader reader = new InputStreamReader(new FileInputStream(jsonFile),"utf-8");
+            int ch = 0;
+            StringBuffer sb = new StringBuffer();
+            while ((ch = reader.read()) != -1) {
+                sb.append((char) ch);
+            }
+            fileReader.close();
+            reader.close();
+            jsonStr = sb.toString();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
+
+        ArrayList<String> eStringList = new ArrayList<>();
+        JSONObject jsonObject = JSONObject.parseObject(jsonStr);
+
+        int i=0;
+        Iterator iter = jsonObject.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            eStringList.add(entry.getValue().toString());
+        }
+
+        /*for (int i = 0; i < 10; i++) {
+            uStringList.add(jsonObject.get(i).toString());
+        }*/
+
+        return  eStringList;
+    }
+
+    // Base64 encode element to string
+    public String element2String(Element e) throws UnsupportedEncodingException {
+        Base64.Encoder encoder = Base64.getEncoder();
+        byte[] eByte = encoder.encode(e.toBytes());
+        String eString = new String(eByte, "UTF-8");
+
+        return eString;
+    }
+
+    // Base64 decode String to element
+/*    public Element string2Element(String s) {
+        Base64.Decoder decoder = Base64.getDecoder();
+        byte[] sByte = s.getBytes();
+
+    }*/
 }

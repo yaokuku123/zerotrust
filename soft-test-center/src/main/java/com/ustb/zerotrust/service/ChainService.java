@@ -1,13 +1,14 @@
 package com.ustb.zerotrust.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.JsonObject;
 import com.ustb.zerotrust.dao.ChainDAO;
 import com.ustb.zerotrust.util.LinkDataBase;
 import edu.ustb.shellchainapi.bean.ChainParam;
 import edu.ustb.shellchainapi.shellchain.command.ShellChainException;
 import edu.ustb.utils.PropertiesUtil;
 import it.unisa.dia.gas.jpbc.Element;
+import it.unisa.dia.gas.jpbc.ElementPowPreProcessing;
 import it.unisa.dia.gas.jpbc.Pairing;
 import it.unisa.dia.gas.jpbc.PairingParameters;
 import it.unisa.dia.gas.plaf.jpbc.pairing.PairingFactory;
@@ -15,9 +16,7 @@ import it.unisa.dia.gas.plaf.jpbc.pairing.a.TypeACurveGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
-import java.util.Base64;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 public class ChainService {
 
@@ -68,7 +67,7 @@ public class ChainService {
     }
 
     public String getFromObj(String txid) throws ShellChainException{
-        res = objChainDAO.getCertificate(txid);
+        res = objChainDAO.getRaw(txid);
         return res;
     }
 
@@ -82,15 +81,23 @@ public class ChainService {
         PairingParameters typeAParams = pg.generate();
         Pairing pairing = PairingFactory.getPairing(typeAParams);
 
+        // 恢复参数
         byte[] gByte = jsonObject.get("g").toString().getBytes();
         byte[] vByte = jsonObject.get("v").toString().getBytes();
         Base64.Decoder decoder = Base64.getDecoder();
         Element g = pairing.getG1().newElementFromBytes(decoder.decode(gByte));
-        Element v = pairing.getZr().newElementFromBytes(decoder.decode(vByte));
+        Element v = pairing.getG1().newElementFromBytes(decoder.decode(vByte));
+        List<String> uStringList = JSONArray.parseArray(jsonObject.get("uStringList").toString(), String.class);
+        ArrayList<ElementPowPreProcessing> uList = new ArrayList<>();
+        for(int i = 0; i< uStringList.size(); i++) {
+            ElementPowPreProcessing u = pairing.getG1().newRandomElement().getField().getElementPowPreProcessingFromBytes(uStringList.get(i).getBytes());
+            uList.add(u);
+        }
 
-
-
-
+        // 验证
+        /*Verify verify = new Verify();
+        boolean result = verify.verifyResult(pairing, g, uLists, v, sigmasValues, viLists, signLists, miuLists);
+        System.out.println(result);*/
 
         return result;
     }
@@ -102,7 +109,7 @@ public class ChainService {
     }
 
     public String getFromSub(String txid) throws ShellChainException{
-        res = subChainDAO.getCertificate(txid);
+        res = subChainDAO.getRaw(txid);
         return res;
     }
 }
