@@ -1,7 +1,9 @@
 package ustb.edu.zerotrust.service;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -18,7 +20,7 @@ import it.unisa.dia.gas.plaf.jpbc.pairing.a.TypeACurveGenerator;
 public class FileGetMessage {
     static String s;
     static String d;
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, UnsupportedEncodingException {
         startTimer();
         s = GetMessage();
         d = GetCheck();
@@ -40,7 +42,9 @@ public class FileGetMessage {
         System.out.println("这是守护进程的文件信息"+s);
         return s;
     }
-    public static String GetCheck(){
+
+
+    public static String GetCheck() throws UnsupportedEncodingException {
         String filePath = "E:\\python学习资料\\chap0 关于Python.pptx";
         File file1 = new File(filePath);
         //初始化配置 默认规定为 100块，每块有10片
@@ -82,16 +86,61 @@ public class FileGetMessage {
         miuLists = check.getMiuList(fileUtil, filePath, viLists, blockFileSize, pieceFileSize);
         System.out.println("这是守护进程的查询信息"+miuLists.toString());
         d = miuLists.toString();
+
+        //封装miuLists
+        ArrayList<String> miuString = new ArrayList<>();
+        for(int i = 0; i< miuLists.size(); i++) {
+//            System.out.println(miuLists.get(i));
+            Base64.Encoder encoder = Base64.getEncoder();
+            byte[] uByte1 = encoder.encode(miuLists.get(i).toBytes());
+            String uString = new String(uByte1, "UTF-8");
+            miuString.add(uString);
+        }
+        System.out.println(miuString);
+        //还原miuLists
+        ArrayList<Element> miuNewString = new ArrayList<>();
+        Base64.Decoder decoder = Base64.getDecoder();
+        for(int i = 0; i< miuString.size(); i++) {
+
+            Element u = pairing.getZr().newElementFromBytes(decoder.decode(miuString.get(i).getBytes()));
+            miuNewString.add(u);
+        }
+        System.out.println(miuNewString);
+
+        //封装viList
+
+        ArrayList<String> viString = new ArrayList<>();
+        for(int i = 0; i< viLists.size(); i++) {
+//            System.out.println(miuLists.get(i));
+            Base64.Encoder encoder = Base64.getEncoder();
+            byte[] vByte1 = encoder.encode(viLists.get(i).toBytes());
+            String vString = new String(vByte1, "UTF-8");
+            viString.add(vString);
+        }
+        System.out.println(viString);
+        //还原viLists
+        ArrayList<Element> viNewString = new ArrayList<>();
+        for(int i = 0; i< miuString.size(); i++) {
+
+            Element u = pairing.getZr().newElementFromBytes(decoder.decode(viString.get(i).getBytes()));
+            viNewString.add(u);
+        }
+        System.out.println(viNewString);
+
         return d;
     }
 
-
+//延时程序
     public static void startTimer() {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
                 GetMessage();
-                GetCheck();
+                try {
+                    GetCheck();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
         };
         Timer timer = new Timer();
