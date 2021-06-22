@@ -34,7 +34,7 @@ public class ChainDAO {
         return res;
     }
 
-    public String getCertificate(String txid) throws ShellChainException{
+    public String getRaw(String txid) throws ShellChainException{
         String  res = (String) shellChainCommand.getIssueCommand().getRawTransaction(txid);
         return res;
     }

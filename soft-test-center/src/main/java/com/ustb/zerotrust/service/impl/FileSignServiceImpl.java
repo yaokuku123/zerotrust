@@ -5,6 +5,7 @@ import com.ustb.zerotrust.BlindVerify.Sign;
 import com.ustb.zerotrust.service.ChainService;
 import com.ustb.zerotrust.service.FileSignService;
 import com.ustb.zerotrust.service.FileStoreService;
+import com.ustb.zerotrust.util.ConvertUtil;
 import com.ustb.zerotrust.util.LinkDataBase;
 import com.ustb.zerotrust.utils.FileUtil;
 import edu.ustb.shellchainapi.shellchain.command.ShellChainException;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -39,6 +41,10 @@ public class FileSignServiceImpl implements FileSignService {
 
     private ChainService chainService = new ChainService();
     private LinkDataBase linkDataBase = new LinkDataBase();
+    private ConvertUtil convertUtil = new ConvertUtil();
+
+    Base64.Encoder encoder = Base64.getEncoder();
+    Base64.Decoder decoder = Base64.getDecoder();
 
     /**
      * 对被测软件进行签名
@@ -47,7 +53,7 @@ public class FileSignServiceImpl implements FileSignService {
      * @return 是否签名成功
      */
     @Override
-    public boolean signFile(String filePath) throws UnsupportedEncodingException, ShellChainException, SQLException, ClassNotFoundException {
+    public boolean signFile(String filePath) throws UnsupportedEncodingException, ShellChainException, SQLException, ClassNotFoundException, FileNotFoundException {
         //初始化配置 默认规定为 100块，每块有10片
         File file = new File(filePath);
         long originFileSize = file.length();
@@ -65,8 +71,16 @@ public class FileSignServiceImpl implements FileSignService {
         Element v = g.powZn(x);
         //生成U
         ArrayList<ElementPowPreProcessing> uLists = new ArrayList<>();
+        ArrayList<String> uStringList = new ArrayList<>();
+        HashMap<Integer, String> uMap = new HashMap<>();
+        String uString = "";
+        String fileName = "exampleWrite.json";
+        boolean flag = false;
         for (int i = 0; i < 10; i++) {
             ElementPowPreProcessing u = pairing.getG1().newRandomElement().getImmutable().getElementPowPreProcessing();
+            uString = new String(encoder.encode(u.toBytes()), "UTF-8");
+            uMap.put(i, uString);
+            uStringList.add(uString);
             uLists.add(u);
         }
 
@@ -81,9 +95,16 @@ public class FileSignServiceImpl implements FileSignService {
         HashMap<String, Object> attributes = new HashMap<>();
         attributes.put("g", gString);
         attributes.put("v", vString);
+        attributes.put("uString", uStringList);
+
+
 
         String toAddress = "1UAarmYDCCD1UQ6gtuyrWEyi25FoNQMvM8ojYe";
         String txid = chainService.send2Sub(toAddress, 0, attributes);
+
+        if (txid != "") {
+            flag = convertUtil.write2JsonFile(uMap, fileName);
+        }
 
         String res = chainService.getFromObj(txid);
         // JSONObject jsonObject = JSONObject.parseObject(res);
