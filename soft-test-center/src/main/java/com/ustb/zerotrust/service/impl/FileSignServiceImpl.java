@@ -72,14 +72,12 @@ public class FileSignServiceImpl implements FileSignService {
         //生成U
         ArrayList<ElementPowPreProcessing> uLists = new ArrayList<>();
         ArrayList<String> uStringList = new ArrayList<>();
-        HashMap<Integer, String> uMap = new HashMap<>();
         String uString = "";
         String fileName = "exampleWrite.json";
         boolean flag = false;
         for (int i = 0; i < 10; i++) {
             ElementPowPreProcessing u = pairing.getG1().newRandomElement().getImmutable().getElementPowPreProcessing();
             uString = new String(encoder.encode(u.toBytes()), "UTF-8");
-            uMap.put(i, uString);
             uStringList.add(uString);
             uLists.add(u);
         }
@@ -102,12 +100,6 @@ public class FileSignServiceImpl implements FileSignService {
         String toAddress = "1UAarmYDCCD1UQ6gtuyrWEyi25FoNQMvM8ojYe";
         String txid = chainService.send2Sub(toAddress, 0, attributes);
 
-        if (txid != "") {
-            flag = convertUtil.write2JsonFile(uMap, fileName);
-        }
-
-        String res = chainService.getFromObj(txid);
-        // JSONObject jsonObject = JSONObject.parseObject(res);
         linkDataBase.insertData("calculator", txid);
 
         //签名阶段

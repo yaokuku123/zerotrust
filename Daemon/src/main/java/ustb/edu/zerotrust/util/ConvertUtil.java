@@ -1,12 +1,13 @@
-package com.ustb.zerotrust.util;
+package ustb.edu.zerotrust.util;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import it.unisa.dia.gas.jpbc.Element;
 
 import java.io.*;
-import java.util.*;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ConvertUtil {
 
@@ -101,7 +102,6 @@ public class ConvertUtil {
         hashMap.put("viStringList", jsonObject.getJSONArray("viStringList"));
         hashMap.put("miuStringList", jsonObject.getJSONArray("miuStringList"));
         hashMap.put("signStringList", jsonObject.getJSONArray("signStringList"));
-
 
         return hashMap;
         // Iterator iter = jsonObject.entrySet().iterator();

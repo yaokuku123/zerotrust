@@ -1,11 +1,14 @@
 package ustb.edu.zerotrust.service;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
+import com.alibaba.fastjson.JSON;
 import com.ustb.zerotrust.BlindVerify.Check;
 import com.ustb.zerotrust.BlindVerify.Sign;
+import ustb.edu.zerotrust.util.ConvertUtil;
 import com.ustb.zerotrust.utils.FileUtil;
 import it.unisa.dia.gas.jpbc.Element;
 import it.unisa.dia.gas.jpbc.ElementPowPreProcessing;
@@ -17,7 +20,8 @@ import it.unisa.dia.gas.plaf.jpbc.pairing.a.TypeACurveGenerator;
 public class FileGetMessage {
     static String s;
     static String d;
-    public static void main(String[] args) throws InterruptedException, UnsupportedEncodingException {
+
+    public static void main(String[] args) throws InterruptedException, UnsupportedEncodingException, FileNotFoundException {
 //        startTimer();
         System.out.println(GetCheckMessage());
 //        s = GetMessage();
@@ -43,9 +47,9 @@ public class FileGetMessage {
 
 
 
-//调用这个函数获得map结果的结果。
-    public static Map<String,Object> GetCheckMessage() throws UnsupportedEncodingException {
-        String filePath = "E:\\python学习资料\\chap0 关于Python.pptx";
+    //调用这个函数获得map结果的结果。
+    public static String GetCheckMessage() throws UnsupportedEncodingException, FileNotFoundException {
+        String filePath = "D:\\Work\\nsAlbum\\UnityPlayer.dll";
         File file1 = new File(filePath);
         //初始化配置 默认规定为 100块，每块有10片
         File file = new File(filePath);
@@ -122,18 +126,32 @@ public class FileGetMessage {
             viNewString.add(u);
         }
 
+        ArrayList<String> signStringList = new ArrayList<>();
+        for(int i = 0; i< signLists.size(); i++) {
+//            System.out.println(miuLists.get(i));
+            Base64.Encoder encoder = Base64.getEncoder();
+            byte[] signByte1 = encoder.encode(signLists.get(i).toBytes());
+            String signString = new String(signByte1, "UTF-8");
+            signStringList.add(signString);
+        }
+
         //还原sigmavalues
         Base64.Encoder encoder = Base64.getEncoder();
         byte[] sigByte1 = encoder.encode(sigmasValues.toBytes());
         String sigString = new String(sigByte1,"UTF-8");
         Element NewSigvalues = pairing.getG1().newElementFromBytes(decoder.decode(sigString.getBytes()));
         HashMap<String, Object> attributes = new HashMap<>();
-        attributes.put("sigmasValues", NewSigvalues);
-        attributes.put("viLists", viNewString);
-        attributes.put("miuLists",miuNewString);
-        System.out.println(attributes);
+        attributes.put("sigmaValues", sigString);
+        attributes.put("viStringList", viString);
+        attributes.put("miuStringList",miuString);
+        attributes.put("signStringList", signStringList);
+        // System.out.println(attributes);
 
-        return attributes;
+        ConvertUtil convertUtil = new ConvertUtil();
+        convertUtil.write2JsonFile(attributes, "checkMessage.json");
+        String res = JSON.toJSON(attributes).toString();
+
+        return res;
 
     }
 //延时程序
@@ -144,7 +162,7 @@ public class FileGetMessage {
                 GetMessage();
                 try {
                     GetCheckMessage();
-                } catch (UnsupportedEncodingException e) {
+                } catch (UnsupportedEncodingException | FileNotFoundException e) {
                     e.printStackTrace();
                 }
             }
