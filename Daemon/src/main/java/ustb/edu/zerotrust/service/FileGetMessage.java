@@ -2,10 +2,7 @@ package ustb.edu.zerotrust.service;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 import com.ustb.zerotrust.BlindVerify.Check;
 import com.ustb.zerotrust.BlindVerify.Sign;
@@ -21,11 +18,12 @@ public class FileGetMessage {
     static String s;
     static String d;
     public static void main(String[] args) throws InterruptedException, UnsupportedEncodingException {
-        startTimer();
-        s = GetMessage();
-        d = GetCheck();
-        System.out.println("这是主进程的文件信息"+s);
-        System.out.println("这是主进程的查询信息"+d);
+//        startTimer();
+        System.out.println(GetCheckMessage());
+//        s = GetMessage();
+//        d = GetCheck();
+//        System.out.println("这是主进程的文件信息"+s);
+//        System.out.println("这是主进程的查询信息"+d);
     }
     public static String GetMessage(){
         String filePath = "E:\\python学习资料\\chap0 关于Python.pptx";
@@ -44,7 +42,9 @@ public class FileGetMessage {
     }
 
 
-    public static String GetCheck() throws UnsupportedEncodingException {
+
+//调用这个函数获得map结果的结果。
+    public static Map<String,Object> GetCheckMessage() throws UnsupportedEncodingException {
         String filePath = "E:\\python学习资料\\chap0 关于Python.pptx";
         File file1 = new File(filePath);
         //初始化配置 默认规定为 100块，每块有10片
@@ -84,7 +84,6 @@ public class FileGetMessage {
         //求miu
         ArrayList<Element> miuLists;
         miuLists = check.getMiuList(fileUtil, filePath, viLists, blockFileSize, pieceFileSize);
-        System.out.println("这是守护进程的查询信息"+miuLists.toString());
         d = miuLists.toString();
 
         //封装miuLists
@@ -96,7 +95,6 @@ public class FileGetMessage {
             String uString = new String(uByte1, "UTF-8");
             miuString.add(uString);
         }
-        System.out.println(miuString);
         //还原miuLists
         ArrayList<Element> miuNewString = new ArrayList<>();
         Base64.Decoder decoder = Base64.getDecoder();
@@ -105,7 +103,6 @@ public class FileGetMessage {
             Element u = pairing.getZr().newElementFromBytes(decoder.decode(miuString.get(i).getBytes()));
             miuNewString.add(u);
         }
-        System.out.println(miuNewString);
 
         //封装viList
 
@@ -117,7 +114,6 @@ public class FileGetMessage {
             String vString = new String(vByte1, "UTF-8");
             viString.add(vString);
         }
-        System.out.println(viString);
         //还原viLists
         ArrayList<Element> viNewString = new ArrayList<>();
         for(int i = 0; i< miuString.size(); i++) {
@@ -125,11 +121,21 @@ public class FileGetMessage {
             Element u = pairing.getZr().newElementFromBytes(decoder.decode(viString.get(i).getBytes()));
             viNewString.add(u);
         }
-        System.out.println(viNewString);
 
-        return d;
+        //还原sigmavalues
+        Base64.Encoder encoder = Base64.getEncoder();
+        byte[] sigByte1 = encoder.encode(sigmasValues.toBytes());
+        String sigString = new String(sigByte1,"UTF-8");
+        Element NewSigvalues = pairing.getG1().newElementFromBytes(decoder.decode(sigString.getBytes()));
+        HashMap<String, Object> attributes = new HashMap<>();
+        attributes.put("sigmasValues", NewSigvalues);
+        attributes.put("viLists", viNewString);
+        attributes.put("miuLists",miuNewString);
+        System.out.println(attributes);
+
+        return attributes;
+
     }
-
 //延时程序
     public static void startTimer() {
         TimerTask task = new TimerTask() {
@@ -137,7 +143,7 @@ public class FileGetMessage {
             public void run() {
                 GetMessage();
                 try {
-                    GetCheck();
+                    GetCheckMessage();
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }

@@ -11,7 +11,6 @@ public class test1 {
 
 //        FileGetMessage sd = new FileGetMessage();
         FileGetMessage.GetMessage();
-        FileGetMessage.GetCheck();
         FileGetMessage.startTimer();
 
     }
