@@ -117,17 +117,19 @@ public class ConvertTest {
 
         //生成U
         ArrayList<ElementPowPreProcessing> uLists = new ArrayList<>();
-        HashMap<Integer, String> uMap = new HashMap<>();
+        ArrayList<String> uStringList = new ArrayList<>();
+        HashMap<String, Object> uMap = new HashMap<>();
         for (int i = 0; i < 10; i++) {
             ElementPowPreProcessing u = pairing.getG1().newRandomElement().getImmutable().getElementPowPreProcessing();
             String uString = new String(encoder.encode(u.toBytes()), "UTF-8");
-            uMap.put(i+1, uString);
+            uStringList.add(uString);
             uLists.add(u);
         }
 
+        uMap.put("uStringList", uStringList);
         String fileName = "exampleWrite.json";
         convertUtil.write2JsonFile(uMap, fileName);
-        ArrayList<String> uStringList = convertUtil.readfromJsonFile(fileName);
+        HashMap<String, Object> hashMap = convertUtil.readfromJsonFile(fileName);
 
         /*// 标记文件生成是否成功
         boolean flag = true;
@@ -178,6 +180,26 @@ public class ConvertTest {
         JSONObject jsonObject = JSONObject.parseObject(jsonStr);*/
 
 
+    }
+
+    public void testEnsure() {
+
+    }
+
+    @Test
+    public void readJsonFile() {
+        String myJsonObj2 = "{\n" +
+                "    \"name\":\"网站\",\n" +
+                "    \"num\":3,\n" +
+                "    \"sites\": [\n" +
+                "        { \"name\":\"Google\", \"info\":[ \"Android\", \"Google 搜索\", \"Google 翻译\" ] },\n" +
+                "        { \"name\":\"Runoob\", \"info\":[ \"菜鸟教程\", \"菜鸟工具\", \"菜鸟微信\" ] },\n" +
+                "        { \"name\":\"Taobao\", \"info\":[ \"淘宝\", \"网购\" ] }\n" +
+                "    ]\n" +
+                "}";
+        JSONObject jsonobj2 = JSON.parseObject(myJsonObj2);
+
+        JSONArray jsonArray = jsonobj2.getJSONArray("sites");
     }
 
 }

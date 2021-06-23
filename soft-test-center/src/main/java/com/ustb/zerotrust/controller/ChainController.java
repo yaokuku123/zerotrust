@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.ustb.zerotrust.BlindVerify.Verify;
 import com.ustb.zerotrust.entity.Application;
 import com.ustb.zerotrust.service.ChainService;
+import com.ustb.zerotrust.util.ConvertUtil;
 import com.ustb.zerotrust.util.LinkDataBase;
 import edu.ustb.shellchainapi.shellchain.command.ShellChainException;
 import it.unisa.dia.gas.jpbc.Element;
@@ -28,6 +30,7 @@ public class ChainController {
     private ChainService chainService = new ChainService();
     private LinkDataBase linkDataBase = new LinkDataBase();
     private Base64.Decoder decoder = Base64.getDecoder();
+    private ConvertUtil convertUtil = new ConvertUtil();
 
     @RequestMapping("/GET")
     public String getChainInfo() throws ShellChainException {
@@ -45,10 +48,11 @@ public class ChainController {
         return resAddress;
     }
 
-    public boolean ensure(String appName) throws SQLException, ClassNotFoundException, ShellChainException {
+    @RequestMapping("/ensure")
+    public boolean ensure(@RequestParam String appName) throws SQLException, ClassNotFoundException, ShellChainException {
         boolean res = false;
         String txid = linkDataBase.getTxid(appName);
-        JSONObject jsonObject = JSONObject.parseObject(chainService.getFromObj(txid));
+        JSONObject jsonObject = JSONObject.parseObject(chainService.getFromSub(txid));
 
         //密码协议部分准备
         int rbits = 53;
@@ -72,6 +76,33 @@ public class ChainController {
             ElementPowPreProcessing u = pairing.getG1().newRandomElement().getField().getElementPowPreProcessingFromBytes(uStringList.get(i).getBytes());
             uList.add(u);
         }
+
+        HashMap<String, Object> hashMap = convertUtil.readfromJsonFile("checkMessage.json");
+        String sigmaValues = hashMap.get("sigmaValues").toString();
+        JSONArray viStringList = (JSONArray) hashMap.get("viStringList");
+        JSONArray miuStringList = (JSONArray) hashMap.get("miuStringList");
+        JSONArray signStringList = (JSONArray) hashMap.get("signStringList");
+        ArrayList<Element> miuList = new ArrayList<>();
+        ArrayList<Element> viList = new ArrayList<>();
+        ArrayList<Element> signList = new ArrayList<>();
+        Base64.Decoder decoder = Base64.getDecoder();
+        for(int i = 0; i< miuStringList.size(); i++) {
+            Element u = pairing.getZr().newElementFromBytes(decoder.decode(miuStringList.get(i).toString().getBytes()));
+            miuList.add(u);
+        }
+
+        for(int i = 0; i< viStringList.size(); i++) {
+            Element u = pairing.getZr().newElementFromBytes(decoder.decode(viStringList.get(i).toString().getBytes()));
+            viList.add(u);
+        }
+        for(int i = 0; i< signStringList.size(); i++) {
+            Element u = pairing.getG1().newElementFromBytes(decoder.decode(signStringList.get(i).toString().getBytes()));
+            signList.add(u);
+        }
+        Element sigmavalues = pairing.getG1().newElementFromBytes(decoder.decode(sigmaValues.getBytes()));
+
+        Verify verify = new Verify();
+        res = verify.verifyResult(pairing, g, uList, v, sigmavalues, viList, signList, miuList);
 
         return res;
     }
