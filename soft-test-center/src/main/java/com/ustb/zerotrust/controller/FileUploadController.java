@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 
@@ -40,7 +41,7 @@ public class FileUploadController {
      * @return
      */
     @PostMapping("/upload")
-    public ResponseResult upload(@RequestParam("file") MultipartFile file) throws ClassNotFoundException, ShellChainException, SQLException, UnsupportedEncodingException {
+    public ResponseResult upload(@RequestParam("file") MultipartFile file) throws ClassNotFoundException, ShellChainException, SQLException, UnsupportedEncodingException, FileNotFoundException {
         //边界判定
         if (file.isEmpty()) {
             return ResponseResult.error(ResponseCodeEnum.FAIL.getCode(), "上传失败，请选择文件");
