@@ -22,7 +22,9 @@ import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Copyright(C),2019-2021,XXX公司
@@ -50,7 +52,7 @@ public class FileSignServiceImpl implements FileSignService {
      * @return 是否签名成功
      */
     @Override
-    public boolean signFile(String filePath) throws UnsupportedEncodingException, ShellChainException, SQLException, ClassNotFoundException, FileNotFoundException {
+    public String signFile(String filePath) throws UnsupportedEncodingException, ShellChainException, SQLException, ClassNotFoundException, FileNotFoundException {
         //初始化配置 默认规定为 100块，每块有10片
         File file = new File(filePath);
         long originFileSize = file.length();
@@ -92,8 +94,13 @@ public class FileSignServiceImpl implements FileSignService {
         signLists = sign.sign(fileUtil, filePath, uLists, g, x, blockFileSize, pieceFileSize);
 
         //签名存储
-        fileStoreService.uploadFileSign(file.getName(), StringUtils.join(signLists, ","));
-
-        return true;
+        List<String> signStringList = new ArrayList<>();
+        Base64.Encoder encoder = Base64.getEncoder();
+        for (Element elm : signLists) {
+            byte[] signByte = encoder.encode(elm.toBytes());
+            signStringList.add(new String(signByte, "UTF-8"));
+        }
+        String signPath = fileStoreService.uploadFileSign(file.getName(), signStringList);
+        return signPath;
     }
 }

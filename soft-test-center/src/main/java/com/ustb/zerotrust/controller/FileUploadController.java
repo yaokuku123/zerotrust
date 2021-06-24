@@ -56,10 +56,13 @@ public class FileUploadController {
             return ResponseResult.error(ResponseCodeEnum.FAIL.getCode(), "上传失败，文件IO异常");
         }
         //签名软件
-        if (!fileSignService.signFile(filePath)) {
+        String signPath = fileSignService.signFile(filePath);
+        if (signPath == null) {
             //签名失败
             return ResponseResult.error(ResponseCodeEnum.FAIL.getCode(), "上传失败，软件检验未通过");
         }
+        //TODO 将被测软件和签名文件打包发送至目标虚拟机
+
         //验证通过
         return ResponseResult.success();
     }
