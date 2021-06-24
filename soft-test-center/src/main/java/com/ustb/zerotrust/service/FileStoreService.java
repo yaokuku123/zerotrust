@@ -2,6 +2,8 @@ package com.ustb.zerotrust.service;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 
 /**
  * Copyright(C),2019-2021,XXX公司
@@ -25,5 +27,5 @@ public interface FileStoreService {
      * @param softName 被测软件名称
      * @return 签名文件路径
      */
-    public String uploadFileSign(String softName, String signList);
+    public String uploadFileSign(String softName, List<String> signList);
 }

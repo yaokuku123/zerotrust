@@ -126,7 +126,7 @@ public class ConvertTest {
         uMap.put("uStringList", uStringList);
         String fileName = "exampleWrite.json";
         convertUtil.write2JsonFile(uMap, fileName);
-        HashMap<String, Object> hashMap = convertUtil.readfromJsonFile(fileName);
+//        HashMap<String, Object> hashMap = convertUtil.readfromJsonFile(fileName);
 
         /*// 标记文件生成是否成功
         boolean flag = true;

@@ -10,9 +10,8 @@ import java.util.*;
 
 public class ConvertUtil {
 
-    private String filePath = "C:\\Users\\KangXi\\zerotrust\\";
 
-    public static Map<String,Object> getStringToMap(String str){
+    public static Map<String, Object> getStringToMap(String str) {
         if (str.startsWith("{")) {
             str = str.substring(1, str.length());
         }
@@ -23,17 +22,17 @@ public class ConvertUtil {
         //根据逗号截取字符串数组
         String[] str1 = str.split(",");
         //创建Map对象
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         //循环加入map集合
         for (int i = 0; i < str1.length; i++) {
             //根据":"截取字符串数组
             String[] str2 = str1[i].split("=");
             //str2[0]为KEY,str2[1]为值
             // str2.length-1 为下标最大值
-            if(str2.length-1 == 0){
-                map.put(str2[0].trim(),"");
-            }else{
-                map.put(str2[0].trim(),str2[1].trim());
+            if (str2.length - 1 == 0) {
+                map.put(str2[0].trim(), "");
+            } else {
+                map.put(str2[0].trim(), str2[1].trim());
             }
 
         }
@@ -41,30 +40,27 @@ public class ConvertUtil {
     }
 
     // write ulist to json
-    public boolean write2JsonFile(HashMap<String, Object> eMap, String fileName) throws FileNotFoundException, UnsupportedEncodingException {
+    public static boolean write2JsonFile(Map<String, Object> eMap, String fileName) {
 
         // 标记文件生成是否成功
         boolean flag = true;
-
-        OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(filePath + fileName),"UTF-8");
         // 生成json格式文件
+        OutputStreamWriter osw = null;
         try {
+            osw = new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8");
             // 保证创建一个新文件
-            File file = new File(filePath);
+            File file = new File(fileName);
             if (!file.getParentFile().exists()) { // 如果父目录不存在，创建父目录
                 file.getParentFile().mkdirs();
             }
             if (file.exists()) { // 如果已存在,删除旧文件
                 file.delete();
             }
-
             file.createNewFile();
             // 将格式化后的字符串写入文件
             osw.write(JSON.toJSON(eMap).toString());
             osw.flush();
             osw.close();
-
-
         } catch (Exception e) {
             flag = false;
             e.printStackTrace();
@@ -73,12 +69,12 @@ public class ConvertUtil {
         return flag;
     }
 
-    public HashMap<String, Object> readfromJsonFile(String fileName) {
+    public static String readfromJsonFile(String fileName) {
         String jsonStr = "";
         try {
-            File jsonFile = new File(filePath + fileName);
+            File jsonFile = new File(fileName);
             FileReader fileReader = new FileReader(jsonFile);
-            Reader reader = new InputStreamReader(new FileInputStream(jsonFile),"utf-8");
+            Reader reader = new InputStreamReader(new FileInputStream(jsonFile), "UTF-8");
             int ch = 0;
             StringBuffer sb = new StringBuffer();
             while ((ch = reader.read()) != -1) {
@@ -90,20 +86,16 @@ public class ConvertUtil {
 
         } catch (IOException e) {
             e.printStackTrace();
-
         }
-
-        HashMap<String,Object> hashMap = new HashMap<>();
-        String sigmaString = "";
-        JSONObject jsonObject = JSONObject.parseObject(jsonStr);
-
-        hashMap.put("sigmaValues", jsonObject.get("sigmaValues").toString());
-        hashMap.put("viStringList", jsonObject.getJSONArray("viStringList"));
-        hashMap.put("miuStringList", jsonObject.getJSONArray("miuStringList"));
-        hashMap.put("signStringList", jsonObject.getJSONArray("signStringList"));
-
-
-        return hashMap;
+        return jsonStr;
+//        HashMap<String, Object> hashMap = new HashMap<>();
+//        JSONObject jsonObject = JSONObject.parseObject(jsonStr);
+//
+//        hashMap.put("sigmaValues", jsonObject.get("sigmaValues").toString());
+//        hashMap.put("viStringList", jsonObject.getJSONArray("viStringList"));
+//        hashMap.put("miuStringList", jsonObject.getJSONArray("miuStringList"));
+//        hashMap.put("signStringList", jsonObject.getJSONArray("signStringList"));
+//        return hashMap;
         // Iterator iter = jsonObject.entrySet().iterator();
 
         /*while (iter.hasNext()) {

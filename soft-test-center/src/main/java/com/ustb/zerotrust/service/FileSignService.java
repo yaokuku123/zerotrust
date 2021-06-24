@@ -19,5 +19,5 @@ public interface FileSignService {
      * @param filePath 被测软件存储路径
      * @return 是否签名成功
      */
-    public boolean signFile(String filePath) throws UnsupportedEncodingException, ShellChainException, SQLException, ClassNotFoundException, FileNotFoundException;
+    public String signFile(String filePath) throws UnsupportedEncodingException, ShellChainException, SQLException, ClassNotFoundException, FileNotFoundException;
 }
