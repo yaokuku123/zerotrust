@@ -1,7 +1,10 @@
-package com.ustb.zerotrust.util;
+package com.ustb.zerotrust.mapper;
+
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 
+@Repository
 public class LinkDataBase {
     public void insertData(String appName, String txid) throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.jdbc.Driver");

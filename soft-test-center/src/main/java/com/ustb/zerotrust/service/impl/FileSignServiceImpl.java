@@ -1,13 +1,10 @@
 package com.ustb.zerotrust.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.ustb.zerotrust.BlindVerify.Sign;
 import com.ustb.zerotrust.entity.PublicKey;
-import com.ustb.zerotrust.service.ChainService;
 import com.ustb.zerotrust.service.FileSignService;
 import com.ustb.zerotrust.service.FileStoreService;
-import com.ustb.zerotrust.util.ConvertUtil;
-import com.ustb.zerotrust.util.LinkDataBase;
+import com.ustb.zerotrust.mapper.LinkDataBase;
 import com.ustb.zerotrust.utils.FileUtil;
 import edu.ustb.shellchainapi.shellchain.command.ShellChainException;
 import it.unisa.dia.gas.jpbc.Element;
@@ -25,7 +22,6 @@ import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.HashMap;
 
 /**
@@ -40,12 +36,12 @@ public class FileSignServiceImpl implements FileSignService {
     @Autowired
     private FileStoreService fileStoreService; //保存文件服务
 
-    private ChainService chainService = new ChainService();
-    private LinkDataBase linkDataBase = new LinkDataBase();
-    private ConvertUtil convertUtil = new ConvertUtil();
+    @Autowired
+    private ChainService chainService;
 
-    Base64.Encoder encoder = Base64.getEncoder();
-    Base64.Decoder decoder = Base64.getDecoder();
+    @Autowired
+    private LinkDataBase linkDataBase;
+
 
     /**
      * 对被测软件进行签名
@@ -83,12 +79,11 @@ public class FileSignServiceImpl implements FileSignService {
         attributes.put("g", publicKey.encodeG());
         attributes.put("v", publicKey.encodeV());
         attributes.put("uString", publicKey.encodeULists());
-
-
         String toAddress = "1UAarmYDCCD1UQ6gtuyrWEyi25FoNQMvM8ojYe";
         String txid = chainService.send2Sub(toAddress, 0, attributes);
 
-        linkDataBase.insertData("calculator", txid);
+        //插入数据库
+        linkDataBase.insertData(file.getName(), txid);
 
         //签名阶段
         ArrayList<Element> signLists;

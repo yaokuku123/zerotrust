@@ -1,9 +1,9 @@
-package com.ustb.zerotrust.service;
+package com.ustb.zerotrust.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.ustb.zerotrust.dao.ChainDAO;
-import com.ustb.zerotrust.util.LinkDataBase;
+import com.ustb.zerotrust.mapper.ChainDAO;
+import com.ustb.zerotrust.mapper.LinkDataBase;
 import edu.ustb.shellchainapi.bean.ChainParam;
 import edu.ustb.shellchainapi.shellchain.command.ShellChainException;
 import edu.ustb.utils.PropertiesUtil;
@@ -14,10 +14,12 @@ import it.unisa.dia.gas.jpbc.PairingParameters;
 import it.unisa.dia.gas.plaf.jpbc.pairing.PairingFactory;
 import it.unisa.dia.gas.plaf.jpbc.pairing.a.TypeACurveGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.*;
 
+@Service
 public class ChainService {
 
     private LinkDataBase linkDataBase = new LinkDataBase();

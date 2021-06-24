@@ -1,12 +1,14 @@
-package com.ustb.zerotrust.dao;
+package com.ustb.zerotrust.mapper;
 
 import com.google.gson.JsonObject;
 import edu.ustb.shellchainapi.bean.ChainParam;
 import edu.ustb.shellchainapi.shellchain.command.ShellChainCommand;
 import edu.ustb.shellchainapi.shellchain.command.ShellChainException;
+import org.springframework.stereotype.Repository;
 
 import java.util.Map;
 
+@Repository
 public class ChainDAO {
     ShellChainCommand shellChainCommand;
     String res = "";
