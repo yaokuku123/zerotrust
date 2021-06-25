@@ -2,6 +2,7 @@ package com.ustb.zerotrust.service;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
 
 
@@ -20,7 +21,7 @@ public interface FileStoreService {
      * @param file 被测软件
      * @return 上传的被测软件路径
      */
-    public String uploadFile(String fileName,String suffix,MultipartFile file);
+    public File uploadFile(String fileName, String suffix, MultipartFile file);
 
     /**
      * 保存被测软件的签名文件
@@ -29,5 +30,5 @@ public interface FileStoreService {
      * @param softName 被测软件名称
      * @return 签名文件路径
      */
-    public String uploadFileSign(String softName, List<String> signList);
+    public File uploadFileSign(String softName, List<String> signList);
 }

@@ -4,6 +4,7 @@ import com.ustb.zerotrust.domain.ResponseCodeEnum;
 import com.ustb.zerotrust.domain.ResponseResult;
 import com.ustb.zerotrust.service.FileStoreService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,17 +26,18 @@ public class DownLoadFileController {
 
     /**
      * 接收软件测试中心发送的被测软件和签名文件
+     *
      * @param fileName 软件名称
-     * @param files 被测软件和签名文件
+     * @param files    被测软件和签名文件
      * @return
      */
-    @PostMapping("/download")
-    public ResponseResult downLoad(String fileName,@RequestParam("files") MultipartFile[] files){
-        if (files.length != 2){
-            return ResponseResult.error(ResponseCodeEnum.PARAMETER_ILLEGAL.getCode(),"文件个数错误");
+    @PostMapping(value = "/download", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseResult downLoad(@RequestParam("fileName") String fileName, @RequestParam("files") MultipartFile[] files) {
+        if (files.length != 2) {
+            return ResponseResult.error(ResponseCodeEnum.PARAMETER_ILLEGAL.getCode(), "文件个数错误");
         }
         //下载文件至本地
-        fileStoreService.uploadFile(fileName,files[0],files[1]);
+        fileStoreService.uploadFile(fileName, files[0], files[1]);
         return ResponseResult.success();
     }
 }
