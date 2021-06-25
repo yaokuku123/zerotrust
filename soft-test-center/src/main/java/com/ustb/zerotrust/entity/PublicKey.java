@@ -95,8 +95,9 @@ public class PublicKey {
      * @return
      */
     public ArrayList<ElementPowPreProcessing> decodeULists(List<String> uStringList) throws UnsupportedEncodingException {
+        uLists = new ArrayList<>();
         for (String elm : uStringList) {
-            byte[] elmByte = decoder.decode(elm.getBytes());
+            byte[] elmByte = decoder.decode(elm.getBytes("UTF-8"));
             ElementPowPreProcessing elmE = pairing.getG1().newRandomElement().getImmutable().getField().getElementPowPreProcessingFromBytes(elmByte);
             uLists.add(elmE);
         }

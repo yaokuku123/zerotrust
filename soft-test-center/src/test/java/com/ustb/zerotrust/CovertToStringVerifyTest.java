@@ -6,6 +6,7 @@ import com.ustb.zerotrust.BlindVerify.Check;
 import com.ustb.zerotrust.BlindVerify.Sign;
 import com.ustb.zerotrust.BlindVerify.Verify;
 import com.ustb.zerotrust.entity.PublicKey;
+import com.ustb.zerotrust.entity.QueryParam;
 import com.ustb.zerotrust.util.ConvertUtil;
 import com.ustb.zerotrust.utils.FileUtil;
 import it.unisa.dia.gas.jpbc.Element;
@@ -100,6 +101,14 @@ public class CovertToStringVerifyTest {
         //求miu
         ArrayList<Element> miuLists;
         miuLists = check.getMiuList(fileUtil, filePath, viLists,  blockFileSize, pieceFileSize);
+
+        //******************************转化验证************************************//
+        QueryParam queryParam = new QueryParam(pairing,sigmasValues,viLists,signLists,miuLists);
+        sigmasValues = queryParam.decodeSigma(queryParam.encodeSigma());
+        ArrayList<Element> viLists2 = queryParam.decodeViLists(queryParam.encodeViList());
+        signLists = queryParam.decodeSignLists(queryParam.encodeSignLists());
+        miuLists = queryParam.decodeMiuLists(queryParam.encodeMiuLists());
+        //******************************转化验证************************************//
 
         //开始验证
         Verify verify = new Verify();
