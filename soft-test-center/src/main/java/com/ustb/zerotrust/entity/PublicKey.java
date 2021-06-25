@@ -29,6 +29,10 @@ public class PublicKey {
     private final Base64.Encoder encoder = Base64.getEncoder();
     private final Base64.Decoder decoder = Base64.getDecoder();
 
+    public PublicKey(Pairing pairing){
+        this.pairing = pairing;
+    }
+
 
     /**
      * 使用Base64编码的方式将Element类型的G转换为String类型
