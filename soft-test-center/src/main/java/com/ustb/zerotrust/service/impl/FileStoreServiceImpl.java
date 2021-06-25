@@ -23,17 +23,16 @@ import java.util.UUID;
 @Service
 public class FileStoreServiceImpl implements FileStoreService {
     /**
-     * 上传被测软件
+     * 保存被测软件
      *
-     * @param file 上传的软件
-     * @return 文件存储路径
+     * @param fileName 上传文件的名称
+     * @param suffix 文件后缀
+     * @param file 被测软件
+     * @return 上传的被测软件路径
      */
-    public String uploadFile(MultipartFile file) {
+    public String  uploadFile(String fileName,String suffix,MultipartFile file) {
         //拼接文件名，添加uuid
-        String originFileName = file.getOriginalFilename();
-        String fileName = originFileName.substring(0,originFileName.lastIndexOf("."))
-                                + UUID.randomUUID().toString().replaceAll("-","");
-        String suffix = originFileName.substring(originFileName.lastIndexOf("."));
+        fileName = fileName + UUID.randomUUID().toString().replaceAll("-","");
         fileName = fileName + suffix;
         //拼接路径
         String filePath = System.getProperty("user.dir") + "/uploadFile/";

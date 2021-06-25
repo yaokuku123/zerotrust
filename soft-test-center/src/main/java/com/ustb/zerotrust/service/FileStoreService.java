@@ -15,10 +15,12 @@ public interface FileStoreService {
     /**
      * 保存被测软件
      *
-     * @param file 上传文件
+     * @param fileName 上传文件的名称
+     * @param suffix 文件后缀
+     * @param file 被测软件
      * @return 上传的被测软件路径
      */
-    public String uploadFile(MultipartFile file);
+    public String uploadFile(String fileName,String suffix,MultipartFile file);
 
     /**
      * 保存被测软件的签名文件

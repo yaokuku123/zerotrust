@@ -50,13 +50,16 @@ public class FileUploadController {
             return ResponseResult.error(ResponseCodeEnum.FAIL.getCode(), "上传失败，请选择大于1KB文件");
         }
         //上传软件
-        String filePath = fileStoreService.uploadFile(file);
+        String originFileName = file.getOriginalFilename();
+        String fileName = originFileName.substring(0, originFileName.lastIndexOf("."));
+        String suffix = originFileName.substring(originFileName.lastIndexOf("."));
+        String filePath = fileStoreService.uploadFile(fileName,suffix,file);
         if (filePath == null) {
             //上传文件失败
             return ResponseResult.error(ResponseCodeEnum.FAIL.getCode(), "上传失败，文件IO异常");
         }
         //签名软件
-        String signPath = fileSignService.signFile(filePath);
+        String signPath = fileSignService.signFile(fileName,filePath);
         if (signPath == null) {
             //签名失败
             return ResponseResult.error(ResponseCodeEnum.FAIL.getCode(), "上传失败，软件检验未通过");
