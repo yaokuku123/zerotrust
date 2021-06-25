@@ -4,7 +4,7 @@ spring:
   application:
     name: soft-test-center
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://123.56.246.148:3306/zerotrust?characterEncoding=utf8
     username: root
     password: ustb_scce_lab202
