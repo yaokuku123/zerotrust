@@ -1,6 +1,9 @@
 package com.ustb.zerotrust.service.impl;
 
+import com.ustb.zerotrust.domain.DaemonSoft;
+import com.ustb.zerotrust.mapper.FilePathStoreMapper;
 import com.ustb.zerotrust.service.FileStoreService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,6 +18,10 @@ import java.io.IOException;
  */
 @Service
 public class FileStoreServiceImpl implements FileStoreService {
+
+    @Autowired
+    private FilePathStoreMapper filePathStoreMapper;
+
     @Override
     public void uploadFile(String fileName, MultipartFile softFile, MultipartFile signFile) {
         //拼接路径
@@ -35,5 +42,9 @@ public class FileStoreServiceImpl implements FileStoreService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        //将位置信息存储至数据库
+        DaemonSoft daemonSoft = new DaemonSoft(fileName, softDestPath, signDestPath);
+        filePathStoreMapper.insertFilePath(daemonSoft);
     }
 }
