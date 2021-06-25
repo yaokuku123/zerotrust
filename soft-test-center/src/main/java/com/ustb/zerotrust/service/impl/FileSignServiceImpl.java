@@ -52,7 +52,7 @@ public class FileSignServiceImpl implements FileSignService {
      * @return 是否签名成功
      */
     @Override
-    public String signFile(String fileName,String filePath) throws UnsupportedEncodingException, ShellChainException, SQLException, ClassNotFoundException, FileNotFoundException {
+    public File signFile(String fileName,String filePath) throws UnsupportedEncodingException, ShellChainException, SQLException, ClassNotFoundException, FileNotFoundException {
         //初始化配置 默认规定为 100块，每块有10片
         File file = new File(filePath);
         long originFileSize = file.length();
@@ -87,7 +87,7 @@ public class FileSignServiceImpl implements FileSignService {
             byte[] signByte = encoder.encode(elm.toBytes());
             signStringList.add(new String(signByte, "UTF-8"));
         }
-        String signPath = fileStoreService.uploadFileSign(file.getName(), signStringList);
+        File signFile = fileStoreService.uploadFileSign(file.getName(), signStringList);
 
 
         //生成公钥对象
@@ -108,6 +108,6 @@ public class FileSignServiceImpl implements FileSignService {
         //插入数据库
         linkDataBase.insertData(fileName, txid);
 
-        return signPath;
+        return signFile;
     }
 }
