@@ -1,4 +1,4 @@
-package ustb.edu.zerotrust.service;
+package com.ustb.zerotrust.service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,7 +8,7 @@ import java.util.*;
 import com.alibaba.fastjson.JSON;
 import com.ustb.zerotrust.BlindVerify.Check;
 import com.ustb.zerotrust.BlindVerify.Sign;
-import ustb.edu.zerotrust.util.ConvertUtil;
+import com.ustb.zerotrust.util.ConvertUtil;
 import com.ustb.zerotrust.utils.FileUtil;
 import it.unisa.dia.gas.jpbc.Element;
 import it.unisa.dia.gas.jpbc.ElementPowPreProcessing;
