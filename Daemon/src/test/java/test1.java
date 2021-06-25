@@ -1,8 +1,7 @@
 import org.junit.Test;
 
-import ustb.edu.zerotrust.service.FileGetMessage;
+import com.ustb.zerotrust.service.FileGetMessage;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 public class test1 {
