@@ -1,4 +1,4 @@
-package ustb.edu.zerotrust.service;
+package com.ustb.zerotrust.service;
 
 import com.ustb.zerotrust.BlindVerify.Sign;
 import com.ustb.zerotrust.utils.FileUtil;
@@ -8,7 +8,7 @@ import it.unisa.dia.gas.jpbc.Pairing;
 import it.unisa.dia.gas.jpbc.PairingParameters;
 import it.unisa.dia.gas.plaf.jpbc.pairing.PairingFactory;
 import it.unisa.dia.gas.plaf.jpbc.pairing.a.TypeACurveGenerator;
-import ustb.edu.zerotrust.ParamStore;
+import com.ustb.zerotrust.ParamStore;
 
 import java.io.File;
 import java.util.ArrayList;

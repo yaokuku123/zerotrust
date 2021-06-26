@@ -1,4 +1,4 @@
-package ustb.edu.zerotrust.util;
+package com.ustb.zerotrust.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;

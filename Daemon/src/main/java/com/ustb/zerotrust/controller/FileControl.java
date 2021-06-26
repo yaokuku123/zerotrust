@@ -1,8 +1,6 @@
-package ustb.edu.zerotrust.controller;
+package com.ustb.zerotrust.controller;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-import ustb.edu.zerotrust.service.FileGetMessage;
+import com.ustb.zerotrust.service.FileGetMessage;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

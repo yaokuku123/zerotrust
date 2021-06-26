@@ -1,4 +1,4 @@
-package ustb.edu.zerotrust;
+package com.ustb.zerotrust;
 
 import it.unisa.dia.gas.jpbc.Element;
 

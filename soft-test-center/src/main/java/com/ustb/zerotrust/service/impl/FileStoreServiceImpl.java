@@ -23,17 +23,16 @@ import java.util.UUID;
 @Service
 public class FileStoreServiceImpl implements FileStoreService {
     /**
-     * 上传被测软件
+     * 保存被测软件
      *
-     * @param file 上传的软件
-     * @return 文件存储路径
+     * @param fileName 上传文件的名称
+     * @param suffix 文件后缀
+     * @param file 被测软件
+     * @return 上传的被测软件路径
      */
-    public String uploadFile(MultipartFile file) {
+    public File  uploadFile(String fileName,String suffix,MultipartFile file) {
         //拼接文件名，添加uuid
-        String originFileName = file.getOriginalFilename();
-        String fileName = originFileName.substring(0,originFileName.lastIndexOf("."))
-                                + UUID.randomUUID().toString().replaceAll("-","");
-        String suffix = originFileName.substring(originFileName.lastIndexOf("."));
+        fileName = fileName + UUID.randomUUID().toString().replaceAll("-","");
         fileName = fileName + suffix;
         //拼接路径
         String filePath = System.getProperty("user.dir") + "/uploadFile/";
@@ -47,7 +46,7 @@ public class FileStoreServiceImpl implements FileStoreService {
         try {
             //将被测软件保存至本地
             file.transferTo(destFile);
-            return destPath;
+            return destFile;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -62,7 +61,7 @@ public class FileStoreServiceImpl implements FileStoreService {
      * @return 签名文件路径
      */
     @Override
-    public String uploadFileSign(String softName, List<String> signList) {
+    public File uploadFileSign(String softName, List<String> signList) {
         //拼接签名文件的名称
         String signFileName = softName + ".sign";
         //保存签名文件
@@ -71,6 +70,6 @@ public class FileStoreServiceImpl implements FileStoreService {
         Map<String,Object> map = new HashMap<>();
         map.put("signStringList",signList);
         ConvertUtil.write2JsonFile(map,destPath);
-        return destPath;
+        return new File(destPath);
     }
 }
