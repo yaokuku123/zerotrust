@@ -7,7 +7,7 @@ spring:
       max-file-size: 200MB #单个文件上传大小
       max-request-size: 600MB #连续上传文件大小
   application:
-    name: daemon
+    name: Daemon
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://123.56.246.148:3306/zerotrust?characterEncoding=utf8
