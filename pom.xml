@@ -16,6 +16,7 @@
         <module>soft-test-center</module>
         <module>control-system</module>
         <module>Daemon</module>
+        <module>auth-server</module>
     </modules>
     <packaging>pom</packaging>
 

@@ -2,10 +2,9 @@ package com.ustb.zerotrust.controller;
 
 import com.ustb.zerotrust.domain.RequestGrant;
 import com.ustb.zerotrust.domain.ResponseResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.ustb.zerotrust.service.CheckClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Copyright(C),2019-2021,XXX公司
@@ -17,6 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
 
+    @Autowired
+    private CheckClient checkClient;
+
     /**
      * 接收网关的检验请求
      * @param requestGrant 用户请求信息
@@ -25,7 +27,25 @@ public class AuthController {
     @PostMapping("/verify")
     public ResponseResult Verify(@RequestBody RequestGrant requestGrant){
         System.out.println(requestGrant);
-        //TODO 根据用户请求信息，监管平台进行验证处理
+        // 根据用户请求信息，监管平台进行验证处理
+        //String softName = "cal";
+        //String s = checkClient.checkResult(softName);
+        //System.out.println(s);
+
+
         return ResponseResult.success(requestGrant);
     }
+
+
+
+
+    @RequestMapping("/test")
+    public String test(){
+        String s = checkClient.checkResult();
+        System.out.println(s);
+        return s;
+
+    }
+
+
 }
