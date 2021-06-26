@@ -4,14 +4,15 @@ spring:
   application:
     name: auth-resource
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql:///security_authority
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://123.56.246.148:3306/zerotrust?characterEncoding=utf8
     username: root
-    password: 199748
+    password: ustb_scce_lab202
 mybatis:
-  type-aliases-package: com.ustb.zerotrust.domain
+  type-aliases-package: com.ustb.domain
   configuration:
     map-underscore-to-camel-case: true
+  mapper-locations: classpath:com/ustb/zerotrust/mapper/xml/*.xml # xml所在路径
 eureka:
   client:
     serviceUrl: # eureka server的路径

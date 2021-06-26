@@ -64,7 +64,7 @@ public class ChainService {
 
     public String send2Obj(String toAddress, float amount, Map<String,Object> attributes) throws ShellChainException, SQLException, ClassNotFoundException {
         res = objChainDAO.sendCustom(toAddress, amount, attributes);
-        linkDataBase.insertData(attributes.get("appName").toString(), res);
+        //linkDataBase.insertData(attributes.get("appName").toString(), res);
         return res;
     }
 

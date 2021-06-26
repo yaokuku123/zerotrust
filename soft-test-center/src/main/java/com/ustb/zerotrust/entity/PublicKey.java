@@ -29,6 +29,10 @@ public class PublicKey {
     private final Base64.Encoder encoder = Base64.getEncoder();
     private final Base64.Decoder decoder = Base64.getDecoder();
 
+    public PublicKey(Pairing pairing){
+        this.pairing = pairing;
+    }
+
 
     /**
      * 使用Base64编码的方式将Element类型的G转换为String类型
@@ -95,8 +99,9 @@ public class PublicKey {
      * @return
      */
     public ArrayList<ElementPowPreProcessing> decodeULists(List<String> uStringList) throws UnsupportedEncodingException {
+        uLists = new ArrayList<>();
         for (String elm : uStringList) {
-            byte[] elmByte = decoder.decode(elm.getBytes());
+            byte[] elmByte = decoder.decode(elm.getBytes("UTF-8"));
             ElementPowPreProcessing elmE = pairing.getG1().newRandomElement().getImmutable().getField().getElementPowPreProcessingFromBytes(elmByte);
             uLists.add(elmE);
         }

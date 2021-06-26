@@ -47,12 +47,12 @@ public class FileSignServiceImpl implements FileSignService {
 
     /**
      * 对被测软件进行签名
-     *
+     * @param fileName 软件名称
      * @param filePath 被测软件存储路径
      * @return 是否签名成功
      */
     @Override
-    public String signFile(String filePath) throws UnsupportedEncodingException, ShellChainException, SQLException, ClassNotFoundException, FileNotFoundException {
+    public File signFile(String fileName,String filePath) throws UnsupportedEncodingException, ShellChainException, SQLException, ClassNotFoundException, FileNotFoundException {
         //初始化配置 默认规定为 100块，每块有10片
         File file = new File(filePath);
         long originFileSize = file.length();
@@ -73,19 +73,6 @@ public class FileSignServiceImpl implements FileSignService {
         for (int i = 0; i < 10; i++) {
             uLists.add(pairing.getG1().newRandomElement().getImmutable().getElementPowPreProcessing());
         }
-        //生成公钥对象
-        PublicKey publicKey = new PublicKey(pairing,g, v, uLists);
-
-        // 参数上链
-        HashMap<String, Object> attributes = new HashMap<>();
-        attributes.put("g", publicKey.encodeG());
-        attributes.put("v", publicKey.encodeV());
-        attributes.put("uString", publicKey.encodeULists());
-        String toAddress = "1UAarmYDCCD1UQ6gtuyrWEyi25FoNQMvM8ojYe";
-        String txid = chainService.send2Sub(toAddress, 0, attributes);
-
-        //插入数据库
-        linkDataBase.insertData(file.getName(), txid);
 
         //签名阶段
         ArrayList<Element> signLists;
@@ -100,7 +87,27 @@ public class FileSignServiceImpl implements FileSignService {
             byte[] signByte = encoder.encode(elm.toBytes());
             signStringList.add(new String(signByte, "UTF-8"));
         }
-        String signPath = fileStoreService.uploadFileSign(file.getName(), signStringList);
-        return signPath;
+        File signFile = fileStoreService.uploadFileSign(file.getName(), signStringList);
+
+
+        //生成公钥对象
+        PublicKey publicKey = new PublicKey(pairing,g, v, uLists);
+        // 参数上客体链
+        HashMap<String, Object> attributes = new HashMap<>();
+        attributes.put("g", publicKey.encodeG());
+        attributes.put("v", publicKey.encodeV());
+        attributes.put("uString", publicKey.encodeULists());
+        attributes.put("appName", fileName);
+        attributes.put("fileSize",originFileSize);
+        attributes.put("createTime",file.lastModified());
+        attributes.put("fileType",file.getName().substring(file.getName().lastIndexOf(".")));
+//        String toAddress = "1UAarmYDCCD1UQ6gtuyrWEyi25FoNQMvM8ojYe"; //主体链地址
+        String toAddress = "1Wkg9jF48VeM16rUE9MSTu4dfyvJv4dAb5X1v";
+        String txid = chainService.send2Obj(toAddress, 0, attributes);
+        System.out.println(txid);
+        //插入数据库
+        linkDataBase.insertData(fileName, txid);
+
+        return signFile;
     }
 }
