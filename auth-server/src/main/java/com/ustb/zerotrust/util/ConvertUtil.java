@@ -7,11 +7,12 @@ import it.unisa.dia.gas.jpbc.Element;
 import java.io.*;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class ConvertUtil {
-    //private String filePath = "C:\\Users\\KangXi\\zerotrust\\";
-    private String filePath = "D:\\tmp\\";
+
+    private static String filePath = "D:\\tmp\\";
 
     public static Map<String,Object> getStringToMap(String str){
         if (str.startsWith("{")) {
@@ -104,20 +105,20 @@ public class ConvertUtil {
         hashMap.put("signStringList", jsonObject.getJSONArray("signStringList"));
 
         return hashMap;
-        // Iterator iter = jsonObject.entrySet().iterator();
-
-        /*while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            if(entry.getKey() == "sigmaValues")
-            {
-
-            }else if(entry.getKey() == "viStringList"){
-                viStringList.add(entry.getValue().toString());
-            }else if(entry.getKey() == "miuStringList"){
-                miuStringList = jsonObject
-            }
-
-        }*/
+//         Iterator iter = jsonObject.entrySet().iterator();
+//
+//        while (iter.hasNext()) {
+//            Map.Entry entry = (Map.Entry) iter.next();
+//            if(entry.getKey() == "sigmaValues")
+//            {
+//
+//            }else if(entry.getKey() == "viStringList"){
+//                viStringList.add(entry.getValue().toString());
+//            }else if(entry.getKey() == "miuStringList"){
+//                miuStringList = jsonObject;
+//            }
+//
+//        }
     }
 
     // Base64 encode element to string

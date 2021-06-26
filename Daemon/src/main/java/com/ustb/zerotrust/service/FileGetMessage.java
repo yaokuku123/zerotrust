@@ -30,7 +30,8 @@ public class FileGetMessage {
 //        System.out.println("这是主进程的查询信息"+d);
     }
     public static String GetMessage(){
-        String filePath = "E:\\python学习资料\\chap0 关于Python.pptx";
+        //String filePath = "E:\\python学习资料\\chap0 关于Python.pptx";
+        String filePath = "D:\\Downloads\\Typora\\typora-scrolls-0.5.zip";
         File file1 = new File(filePath);
         //封装程序的一些信息
         ArrayList<String> Filists = new ArrayList<String>();
@@ -49,7 +50,10 @@ public class FileGetMessage {
 
     //调用这个函数获得map结果的结果。
     public static String GetCheckMessage() throws UnsupportedEncodingException, FileNotFoundException {
-        String filePath = "D:\\Work\\nsAlbum\\UnityPlayer.dll";
+        //String filePath = "D:\\Work\\nsAlbum\\UnityPlayer.dll";
+        String filePath = "D:\\Downloads\\Typora\\typora-scrolls-0.5.zip";
+
+
         File file1 = new File(filePath);
         //初始化配置 默认规定为 100块，每块有10片
         File file = new File(filePath);
@@ -150,9 +154,8 @@ public class FileGetMessage {
         ConvertUtil convertUtil = new ConvertUtil();
         convertUtil.write2JsonFile(attributes, "checkMessage.json");
         String res = JSON.toJSON(attributes).toString();
-
+        //System.out.println(res);
         return res;
-
     }
 //延时程序
     public static void startTimer() {
