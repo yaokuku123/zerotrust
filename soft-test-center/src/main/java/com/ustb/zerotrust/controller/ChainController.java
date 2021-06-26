@@ -48,6 +48,14 @@ public class ChainController {
         return resAddress;
     }
 
+
+    @RequestMapping("/getParam")
+    public JSONObject getParam(@RequestParam("appName") String appName) throws Exception {
+        String txid = linkDataBase.getTxid(appName);
+      JSONObject jsonObject = JSONObject.parseObject(chainService.getFromSub(txid));
+      return jsonObject;
+    }
+
 //    @RequestMapping("/ensure")
 //    public boolean ensure(@RequestParam String appName) throws SQLException, ClassNotFoundException, ShellChainException {
 //        boolean res = false;
