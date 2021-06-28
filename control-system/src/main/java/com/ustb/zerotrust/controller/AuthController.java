@@ -26,26 +26,10 @@ public class AuthController {
      */
     @PostMapping("/verify")
     public ResponseResult Verify(@RequestBody RequestGrant requestGrant){
-        System.out.println(requestGrant);
+        //System.out.println(requestGrant);
         // 根据用户请求信息，监管平台进行验证处理
-        //String softName = "cal";
-        //String s = checkClient.checkResult(softName);
-        //System.out.println(s);
+        boolean flag = checkClient.checkResult(requestGrant.getSoftName());
 
-
-        return ResponseResult.success(requestGrant);
+        return ResponseResult.success(flag);
     }
-
-
-
-
-    @RequestMapping("/test")
-    public String test(){
-        String s = checkClient.checkResult();
-        System.out.println(s);
-        return s;
-
-    }
-
-
 }

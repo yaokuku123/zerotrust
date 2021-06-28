@@ -4,6 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author WYP
@@ -18,5 +19,5 @@ public interface CheckClient {
      * @return 返回查询结果
      */
     @GetMapping("/check/result")
-    public String checkResult();
+    public boolean checkResult(@RequestParam("fileName") String fileName);
 }

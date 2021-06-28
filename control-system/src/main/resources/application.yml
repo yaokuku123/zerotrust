@@ -22,6 +22,12 @@ eureka:
       defaultZone: http://localhost:7001/eureka/
   instance:
     prefer-ip-address: true #使用ip注册
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 30000  #单位毫秒
+        readTimeout: 30000
 logging:
   level:
     com.ustb: debug

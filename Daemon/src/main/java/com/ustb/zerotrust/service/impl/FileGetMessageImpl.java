@@ -38,7 +38,7 @@ public class FileGetMessageImpl implements FileGetMessage {
 
     public static String GetMessage(){
         //String filePath = "E:\\python学习资料\\chap0 关于Python.pptx";
-        String filePath = "D:\\Downloads\\Typora\\typora-scrolls-0.5.zip";
+        String filePath = "D:\\Downloads\\Typora\\unins000.exe";
         File file1 = new File(filePath);
         //封装程序的一些信息
         ArrayList<String> Filists = new ArrayList<String>();

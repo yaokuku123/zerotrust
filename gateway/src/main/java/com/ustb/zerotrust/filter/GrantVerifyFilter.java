@@ -41,6 +41,7 @@ public class GrantVerifyFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
+        ServerHttpResponse response = exchange.getResponse();
 
         String method = request.getMethodValue();
         String contentType = request.getHeaders().getFirst("Content-Type");
@@ -57,7 +58,12 @@ public class GrantVerifyFilter implements GlobalFilter, Ordered {
                             //远程调用监控平台
                             ResponseResult grantResult = grantFeignClient.Verify(requestGrant);
                             System.out.println(grantResult.getData());
-
+                            if (false == (Boolean) grantResult.getData()) {
+                                String url = "http://www.baidu.com";
+                                response.setStatusCode(HttpStatus.SEE_OTHER);
+                                response.getHeaders().set(HttpHeaders.LOCATION,url);
+                                return response.setComplete();
+                            }
                             exchange.getAttributes().put("POST_BODY", bodyString);
                         } catch (Exception e) {
                             e.printStackTrace();
