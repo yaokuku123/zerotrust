@@ -1,7 +1,7 @@
 package com.ustb.zerotrust.service.impl;
 
 import com.ustb.zerotrust.BlindVerify.Sign;
-import com.ustb.zerotrust.entity.PublicKey;
+import com.ustb.zerotrust.domain.PublicKey;
 import com.ustb.zerotrust.service.FileSignService;
 import com.ustb.zerotrust.service.FileStoreService;
 import com.ustb.zerotrust.mapper.LinkDataBase;
@@ -13,7 +13,6 @@ import it.unisa.dia.gas.jpbc.Pairing;
 import it.unisa.dia.gas.jpbc.PairingParameters;
 import it.unisa.dia.gas.plaf.jpbc.pairing.PairingFactory;
 import it.unisa.dia.gas.plaf.jpbc.pairing.a.TypeACurveGenerator;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
