@@ -2,13 +2,15 @@ package com.ustb.zerotrust.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.ustb.zerotrust.BlindVerify.Check;
 import com.ustb.zerotrust.BlindVerify.Verify;
-import com.ustb.zerotrust.entity.PublicKey;
-import com.ustb.zerotrust.entity.QueryParam;
+import com.ustb.zerotrust.domain.PublicKey;
+import com.ustb.zerotrust.domain.QueryParam;
+import com.ustb.zerotrust.domain.vo.QueryParamString;
+import com.ustb.zerotrust.mapper.LinkDataBase;
 import com.ustb.zerotrust.service.ChainClient;
 import com.ustb.zerotrust.service.DaemonClient;
 
+import com.ustb.zerotrust.service.impl.ChainService;
 import com.ustb.zerotrust.util.ConvertUtil;
 import it.unisa.dia.gas.jpbc.Element;
 import it.unisa.dia.gas.jpbc.ElementPowPreProcessing;
@@ -40,7 +42,10 @@ public class CheckAuthController {
     private DaemonClient daemonClient;
 
     @Autowired
-    private ChainClient chainClient;
+    private ChainService chainService;
+
+    @Autowired
+    private LinkDataBase linkDataBase;
 
 
     /**
@@ -49,26 +54,7 @@ public class CheckAuthController {
      * @return 是否通过
      */
     @GetMapping("/result")
-    public String checkResult() throws Exception {
-
-        QueryParam queryParam = new QueryParam();
-        Base64.Decoder decoder = Base64.getDecoder();
-
-        //查询 返回参数
-        String s = daemonClient.getMessage();
-        ConvertUtil convertUtil = new ConvertUtil();
-        String fileName = "checkMessage.json";
-        HashMap<String, Object> hashMap = convertUtil.readfromJsonFile(fileName);
-        //vLists sigma miuList signList
-        String sigmaValues = (String)hashMap.get("sigmaValues");
-        List<String> viStringList = (List) hashMap.get("viStringList");
-        List<String> miuStringList = (List)hashMap.get("miuStringList");
-        List<String> signStringList = (List)hashMap.get("signStringList");
-        log.info("sigmaValues :"+sigmaValues);
-        log.info("viStringList :"+viStringList);
-        log.info("miuStringList :"+miuStringList);
-        log.info("signStringList :"+signStringList);
-
+    public boolean checkResult(String fileName) throws Exception {
 
         //密码初始化部分
         int rbits = 53;
@@ -76,66 +62,43 @@ public class CheckAuthController {
         TypeACurveGenerator pg = new TypeACurveGenerator(rbits, qbits);
         PairingParameters typeAParams = pg.generate();
         Pairing pairing = PairingFactory.getPairing(typeAParams);
+        QueryParam queryParam = new QueryParam(pairing);
         //初始化相关参数
-        Element g = pairing.getG1().newRandomElement().getImmutable();     //生成生成元
-        Element x = pairing.getZr().newRandomElement().getImmutable();
-        Element v = g.powZn(x);
-        //生成U
-        ArrayList<ElementPowPreProcessing> uLists = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            ElementPowPreProcessing u = pairing.getG1().newRandomElement().getImmutable().getElementPowPreProcessing();
-            uLists.add(u);
-        }
 
         //从链上获取参数
-        PublicKey publicKey = new PublicKey(pairing, g, v, uLists);
-        JSONObject jsonObject = chainClient.getParam("typora-scrolls-0.5");
-
-        g = publicKey.decodeG(jsonObject.get("g").toString());
-        v = publicKey.decodeV(jsonObject.get("v").toString());
-        uLists = publicKey.decodeULists(JSONArray.parseArray(jsonObject.get("uString").toString(), String.class));
-
-        log.info("g:"+g);
-        log.info("v:"+v);
+        String txid = linkDataBase.getTxid(fileName);
+        String res = chainService.getFromObj(txid);
+        JSONObject jsonObject = JSONObject.parseObject(res);
+        PublicKey publicKey = new PublicKey(pairing);
+        Element g = publicKey.decodeG(jsonObject.get("g").toString());
+        Element v = publicKey.decodeV(jsonObject.get("v").toString());
+        ArrayList<ElementPowPreProcessing> uLists = publicKey.decodeULists(JSONArray.parseArray(jsonObject.get("uString").toString(), String.class));
         log.info("uLists:"+uLists);
 
+        //查询 返回参数
+        QueryParamString queryParamString = daemonClient.getMessage(fileName);
+        String sigmaValues = queryParamString.getSigmasValues();
+        ArrayList<String> viStringList = queryParamString.getViLists();
+        ArrayList<String> miuStringList = queryParamString.getMiuLists();
+        ArrayList<String> signStringList = queryParamString.getSignLists();
+        log.info("sigmaValues :"+sigmaValues);
+        log.info("viStringList :"+viStringList);
+        log.info("miuStringList :"+miuStringList);
+        log.info("signStringList :"+signStringList);
+
+        //解析参数
         ArrayList<Element> viLists = queryParam.decodeViLists(viStringList);
-        log.info("viLists :"+viLists);
-
         ArrayList<Element> miuLists = queryParam.decodeMiuLists(miuStringList);
-        log.info("miuStringLists :"+miuLists);
-
         ArrayList<Element> signLists = queryParam.decodeSignLists(signStringList);
-        log.info("signLists :"+signLists);
-
-        byte[] signByte = decoder.decode(sigmaValues.toString().getBytes("UTF-8"));
-        Element sigmasValues = pairing.getG1().newElementFromBytes(signByte).getImmutable();
-        log.info("sigmasValues :"+sigmasValues);
-
-
-
-
+        Element sigmasValues = queryParam.decodeSigma(sigmaValues);
 
 //        开始验证
-//        Element v = g.powZn(x);
-//        Verify verify = new Verify();
-//        boolean res = verify.verifyResult(pairing, g, uLists, v, sigmasValues, viLists, signLists, miuLists);
-//        System.out.println(res);
-//
-//        Verify verify = new Verify();
-//        res = verify.verifyResult(pairing, g, uList, v, sigmavalues, viList, signList, miuList);
+        Verify verify = new Verify();
+        boolean result = verify.verifyResult(pairing, g, uLists, v, sigmasValues, viLists, signLists, miuLists);
+        System.out.println(result);
 
 
-        return s;
+        return result;
     }
-
-//    @RequestMapping("/test")
-//    public String getParam(){
-//        String s = chainClient.getParam("typora-scrolls-0.5");
-//        System.out.println(s);
-//
-//        return s;
-//    }
-
 
 }

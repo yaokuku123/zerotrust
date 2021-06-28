@@ -1,8 +1,10 @@
 package com.ustb.zerotrust.service;
 
+import com.ustb.zerotrust.domain.vo.QueryParamString;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author WYP
@@ -19,11 +21,6 @@ public interface DaemonClient {
      */
 
     @RequestMapping("/GetCheckMessage")
-    public String getMessage();
-
-
-    @RequestMapping("/hello2")
-    public String Hello2();
-
+    QueryParamString getMessage(@RequestParam("fileName") String fileName);
 
 }
