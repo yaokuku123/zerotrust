@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ustb.zerotrust.service.impl.ChainService;
-import com.ustb.zerotrust.util.ConvertUtil;
+import com.ustb.zerotrust.utils.ConvertUtil;
 import com.ustb.zerotrust.mapper.LinkDataBase;
 import edu.ustb.shellchainapi.shellchain.command.ShellChainException;
 import it.unisa.dia.gas.jpbc.Element;

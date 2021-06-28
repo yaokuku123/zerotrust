@@ -1,4 +1,4 @@
-package com.ustb.zerotrust.entity;
+package com.ustb.zerotrust.domain;
 
 import it.unisa.dia.gas.jpbc.Element;
 import it.unisa.dia.gas.jpbc.ElementPowPreProcessing;
