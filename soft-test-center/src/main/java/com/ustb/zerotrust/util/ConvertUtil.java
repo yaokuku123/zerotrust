@@ -53,10 +53,10 @@ public class ConvertUtil {
             if (!file.getParentFile().exists()) { // 如果父目录不存在，创建父目录
                 file.getParentFile().mkdirs();
             }
-            if (file.exists()) { // 如果已存在,删除旧文件
-                file.delete();
-            }
-            file.createNewFile();
+//            if (file.exists()) { // 如果已存在,删除旧文件
+//                file.delete();
+//                file.createNewFile();
+//            }
             // 将格式化后的字符串写入文件
             osw.write(JSON.toJSON(eMap).toString());
             osw.flush();
