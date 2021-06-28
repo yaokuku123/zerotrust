@@ -31,7 +31,8 @@ import java.util.*;
  */
 public class CovertToStringVerifyTest {
     public static void main(String[] args) throws UnsupportedEncodingException, ShellChainException, SQLException, ClassNotFoundException {
-        String filePath = "D:\\study\\code\\test\\zerotrust-demo\\uploadFile\\multichain-2.0-latest.tar.gz";
+        //String filePath = "D:\\study\\code\\test\\zerotrust-demo\\uploadFile\\multichain-2.0-latest.tar.gz";
+        String filePath = "D:\\Downloads\\Typora\\typora-scrolls-0.5.zip";
 
         //初始化配置 默认规定为 100块，每块有10片
         File file = new File(filePath);

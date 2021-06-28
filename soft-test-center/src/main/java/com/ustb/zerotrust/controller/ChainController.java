@@ -52,7 +52,7 @@ public class ChainController {
     @RequestMapping("/getParam")
     public JSONObject getParam(@RequestParam("appName") String appName) throws Exception {
         String txid = linkDataBase.getTxid(appName);
-        JSONObject jsonObject = JSONObject.parseObject(chainService.getFromSub(txid));
+        JSONObject jsonObject = JSONObject.parseObject(chainService.getFromObj(txid));
         return jsonObject;
     }
 

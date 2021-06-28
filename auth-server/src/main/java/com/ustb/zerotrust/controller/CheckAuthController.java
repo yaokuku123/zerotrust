@@ -2,7 +2,9 @@ package com.ustb.zerotrust.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.ustb.zerotrust.BlindVerify.Check;
 import com.ustb.zerotrust.BlindVerify.Verify;
+import com.ustb.zerotrust.entity.PublicKey;
 import com.ustb.zerotrust.entity.QueryParam;
 import com.ustb.zerotrust.service.ChainClient;
 import com.ustb.zerotrust.service.DaemonClient;
@@ -50,6 +52,7 @@ public class CheckAuthController {
     public String checkResult() throws Exception {
 
         QueryParam queryParam = new QueryParam();
+        Base64.Decoder decoder = Base64.getDecoder();
 
         //查询 返回参数
         String s = daemonClient.getMessage();
@@ -73,9 +76,28 @@ public class CheckAuthController {
         TypeACurveGenerator pg = new TypeACurveGenerator(rbits, qbits);
         PairingParameters typeAParams = pg.generate();
         Pairing pairing = PairingFactory.getPairing(typeAParams);
-        queryParam.setPairing(pairing);
-        Base64.Decoder decoder = Base64.getDecoder();
         //初始化相关参数
+        Element g = pairing.getG1().newRandomElement().getImmutable();     //生成生成元
+        Element x = pairing.getZr().newRandomElement().getImmutable();
+        Element v = g.powZn(x);
+        //生成U
+        ArrayList<ElementPowPreProcessing> uLists = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            ElementPowPreProcessing u = pairing.getG1().newRandomElement().getImmutable().getElementPowPreProcessing();
+            uLists.add(u);
+        }
+
+        //从链上获取参数
+        PublicKey publicKey = new PublicKey(pairing, g, v, uLists);
+        JSONObject jsonObject = chainClient.getParam("typora-scrolls-0.5");
+
+        g = publicKey.decodeG(jsonObject.get("g").toString());
+        v = publicKey.decodeV(jsonObject.get("v").toString());
+        uLists = publicKey.decodeULists(JSONArray.parseArray(jsonObject.get("uString").toString(), String.class));
+
+        log.info("g:"+g);
+        log.info("v:"+v);
+        log.info("uLists:"+uLists);
 
         ArrayList<Element> viLists = queryParam.decodeViLists(viStringList);
         log.info("viLists :"+viLists);
@@ -91,26 +113,8 @@ public class CheckAuthController {
         log.info("sigmasValues :"+sigmasValues);
 
 
-        //从链上获取参数
-        JSONObject jsonObject = chainClient.getParam("typora-scrolls-0.5");
 
-        byte[] gEnByte = jsonObject.get("g").toString().getBytes();
-        byte[] vEnByte = jsonObject.get("v").toString().getBytes();
-        List<String> uStringList = JSONArray.parseArray(jsonObject.get("uStringList").toString(), String.class);
 
-        ArrayList<ElementPowPreProcessing> uLists = new ArrayList<>();
-
-        byte[] gDeByte = decoder.decode(gEnByte);
-        byte[] vDeByte = decoder.decode(vEnByte);
-        Element g = pairing.getG1().newElementFromBytes(gDeByte);
-        Element v = pairing.getG1().newElementFromBytes(vDeByte);
-        log.info("g :"+g);
-        log.info("v :"+v);
-        for(int i = 0; i< uStringList.size(); i++) {
-            ElementPowPreProcessing u = pairing.getG1().newRandomElement().getField().getElementPowPreProcessingFromBytes(uStringList.get(i).getBytes());
-            uLists.add(u);
-        }
-        log.info("uLists :"+uLists);
 
 //        开始验证
 //        Element v = g.powZn(x);
