@@ -3,9 +3,13 @@
 <mapper namespace="com.ustb.zerotrust.mapper.FilePathStoreMapper">
 
     <!--插入被测软件的路径信息-->
-    <select id="insertFilePath" parameterType="com.ustb.zerotrust.domain.DaemonSoft">
+    <insert id="insertFilePath" parameterType="com.ustb.zerotrust.domain.DaemonSoft">
         INSERT INTO daemonsoft(app_name,soft_path,sign_path)
                   VALUES(#{daemonSoft.appName},#{daemonSoft.softPath},#{daemonSoft.signPath})
+    </insert>
+
+    <select id="getFilePath" resultType="com.ustb.zerotrust.domain.DaemonSoft">
+        SELECT * from daemonsoft where app_name=#{fileName}
     </select>
 
 

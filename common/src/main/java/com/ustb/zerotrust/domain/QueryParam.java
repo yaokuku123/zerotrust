@@ -1,4 +1,4 @@
-package com.ustb.zerotrust.entity;
+package com.ustb.zerotrust.domain;
 
 import it.unisa.dia.gas.jpbc.Element;
 import it.unisa.dia.gas.jpbc.ElementPowPreProcessing;
@@ -30,6 +30,10 @@ public class QueryParam implements Serializable {
     private ArrayList<Element> miuLists;
     private final Base64.Encoder encoder = Base64.getEncoder();
     private final Base64.Decoder decoder = Base64.getDecoder();
+
+    public QueryParam(Pairing pairing) {
+        this.pairing = pairing;
+    }
 
     /**
      * 使用Base64编码的方式将Element类型的sigmasValues转换为String类型
