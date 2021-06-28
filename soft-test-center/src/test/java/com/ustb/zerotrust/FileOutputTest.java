@@ -1,6 +1,6 @@
 package com.ustb.zerotrust;
 
-import com.ustb.zerotrust.util.ConvertUtil;
+import com.ustb.zerotrust.utils.ConvertUtil;
 
 import java.io.File;
 import java.util.*;

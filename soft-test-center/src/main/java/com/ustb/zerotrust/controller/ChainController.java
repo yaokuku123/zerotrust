@@ -1,28 +1,18 @@
 package com.ustb.zerotrust.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.ustb.zerotrust.BlindVerify.Verify;
 import com.ustb.zerotrust.entity.Application;
 import com.ustb.zerotrust.service.impl.ChainService;
-import com.ustb.zerotrust.util.ConvertUtil;
+import com.ustb.zerotrust.utils.ConvertUtil;
 import com.ustb.zerotrust.mapper.LinkDataBase;
 import edu.ustb.shellchainapi.shellchain.command.ShellChainException;
-import it.unisa.dia.gas.jpbc.Element;
-import it.unisa.dia.gas.jpbc.ElementPowPreProcessing;
-import it.unisa.dia.gas.jpbc.Pairing;
-import it.unisa.dia.gas.jpbc.PairingParameters;
-import it.unisa.dia.gas.plaf.jpbc.pairing.PairingFactory;
-import it.unisa.dia.gas.plaf.jpbc.pairing.a.TypeACurveGenerator;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
-import java.util.List;
 
 @RestController
 public class ChainController {
