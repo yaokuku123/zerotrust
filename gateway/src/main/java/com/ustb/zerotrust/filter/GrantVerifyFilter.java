@@ -58,15 +58,21 @@ public class GrantVerifyFilter implements GlobalFilter, Ordered {
                             //远程调用监控平台
                             ResponseResult grantResult = grantFeignClient.Verify(requestGrant);
                             System.out.println(grantResult.getData());
-                            if (false == (Boolean) grantResult.getData()) {
-                                String url = "http://www.baidu.com";
-                                response.setStatusCode(HttpStatus.SEE_OTHER);
-                                response.getHeaders().set(HttpHeaders.LOCATION,url);
-                                return response.setComplete();
+                            if (true == (Boolean) grantResult.getData()) {
+                                exchange.getAttributes().put("POST_BODY", bodyString);
+                            }else {
+                                //failjson return
+                                return getVoidMono(response, ResponseCodeEnum.FAIL);
+                                //重定向
+//                                String url = "http://www.baidu.com";
+//                                response.setStatusCode(HttpStatus.SEE_OTHER);
+//                                response.getHeaders().set(HttpHeaders.LOCATION,url);
+//                                return response.setComplete();
                             }
-                            exchange.getAttributes().put("POST_BODY", bodyString);
                         } catch (Exception e) {
                             e.printStackTrace();
+                            //failjson return
+                            return getVoidMono(response, ResponseCodeEnum.FAIL);
                         }
                         DataBufferUtils.release(dataBuffer);
                         Flux<DataBuffer> cachedFlux = Flux.defer(() -> {
