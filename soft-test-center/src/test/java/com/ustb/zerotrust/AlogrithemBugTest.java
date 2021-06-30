@@ -7,6 +7,7 @@ import com.ustb.zerotrust.BlindVerify.Sign;
 import com.ustb.zerotrust.BlindVerify.Verify;
 import com.ustb.zerotrust.domain.PublicKey;
 import com.ustb.zerotrust.domain.QueryParam;
+import com.ustb.zerotrust.mapper.LinkDataBase;
 import com.ustb.zerotrust.service.impl.ChainService;
 import com.ustb.zerotrust.utils.ConvertUtil;
 import com.ustb.zerotrust.utils.FileUtil;
@@ -25,9 +26,9 @@ import java.util.*;
 
 public class AlogrithemBugTest {
     public static void main(String[] args) throws UnsupportedEncodingException, ShellChainException, SQLException, ClassNotFoundException {
-        String filePath = "/Users/yorick/Desktop/testFile05.exe";
-        String signPath = "/Users/yorick/Desktop/testFile04.exe.sign";
-        String txid = "1855d9adab400efa2db26782dd3555e608bce02b8e264913c230c57f0f289ce7";
+        String filePath = "/Users/yorick/Desktop/testFile02.exe";
+        String signPath = "/Users/yorick/Desktop/testFile02.exe.sign";
+        String appName = "testFile02";
 
         //初始化配置 默认规定为 100块，每块有10片
         File file = new File(filePath);
@@ -45,6 +46,8 @@ public class AlogrithemBugTest {
         ChainService chainService = new ChainService();
         PublicKey publicKey = new PublicKey(pairing);
         //获取区块链数据并解析
+        LinkDataBase linkDataBase = new LinkDataBase();
+        String txid = linkDataBase.getTxid(appName);
         String res = chainService.getFromObj(txid);
         JSONObject jsonObject = JSONObject.parseObject(res);
         Element g = publicKey.decodeG(jsonObject.get("g").toString());
