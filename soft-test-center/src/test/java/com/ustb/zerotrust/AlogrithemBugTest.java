@@ -7,7 +7,6 @@ import com.ustb.zerotrust.BlindVerify.Sign;
 import com.ustb.zerotrust.BlindVerify.Verify;
 import com.ustb.zerotrust.domain.PublicKey;
 import com.ustb.zerotrust.domain.QueryParam;
-import com.ustb.zerotrust.mapper.LinkDataBase;
 import com.ustb.zerotrust.service.impl.ChainService;
 import com.ustb.zerotrust.utils.ConvertUtil;
 import com.ustb.zerotrust.utils.FileUtil;
@@ -24,17 +23,11 @@ import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.*;
 
-/**
- * Copyright(C),2019-2021,XXX公司
- * FileName: CovertToStringVerifyTest
- * Author: yaoqijun
- * Date: 2021/6/24 16:05
- */
-public class CovertToStringVerifyTest {
+public class AlogrithemBugTest {
     public static void main(String[] args) throws UnsupportedEncodingException, ShellChainException, SQLException, ClassNotFoundException {
         String filePath = "/Users/yorick/Desktop/testFile05.exe";
-        String signPath = "/Users/yorick/Desktop/testFile05.exe.sign";
-        String signPath2 = "/Users/yorick/Desktop/testFile04.exe.sign";
+        String signPath = "/Users/yorick/Desktop/testFile04.exe.sign";
+        String txid = "1855d9adab400efa2db26782dd3555e608bce02b8e264913c230c57f0f289ce7";
 
         //初始化配置 默认规定为 100块，每块有10片
         File file = new File(filePath);
@@ -48,63 +41,22 @@ public class CovertToStringVerifyTest {
         TypeACurveGenerator pg = new TypeACurveGenerator(rbits, qbits);
         PairingParameters typeAParams = pg.generate();
         Pairing pairing = PairingFactory.getPairing(typeAParams);
-        //初始化相关参数
-        Element g = pairing.getG1().newRandomElement().getImmutable();     //生成生成元
-        Element x = pairing.getZr().newRandomElement().getImmutable();
-        Element v = g.powZn(x);
-        //生成U
-        ArrayList<ElementPowPreProcessing> uLists = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            ElementPowPreProcessing u = pairing.getG1().newRandomElement().getImmutable().getElementPowPreProcessing();
-            uLists.add(u);
-        }
 
-        //******************************转化验证************************************//
-        PublicKey publicKey = new PublicKey(pairing, g, v, uLists);
-        //上传至区块链
-        HashMap<String, Object> attributes = new HashMap<>();
-        attributes.put("g", publicKey.encodeG());
-        attributes.put("v", publicKey.encodeV());
-        attributes.put("uString", publicKey.encodeULists());
-        attributes.put("appName", file.getName());
-        attributes.put("fileSize",originFileSize);
-        attributes.put("createTime",file.lastModified());
-        attributes.put("fileType",file.getName().substring(file.getName().lastIndexOf(".")));
-        String toAddress = "1Wkg9jF48VeM16rUE9MSTu4dfyvJv4dAb5X1v";
         ChainService chainService = new ChainService();
-        String txid = chainService.send2Obj(toAddress, 0, attributes);
-        System.out.println(txid);
-//        LinkDataBase linkDataBase = new LinkDataBase();
-//        linkDataBase.insertData("testFile04",txid);
+        PublicKey publicKey = new PublicKey(pairing);
         //获取区块链数据并解析
         String res = chainService.getFromObj(txid);
         JSONObject jsonObject = JSONObject.parseObject(res);
-        g = publicKey.decodeG(jsonObject.get("g").toString());
-        v = publicKey.decodeV(jsonObject.get("v").toString());
-        uLists = publicKey.decodeULists(JSONArray.parseArray(jsonObject.get("uString").toString(), String.class));
+        Element g = publicKey.decodeG(jsonObject.get("g").toString());
+        Element v = publicKey.decodeV(jsonObject.get("v").toString());
+        ArrayList<ElementPowPreProcessing> uLists = publicKey.decodeULists(JSONArray.parseArray(jsonObject.get("uString").toString(), String.class));
         //******************************转化验证************************************//
 
-        //签名阶段
-        ArrayList<Element> signLists;
-        Sign sign = new Sign();
-        FileUtil fileUtil = new FileUtil();
-        signLists = sign.sign(fileUtil, filePath, uLists, g, x, blockFileSize, pieceFileSize);
-
         //******************************转化验证************************************//
-        //转为json字符串，存本地
-        Base64.Encoder encoder = Base64.getEncoder();
-        List<String> signStringList = new ArrayList<>();
-        for (Element elm : signLists) {
-            byte[] elmByte = encoder.encode(elm.toBytes());
-            signStringList.add(new String(elmByte,"UTF-8"));
-        }
-        Map<String,Object> map = new HashMap<>();
-        map.put("signStringList",signStringList);
-        ConvertUtil.write2JsonFile(map,signPath);
-
+        ArrayList<Element> signLists = new ArrayList<>();
         //从本地恢复
         Base64.Decoder decoder = Base64.getDecoder();
-        String jsonFile = ConvertUtil.readfromJsonFile(signPath2);
+        String jsonFile = ConvertUtil.readfromJsonFile(signPath);
         JSONObject jsonObjectLocal = JSONObject.parseObject(jsonFile);
         JSONArray jsonArray = jsonObjectLocal.getJSONArray("signStringList");
         signLists = new ArrayList<>();
@@ -123,6 +75,7 @@ public class CovertToStringVerifyTest {
         Element sigmasValues = check.getSigh(pairing, signLists, viLists);
         //求miu
         ArrayList<Element> miuLists;
+        FileUtil fileUtil = new FileUtil();
         miuLists = check.getMiuList(fileUtil, filePath, viLists,  blockFileSize, pieceFileSize);
 
         //******************************转化验证************************************//

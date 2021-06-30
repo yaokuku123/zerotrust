@@ -126,7 +126,7 @@ public class QueryParam implements Serializable {
         signLists = new ArrayList<>();
         for (String elm : signStringList) {
             byte[] elmByte = decoder.decode(elm.getBytes("UTF-8"));
-            Element elmE = pairing.getZr().newElementFromBytes(elmByte).getImmutable();
+            Element elmE = pairing.getG1().newElementFromBytes(elmByte).getImmutable();
             signLists.add(elmE);
         }
         return signLists;
