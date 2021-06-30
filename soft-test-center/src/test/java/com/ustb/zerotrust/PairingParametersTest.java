@@ -7,10 +7,10 @@ import com.ustb.zerotrust.BlindVerify.Sign;
 import com.ustb.zerotrust.BlindVerify.Verify;
 import com.ustb.zerotrust.domain.PublicKey;
 import com.ustb.zerotrust.domain.QueryParam;
-import com.ustb.zerotrust.mapper.LinkDataBase;
 import com.ustb.zerotrust.service.impl.ChainService;
 import com.ustb.zerotrust.utils.ConvertUtil;
 import com.ustb.zerotrust.utils.FileUtil;
+import com.ustb.zerotrust.utils.SerializeUtil;
 import edu.ustb.shellchainapi.shellchain.command.ShellChainException;
 import it.unisa.dia.gas.jpbc.Element;
 import it.unisa.dia.gas.jpbc.ElementPowPreProcessing;
@@ -18,24 +18,15 @@ import it.unisa.dia.gas.jpbc.Pairing;
 import it.unisa.dia.gas.jpbc.PairingParameters;
 import it.unisa.dia.gas.plaf.jpbc.pairing.PairingFactory;
 import it.unisa.dia.gas.plaf.jpbc.pairing.a.TypeACurveGenerator;
-import it.unisa.dia.gas.plaf.jpbc.pairing.a.TypeAPairing;
 
-import java.io.File;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.sql.SQLException;
 import java.util.*;
 
-/**
- * Copyright(C),2019-2021,XXX公司
- * FileName: CovertToStringVerifyTest
- * Author: yaoqijun
- * Date: 2021/6/24 16:05
- */
-public class CovertToStringVerifyTest {
+public class PairingParametersTest {
     public static void main(String[] args) throws UnsupportedEncodingException, ShellChainException, SQLException, ClassNotFoundException {
         String filePath = "/Users/yorick/Desktop/testFile02.exe";
         String signPath = "/Users/yorick/Desktop/testFile02.exe.sign";
-        String signPath2 = "/Users/yorick/Desktop/testFile02.exe的副本.sign";
         String appName = "testFile02";
 
         //初始化配置 默认规定为 100块，每块有10片
@@ -48,12 +39,20 @@ public class CovertToStringVerifyTest {
         int rbits = 53;
         int qbits = 1024;
         TypeACurveGenerator pg = new TypeACurveGenerator(rbits, qbits);
+
+        //******************************转化验证************************************//
         PairingParameters typeAParams = pg.generate();
+        try {
+            String serialize = SerializeUtil.serialize(typeAParams);
+            typeAParams = (PairingParameters) SerializeUtil.serializeToObject(serialize);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        serialFunc("/Users/yorick/Desktop/obj.txt",typeAParams);
+//        typeAParams = deSerialFunc("/Users/yorick/Desktop/obj.txt");
+
         Pairing pairing = PairingFactory.getPairing(typeAParams);
-
-        PairingParameters typeAParams2 = typeAParams;
-        Pairing pairing2 = PairingFactory.getPairing(typeAParams2);
-
+        //******************************转化验证************************************//
 
         //初始化相关参数
         Element g = pairing.getG1().newRandomElement().getImmutable();     //生成生成元
@@ -67,7 +66,7 @@ public class CovertToStringVerifyTest {
         }
 
         //******************************转化验证************************************//
-        PublicKey publicKey = new PublicKey(pairing2, g, v, uLists);
+        PublicKey publicKey = new PublicKey(pairing, g, v, uLists);
         //上传至区块链
         HashMap<String, Object> attributes = new HashMap<>();
         attributes.put("g", publicKey.encodeG());
@@ -111,13 +110,13 @@ public class CovertToStringVerifyTest {
 
         //从本地恢复
         Base64.Decoder decoder = Base64.getDecoder();
-        String jsonFile = ConvertUtil.readfromJsonFile(signPath2);
+        String jsonFile = ConvertUtil.readfromJsonFile(signPath);
         JSONObject jsonObjectLocal = JSONObject.parseObject(jsonFile);
         JSONArray jsonArray = jsonObjectLocal.getJSONArray("signStringList");
         signLists = new ArrayList<>();
         for (Object elm : jsonArray) {
             byte[] signByte = decoder.decode(elm.toString().getBytes("UTF-8"));
-            signLists.add(pairing2.getG1().newElementFromBytes(signByte).getImmutable());
+            signLists.add(pairing.getG1().newElementFromBytes(signByte).getImmutable());
         }
         //******************************转化验证************************************//
 
@@ -125,15 +124,15 @@ public class CovertToStringVerifyTest {
         Check check = new Check();
         //求viLists
         ArrayList<Element> viLists;
-        viLists = check.getViList(pairing2, signLists);
+        viLists = check.getViList(pairing, signLists);
         //求sigma
-        Element sigmasValues = check.getSigh(pairing2, signLists, viLists);
+        Element sigmasValues = check.getSigh(pairing, signLists, viLists);
         //求miu
         ArrayList<Element> miuLists;
         miuLists = check.getMiuList(fileUtil, filePath, viLists,  blockFileSize, pieceFileSize);
 
         //******************************转化验证************************************//
-        QueryParam queryParam = new QueryParam(pairing2,sigmasValues,viLists,signLists,miuLists);
+        QueryParam queryParam = new QueryParam(pairing,sigmasValues,viLists,signLists,miuLists);
         sigmasValues = queryParam.decodeSigma(queryParam.encodeSigma());
         viLists = queryParam.decodeViLists(queryParam.encodeViList());
         signLists = queryParam.decodeSignLists(queryParam.encodeSignLists());
@@ -142,7 +141,46 @@ public class CovertToStringVerifyTest {
 
         //开始验证
         Verify verify = new Verify();
-        boolean result = verify.verifyResult(pairing2, g, uLists, v, sigmasValues, viLists, signLists, miuLists);
+        boolean result = verify.verifyResult(pairing, g, uLists, v, sigmasValues, viLists, signLists, miuLists);
         System.out.println(result);
     }
+
+    public static PairingParameters deSerialFunc(String path){
+        ObjectInputStream ois = null;
+        try{
+            ois = new ObjectInputStream(new FileInputStream(path));
+            return (PairingParameters) ois.readObject();
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }finally {
+            if (ois!=null){
+                try {
+                    ois.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static void serialFunc(String path,PairingParameters parameters){
+        ObjectOutputStream oos = null;
+        try{
+            oos = new ObjectOutputStream(new FileOutputStream(path));
+            oos.writeObject(parameters);
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if (oos !=null){
+                try {
+                    oos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
 }
