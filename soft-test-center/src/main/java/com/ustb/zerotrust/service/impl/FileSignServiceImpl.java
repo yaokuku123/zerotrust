@@ -6,6 +6,7 @@ import com.ustb.zerotrust.service.FileSignService;
 import com.ustb.zerotrust.service.FileStoreService;
 import com.ustb.zerotrust.mapper.LinkDataBase;
 import com.ustb.zerotrust.utils.FileUtil;
+import com.ustb.zerotrust.utils.SerializeUtil;
 import edu.ustb.shellchainapi.shellchain.command.ShellChainException;
 import it.unisa.dia.gas.jpbc.Element;
 import it.unisa.dia.gas.jpbc.ElementPowPreProcessing;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -51,7 +53,7 @@ public class FileSignServiceImpl implements FileSignService {
      * @return 是否签名成功
      */
     @Override
-    public File signFile(String fileName,String filePath) throws UnsupportedEncodingException, ShellChainException, SQLException, ClassNotFoundException, FileNotFoundException {
+    public File signFile(String fileName,String filePath) throws IOException, ShellChainException, SQLException, ClassNotFoundException {
         //初始化配置 默认规定为 100块，每块有10片
         File file = new File(filePath);
         long originFileSize = file.length();
@@ -96,6 +98,7 @@ public class FileSignServiceImpl implements FileSignService {
         attributes.put("g", publicKey.encodeG());
         attributes.put("v", publicKey.encodeV());
         attributes.put("uString", publicKey.encodeULists());
+        attributes.put("pairParam",new String(Base64.getEncoder().encode(SerializeUtil.serialize(typeAParams).getBytes("UTF-8")),"UTF-8"));
         attributes.put("appName", fileName);
         attributes.put("fileSize",originFileSize);
         attributes.put("createTime",file.lastModified());

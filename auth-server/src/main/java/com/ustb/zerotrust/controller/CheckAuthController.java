@@ -12,6 +12,7 @@ import com.ustb.zerotrust.service.DaemonClient;
 
 import com.ustb.zerotrust.service.impl.ChainService;
 import com.ustb.zerotrust.util.ConvertUtil;
+import com.ustb.zerotrust.utils.SerializeUtil;
 import it.unisa.dia.gas.jpbc.Element;
 import it.unisa.dia.gas.jpbc.ElementPowPreProcessing;
 import lombok.extern.slf4j.Slf4j;
@@ -56,19 +57,17 @@ public class CheckAuthController {
     @GetMapping("/result")
     public boolean checkResult(String fileName) throws Exception {
 
-        //密码初始化部分
-        int rbits = 53;
-        int qbits = 1024;
-        TypeACurveGenerator pg = new TypeACurveGenerator(rbits, qbits);
-        PairingParameters typeAParams = pg.generate();
-        Pairing pairing = PairingFactory.getPairing(typeAParams);
-        QueryParam queryParam = new QueryParam(pairing);
-        //初始化相关参数
-
         //从链上获取参数
         String txid = linkDataBase.getTxid(fileName);
         String res = chainService.getFromObj(txid);
         JSONObject jsonObject = JSONObject.parseObject(res);
+        //密码初始化部分
+        Pairing pairing = null;
+        try {
+            pairing = PairingFactory.getPairing((PairingParameters) SerializeUtil.serializeToObject(new String(Base64.getDecoder().decode(jsonObject.get("pairParam").toString().getBytes("UTF-8")),"UTF-8")));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         PublicKey publicKey = new PublicKey(pairing);
         Element g = publicKey.decodeG(jsonObject.get("g").toString());
         Element v = publicKey.decodeV(jsonObject.get("v").toString());
@@ -87,6 +86,7 @@ public class CheckAuthController {
         log.info("signStringList :"+signStringList);
 
         //解析参数
+        QueryParam queryParam = new QueryParam(pairing);
         ArrayList<Element> viLists = queryParam.decodeViLists(viStringList);
         ArrayList<Element> miuLists = queryParam.decodeMiuLists(miuStringList);
         ArrayList<Element> signLists = queryParam.decodeSignLists(signStringList);
