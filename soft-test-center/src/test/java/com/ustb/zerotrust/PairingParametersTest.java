@@ -7,6 +7,7 @@ import com.ustb.zerotrust.BlindVerify.Sign;
 import com.ustb.zerotrust.BlindVerify.Verify;
 import com.ustb.zerotrust.domain.PublicKey;
 import com.ustb.zerotrust.domain.QueryParam;
+import com.ustb.zerotrust.mapper.LinkDataBase;
 import com.ustb.zerotrust.service.impl.ChainService;
 import com.ustb.zerotrust.utils.ConvertUtil;
 import com.ustb.zerotrust.utils.FileUtil;
@@ -24,7 +25,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class PairingParametersTest {
-    public static void main(String[] args) throws UnsupportedEncodingException, ShellChainException, SQLException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException, ShellChainException, SQLException, ClassNotFoundException {
         String filePath = "/Users/yorick/Desktop/testFile02.exe";
         String signPath = "/Users/yorick/Desktop/testFile02.exe.sign";
         String appName = "testFile02";
@@ -42,12 +43,12 @@ public class PairingParametersTest {
 
         //******************************转化验证************************************//
         PairingParameters typeAParams = pg.generate();
-        try {
-            String serialize = SerializeUtil.serialize(typeAParams);
-            typeAParams = (PairingParameters) SerializeUtil.serializeToObject(serialize);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            String serialize = SerializeUtil.serialize(typeAParams);
+//            typeAParams = (PairingParameters) SerializeUtil.serializeToObject(serialize);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 //        serialFunc("/Users/yorick/Desktop/obj.txt",typeAParams);
 //        typeAParams = deSerialFunc("/Users/yorick/Desktop/obj.txt");
 
@@ -72,6 +73,7 @@ public class PairingParametersTest {
         attributes.put("g", publicKey.encodeG());
         attributes.put("v", publicKey.encodeV());
         attributes.put("uString", publicKey.encodeULists());
+        attributes.put("pairParam",new String(Base64.getEncoder().encode(SerializeUtil.serialize(typeAParams).getBytes("UTF-8")),"UTF-8"));
         attributes.put("appName", file.getName());
         attributes.put("fileSize",originFileSize);
         attributes.put("createTime",file.lastModified());
@@ -80,16 +82,20 @@ public class PairingParametersTest {
         ChainService chainService = new ChainService();
         String txid = chainService.send2Obj(toAddress, 0, attributes);
         System.out.println(txid);
-//        LinkDataBase linkDataBase = new LinkDataBase();
-//        linkDataBase.insertData(appName,txid);
+        LinkDataBase linkDataBase = new LinkDataBase();
+        linkDataBase.insertData(appName,txid);
         //获取区块链数据并解析
         String res = chainService.getFromObj(txid);
         JSONObject jsonObject = JSONObject.parseObject(res);
         g = publicKey.decodeG(jsonObject.get("g").toString());
         v = publicKey.decodeV(jsonObject.get("v").toString());
         uLists = publicKey.decodeULists(JSONArray.parseArray(jsonObject.get("uString").toString(), String.class));
+        try {
+            pairing = PairingFactory.getPairing((PairingParameters) SerializeUtil.serializeToObject(new String(Base64.getDecoder().decode(jsonObject.get("pairParam").toString().getBytes("UTF-8")),"UTF-8")));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         //******************************转化验证************************************//
-
         //签名阶段
         ArrayList<Element> signLists;
         Sign sign = new Sign();
