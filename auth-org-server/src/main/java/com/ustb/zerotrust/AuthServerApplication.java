@@ -6,6 +6,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * Copyright(C),2019-2021,XXX公司
@@ -14,6 +15,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  * Date: 2021/2/25 9:50
  */
 @SpringBootApplication
+@ComponentScan(basePackages = {"com.ustb"})
 @MapperScan("com.ustb.zerotrust.mapper")
 @EnableConfigurationProperties(RsaKeyProperties.class)
 public class AuthServerApplication {
