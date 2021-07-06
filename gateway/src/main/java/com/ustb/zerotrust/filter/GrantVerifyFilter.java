@@ -63,11 +63,6 @@ public class GrantVerifyFilter implements GlobalFilter, Ordered {
                             }else {
                                 //failjson return
                                 return getVoidMono(response, ResponseCodeEnum.FAIL);
-                                //重定向
-//                                String url = "http://www.baidu.com";
-//                                response.setStatusCode(HttpStatus.SEE_OTHER);
-//                                response.getHeaders().set(HttpHeaders.LOCATION,url);
-//                                return response.setComplete();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
