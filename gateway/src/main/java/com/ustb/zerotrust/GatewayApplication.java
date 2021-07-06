@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * Copyright(C),2019-2021,XXX公司
@@ -13,6 +14,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * Date: 2021/5/25 16:15
  */
 @SpringBootApplication
+@ComponentScan(basePackages = {"com.ustb"})
 @EnableFeignClients
 //@EnableConfigurationProperties(RsaKeyProperties.class)
 public class GatewayApplication {
