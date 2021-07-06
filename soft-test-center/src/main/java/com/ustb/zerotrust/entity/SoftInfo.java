@@ -20,8 +20,8 @@ public class SoftInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Long id; //id 主键
-    private String softFileStoreId; // 被测软件保存路径的外键
+    private int id; //id 主键
+    private int softFileStoreId; // 被测软件保存路径的外键
     private String softName; //软件名称，（区块链存储）
     private String softDesc; //软件描述，（区块链存储）
     private String userName; //软件拥有者，（区块链存储）
