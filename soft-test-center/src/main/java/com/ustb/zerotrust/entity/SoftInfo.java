@@ -1,5 +1,6 @@
 package com.ustb.zerotrust.entity;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,11 +21,13 @@ public class SoftInfo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String id; //id 主键
-    private String softName; //软件名称
-    private String softDesc; //软件描述
-    private String softSize; //软件大小
-    private String softType; //软件类型
-    private String userName; //软件拥有者
-    private String phoneNum; //软件拥有者手机号
-    private Date createTime; //上链时间
+    private String softFileStoreId; // 被测软件保存路径的外键
+    private String softName; //软件名称，（区块链存储）
+    private String softDesc; //软件描述，（区块链存储）
+    private String userName; //软件拥有者，（区块链存储）
+    private String phoneNum; //软件拥有者手机号，（区块链存储）
+    private Date createTime; //创建时间，（区块链存储）
+    private String txId; //软件交易id
+    private Integer status; // 状态，0表示软件正在被处理，1表示软件待审核，2表示软件已注册成功，3表示软件已驳回
+    private Boolean isDeleted; //逻辑删除 1（true）已删除， 0（false）未删除
 }
