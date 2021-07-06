@@ -99,10 +99,10 @@ public class FileSignServiceImpl implements FileSignService {
         attributes.put("v", publicKey.encodeV());
         attributes.put("uString", publicKey.encodeULists());
         attributes.put("pairParam",new String(Base64.getEncoder().encode(SerializeUtil.serialize(typeAParams).getBytes("UTF-8")),"UTF-8"));
-        attributes.put("appName", fileName);
-        attributes.put("fileSize",originFileSize);
+        attributes.put("softName", fileName);
+        attributes.put("softSize",originFileSize);
         attributes.put("createTime",file.lastModified());
-        attributes.put("fileType",file.getName().substring(file.getName().lastIndexOf(".")));
+        attributes.put("softType",file.getName().substring(file.getName().lastIndexOf(".")));
 //        String toAddress = "1UAarmYDCCD1UQ6gtuyrWEyi25FoNQMvM8ojYe"; //主体链地址
         String toAddress = "1Wkg9jF48VeM16rUE9MSTu4dfyvJv4dAb5X1v";
         String txid = chainService.send2Obj(toAddress, 0, attributes);
