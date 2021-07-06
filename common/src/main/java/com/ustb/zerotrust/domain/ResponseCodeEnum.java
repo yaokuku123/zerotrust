@@ -7,8 +7,8 @@ package com.ustb.zerotrust.domain;
  * Date: 2021/5/25 14:08
  */
 public enum ResponseCodeEnum {
-    SUCCESS(0, "成功"),
-    FAIL(-1, "失败"),
+    SUCCESS(20000, "成功"),
+    FAIL(20001, "失败"),
     LOGIN_ERROR(1000, "用户名或密码错误"),
     UNKNOWN_ERROR(2000, "未知错误"),
     PARAMETER_ILLEGAL(2001, "参数不合法"),
