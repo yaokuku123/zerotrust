@@ -42,9 +42,15 @@ public class GrantVerifyFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
-
         String method = request.getMethodValue();
         String contentType = request.getHeaders().getFirst("Content-Type");
+
+        //放行路径的白名单
+        String uri = request.getURI().getPath();
+        if (uri.indexOf("/soft-test-center/") >= 0) {
+            return chain.filter(exchange);
+        }
+
         if ("POST".equals(method)) {
             return DataBufferUtils.join(exchange.getRequest().getBody())
                     .flatMap(dataBuffer -> {
@@ -63,11 +69,6 @@ public class GrantVerifyFilter implements GlobalFilter, Ordered {
                             }else {
                                 //failjson return
                                 return getVoidMono(response, ResponseCodeEnum.FAIL);
-                                //重定向
-//                                String url = "http://www.baidu.com";
-//                                response.setStatusCode(HttpStatus.SEE_OTHER);
-//                                response.getHeaders().set(HttpHeaders.LOCATION,url);
-//                                return response.setComplete();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();

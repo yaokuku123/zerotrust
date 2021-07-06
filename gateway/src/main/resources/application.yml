@@ -6,18 +6,18 @@ spring:
   cloud:
     gateway:
       routes:
-#      - id: auth-org-server
-#        uri: lb://auth-org-server # lb代表从注册中心获取服务
-#        predicates:
-#        - Path=/auth-org-server/**
-#        filters:
-#        - RewritePath=/auth-org-server/(?<segment>.*), /$\{segment}
       - id: auth-resource
         uri: lb://auth-resource # lb代表从注册中心获取服务
         predicates:
         - Path=/auth-resource/**
         filters:
         - RewritePath=/auth-resource/(?<segment>.*), /$\{segment}
+      - id: soft-test-center
+        uri: lb://soft-test-center # lb代表从注册中心获取服务
+        predicates:
+          - Path=/soft-test-center/**
+        filters:
+          - RewritePath=/soft-test-center/(?<segment>.*), /$\{segment}
   redis:
     host: localhost
     port: 6379
