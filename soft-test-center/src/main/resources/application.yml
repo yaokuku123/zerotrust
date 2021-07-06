@@ -18,7 +18,7 @@ spring:
       max-file-size: 200MB #设置单个文件最大长度
 
 mybatis:
-  type-aliases-package: com.ustb.domain
+  type-aliases-package: com.ustb.zerotrust.entity
   configuration:
     map-underscore-to-camel-case: true
   mapper-locations: classpath:com/ustb/zerotrust/mapper/xml/*.xml # xml所在路径
