@@ -37,14 +37,6 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-web</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>io.springfox</groupId>
-                    <artifactId>springfox-swagger-ui</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>io.springfox</groupId>
-                    <artifactId>springfox-swagger2</artifactId>
-                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
