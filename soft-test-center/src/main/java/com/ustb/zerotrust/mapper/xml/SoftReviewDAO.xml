@@ -18,16 +18,16 @@
 
     </select>
 
-    <select id="getAllPending" resultType="SoftSimpleInfoVo">
-        select soft_name,soft_desc,user_name,phone_num from soft_info where status = 1
+    <select id="getAllPending" resultType="SoftInfo">
+        select * from soft_info where status = 1
     </select>
 
-    <select id="getAllReject" resultType="SoftSimpleInfoVo">
-        select soft_name,soft_desc,user_name,phone_num from soft_info where status = 3
+    <select id="getAllReject" resultType="SoftInfo">
+        select * from soft_info where status = 3
     </select>
 
-    <select id="getAllHandled" resultType="SoftSimpleInfoVo">
-        select soft_name,soft_desc,user_name,phone_num from soft_info where status = 2
+    <select id="getAllHandled" resultType="SoftInfo">
+        select * from soft_info where status = 2
     </select>
 
     <update id="examineSoftSuccess" parameterType="int">

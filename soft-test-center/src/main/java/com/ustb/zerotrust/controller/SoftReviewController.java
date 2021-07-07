@@ -1,6 +1,7 @@
 package com.ustb.zerotrust.controller;
 
 import com.ustb.zerotrust.domain.ResponseResult;
+import com.ustb.zerotrust.entity.SoftInfo;
 import com.ustb.zerotrust.entity.vo.SoftSimpleInfoVo;
 import com.ustb.zerotrust.service.SoftReviewService;
 import io.swagger.annotations.ApiOperation;
@@ -69,7 +70,7 @@ public class SoftReviewController {
     @ApiOperation(value = "获取所有已处理软件信息",notes = "接口:/soft/getAllPending")
     @RequestMapping("/getAllPending")
     public ResponseResult getAllPending(){
-        List<SoftSimpleInfoVo> allPending = null;
+        List<SoftInfo> allPending = null;
         ResponseResult pendingSoft = null;
         try {
             allPending = softReviewService.getAllPending();
@@ -85,7 +86,7 @@ public class SoftReviewController {
     @ApiOperation(value = "获取所有已驳回软件信息",notes = "接口:/soft/getAllReject")
     @RequestMapping("/getAllReject")
     public ResponseResult getAllReject(){
-        List<SoftSimpleInfoVo> allReject = null;
+        List<SoftInfo> allReject = null;
         ResponseResult rejectSoft = null;
         try {
             allReject = softReviewService.getAllReject();
@@ -101,7 +102,7 @@ public class SoftReviewController {
     @ApiOperation(value = "获取所有已处理软件信息",notes = "接口:/soft/getAllHandled")
     @RequestMapping("/getAllHandled")
     public ResponseResult getAllHandled(){
-        List<SoftSimpleInfoVo> allHandled = null;
+        List<SoftInfo> allHandled = null;
         ResponseResult handledSoft = null;
         try {
             allHandled = softReviewService.getAllHandled();

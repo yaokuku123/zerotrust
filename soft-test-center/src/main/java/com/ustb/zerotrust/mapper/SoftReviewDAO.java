@@ -1,5 +1,6 @@
 package com.ustb.zerotrust.mapper;
 
+import com.ustb.zerotrust.entity.SoftInfo;
 import com.ustb.zerotrust.entity.vo.SoftSimpleInfoVo;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -22,13 +23,13 @@ public interface SoftReviewDAO {
     int HandledNums();
 
     //获取待处理软件摘要信息
-    List<SoftSimpleInfoVo> getAllPending();
+    List<SoftInfo> getAllPending();
 
     //获取被驳回软件摘要信息
-    List<SoftSimpleInfoVo> getAllReject();
+    List<SoftInfo> getAllReject();
 
     //获取已经办理软件摘要信息
-    List<SoftSimpleInfoVo> getAllHandled();
+    List<SoftInfo> getAllHandled();
 
     //审核通过待处理软件
     void examineSoftSuccess(Integer id);

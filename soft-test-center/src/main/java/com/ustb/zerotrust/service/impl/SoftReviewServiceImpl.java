@@ -1,5 +1,6 @@
 package com.ustb.zerotrust.service.impl;
 
+import com.ustb.zerotrust.entity.SoftInfo;
 import com.ustb.zerotrust.entity.vo.SoftSimpleInfoVo;
 import com.ustb.zerotrust.mapper.SoftReviewDAO;
 import com.ustb.zerotrust.service.SoftReviewService;
@@ -36,17 +37,17 @@ public class SoftReviewServiceImpl implements SoftReviewService {
     }
 
     @Override
-    public List<SoftSimpleInfoVo> getAllPending() {
+    public List<SoftInfo> getAllPending() {
         return softReviewDAO.getAllPending();
     }
 
     @Override
-    public List<SoftSimpleInfoVo> getAllReject() {
+    public List<SoftInfo> getAllReject() {
         return softReviewDAO.getAllReject();
     }
 
     @Override
-    public List<SoftSimpleInfoVo> getAllHandled() {
+    public List<SoftInfo> getAllHandled() {
         return softReviewDAO.getAllHandled();
     }
 

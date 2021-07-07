@@ -1,5 +1,6 @@
 package com.ustb.zerotrust.service;
 
+import com.ustb.zerotrust.entity.SoftInfo;
 import com.ustb.zerotrust.entity.vo.SoftSimpleInfoVo;
 
 import java.util.List;
@@ -16,11 +17,11 @@ public interface SoftReviewService {
 
     int HandledNums();
 
-    List<SoftSimpleInfoVo> getAllPending();
+    List<SoftInfo> getAllPending();
 
-    List<SoftSimpleInfoVo> getAllReject();
+    List<SoftInfo> getAllReject();
 
-    List<SoftSimpleInfoVo> getAllHandled();
+    List<SoftInfo> getAllHandled();
 
     void examineSoftSuccess(Integer id);
 
