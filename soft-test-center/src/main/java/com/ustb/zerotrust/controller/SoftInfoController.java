@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/soft")
+@CrossOrigin
 public class SoftInfoController {
 
     /**
