@@ -49,10 +49,10 @@ public class FileUploadController {
     public ResponseResult upload(@RequestParam("file") MultipartFile file) throws ClassNotFoundException, ShellChainException, SQLException, IOException {
         //边界判定
         if (file.isEmpty()) {
-            return ResponseResult.error(ResponseCodeEnum.FAIL.getCode(), "上传失败，请选择文件");
+            return ResponseResult.error().message("上传失败，请选择文件");
         }
         if (file.getSize() < 1024) {
-            return ResponseResult.error(ResponseCodeEnum.FAIL.getCode(), "上传失败，请选择大于1KB文件");
+            return ResponseResult.error().message("上传失败，请选择大于1KB文件");
         }
         //上传软件
         String originFileName = file.getOriginalFilename();
@@ -61,13 +61,13 @@ public class FileUploadController {
         File softFile = fileStoreService.uploadFile(fileName, suffix, file);
         if (softFile == null) {
             //上传文件失败
-            return ResponseResult.error(ResponseCodeEnum.FAIL.getCode(), "上传失败，文件IO异常");
+            return ResponseResult.error().message("上传失败，文件IO异常");
         }
         //签名软件
         File signFile = fileSignService.signFile(fileName, softFile.getAbsolutePath());
         if (signFile == null) {
             //签名失败
-            return ResponseResult.error(ResponseCodeEnum.FAIL.getCode(), "上传失败，软件检验未通过");
+            return ResponseResult.error().message("上传失败，软件检验未通过");
         }
         //将被测软件和签名文件打包发送至目标虚拟机
         MultipartFile[] files = new MultipartFile[2];

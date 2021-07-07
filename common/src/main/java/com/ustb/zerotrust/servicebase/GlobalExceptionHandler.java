@@ -16,6 +16,6 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public ResponseResult error(Exception e){
         e.printStackTrace();
-        return ResponseResult.error(ResponseCodeEnum.FAIL.getCode(),ResponseCodeEnum.FAIL.getMessage());
+        return ResponseResult.error();
     }
 }
