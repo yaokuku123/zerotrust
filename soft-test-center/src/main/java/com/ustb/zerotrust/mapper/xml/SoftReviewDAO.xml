@@ -1,0 +1,15 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ustb.zerotrust.mapper.SoftReviewDAO">
+
+    <select id="PendingNums" resultType="int">
+
+        select count(id) from soft_info where status = 1
+
+    </select>
+    <select id="RejectNums" resultType="int">
+
+        select count(id) from soft_info where status = 3
+
+    </select>
+
+</mapper>
