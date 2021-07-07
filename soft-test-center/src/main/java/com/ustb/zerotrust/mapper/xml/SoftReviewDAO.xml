@@ -12,4 +12,30 @@
 
     </select>
 
+    <select id="HandledNums" resultType="int">
+
+        select count(id) from soft_info where status = 2
+
+    </select>
+
+    <select id="getAllPending" resultType="SoftSimpleInfoVo">
+        select soft_name,soft_desc,user_name,phone_num from soft_info where status = 1
+    </select>
+
+    <select id="getAllReject" resultType="SoftSimpleInfoVo">
+        select soft_name,soft_desc,user_name,phone_num from soft_info where status = 3
+    </select>
+
+    <select id="getAllHandled" resultType="SoftSimpleInfoVo">
+        select soft_name,soft_desc,user_name,phone_num from soft_info where status = 2
+    </select>
+
+    <update id="examineSoftSuccess" parameterType="int">
+        update soft_info set status = 2 where id = #{id}
+    </update>
+
+    <update id="examineSoftFail" parameterType="int">
+        update soft_info set status = 3 where id = #{id}
+    </update>
+
 </mapper>
