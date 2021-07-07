@@ -63,17 +63,17 @@ public class GrantVerifyFilter implements GlobalFilter, Ordered {
                             RequestGrant requestGrant = new ObjectMapper().readValue(bodyString, RequestGrant.class);
                             //远程调用监控平台
                             ResponseResult grantResult = grantFeignClient.Verify(requestGrant);
-                            System.out.println(grantResult.getData());
-                            if (true == (Boolean) grantResult.getData()) {
+                            System.out.println(grantResult.getData().get("flag"));
+                            if ((Boolean) grantResult.getData().get("flag")) {
                                 exchange.getAttributes().put("POST_BODY", bodyString);
                             }else {
                                 //failjson return
-                                return getVoidMono(response, ResponseCodeEnum.FAIL);
+                                return getVoidMono(response);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                             //failjson return
-                            return getVoidMono(response, ResponseCodeEnum.FAIL);
+                            return getVoidMono(response);
                         }
                         DataBufferUtils.release(dataBuffer);
                         Flux<DataBuffer> cachedFlux = Flux.defer(() -> {
@@ -105,12 +105,11 @@ public class GrantVerifyFilter implements GlobalFilter, Ordered {
      * 错误处理方法
      *
      * @param serverHttpResponse
-     * @param responseCodeEnum
      * @return
      */
-    private Mono<Void> getVoidMono(ServerHttpResponse serverHttpResponse, ResponseCodeEnum responseCodeEnum) {
+    private Mono<Void> getVoidMono(ServerHttpResponse serverHttpResponse) {
         serverHttpResponse.getHeaders().add("Content-Type", "application/json;charset=UTF-8");
-        ResponseResult responseResult = ResponseResult.error(responseCodeEnum.getCode(), responseCodeEnum.getMessage());
+        ResponseResult responseResult = ResponseResult.error();
         DataBuffer dataBuffer = serverHttpResponse.bufferFactory().wrap(JsonUtils.toString(responseResult).getBytes());
         return serverHttpResponse.writeWith(Flux.just(dataBuffer));
     }

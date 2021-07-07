@@ -15,9 +15,9 @@ public class SoftInfoController {
      * @return 交易信息列表
      */
     @GetMapping("/list")
-    public ResponseResult<SoftInfo> getSoftList(){
+    public ResponseResult getSoftList(){
         //TODO 从数据库中获取当前的软件交易信息
-        return null;
+        return ResponseResult.success();
     }
 
     /**
@@ -26,9 +26,9 @@ public class SoftInfoController {
      * @return 被测对象的id主键
      */
     @PostMapping("/add")
-    public ResponseResult<String> addSoft(@RequestBody SoftSimpleInfoVo softSimpleInfoVo){
+    public ResponseResult addSoft(@RequestBody SoftSimpleInfoVo softSimpleInfoVo){
         //TODO 添加软件的信息到SoftInfo对象中，并返回该对象的主键ID给前端
-        return null;
+        return ResponseResult.success();
     }
 
     /**
@@ -38,10 +38,10 @@ public class SoftInfoController {
      * @return 无
      */
     @PostMapping("/upload/{id}")
-    public ResponseResult<String> softUpload(@PathVariable("id") String softId, @RequestParam("file") MultipartFile file){
+    public ResponseResult softUpload(@PathVariable("id") String softId, @RequestParam("file") MultipartFile file){
         //TODO 上传被测软件到测试中心本地，并将对应的软件信息softId主键以及软件存储的路径封装至SoftFileStore对象中
         //TODO 另外，将SoftFileStore对象返回的主键id保存至对应的软件信息对象SoftInfo的softFileStoreId属性中
-        return ResponseResult.success("ok");
+        return ResponseResult.success();
     }
 
     /**
@@ -50,8 +50,8 @@ public class SoftInfoController {
      * @return 无
      */
     @PostMapping("/verity/{id}")
-    public ResponseResult<String> softVerify(@PathVariable("id") String id){
+    public ResponseResult softVerify(@PathVariable("id") String id){
         //TODO 修改SoftInfo对象的状态为：1软件待审核
-        return ResponseResult.success("ok");
+        return ResponseResult.success();
     }
 }

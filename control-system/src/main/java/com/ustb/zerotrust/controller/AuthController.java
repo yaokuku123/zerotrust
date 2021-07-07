@@ -30,6 +30,6 @@ public class AuthController {
         // 根据用户请求信息，监管平台进行验证处理
         boolean flag = checkClient.checkResult(requestGrant.getSoftName());
 
-        return ResponseResult.success(flag);
+        return ResponseResult.success().data("flag",flag);
     }
 }
