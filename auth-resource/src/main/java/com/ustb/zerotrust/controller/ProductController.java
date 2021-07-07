@@ -1,5 +1,6 @@
 package com.ustb.zerotrust.controller;
 
+import com.ustb.zerotrust.domain.ResponseResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,9 +21,9 @@ import java.io.IOException;
 public class ProductController {
 
     @PostMapping("/findAll")
-    public String findAll(HttpServletRequest request) {
+    public ResponseResult findAll(HttpServletRequest request) {
         String params = ReadAsChars(request);
-        return "9002 success findAll..." + params;
+        return ResponseResult.success().data("result","9002 success findAll..." + params);
     }
 
     /**
