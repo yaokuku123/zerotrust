@@ -1,6 +1,8 @@
 package com.ustb.zerotrust.domain;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Copyright(C),2019-2021,XXX公司
@@ -8,53 +10,69 @@ import java.io.Serializable;
  * Author: yaoqijun
  * Date: 2021/5/25 14:10
  */
-public class ResponseResult<T> implements Serializable {
+public class ResponseResult implements Serializable {
+    private Boolean success; //是否成功
+    private Integer code; //返回码
+    private String msg; //消息
+    private Map<String, Object> data = new HashMap<>(); //数据
 
-    private int code = 0;
-
-    private String msg;
-
-    private T data;
-
-    public ResponseResult() {
-    }
-
-    public ResponseResult(int code, String msg) {
-        this.code = code;
-        this.msg = msg;
-    }
-
-    public ResponseResult(int code, String msg, T data) {
-        this.code = code;
-        this.msg = msg;
-        this.data = data;
+    private ResponseResult() {
     }
 
     public static ResponseResult success() {
-        return new ResponseResult(ResponseCodeEnum.SUCCESS.getCode(), ResponseCodeEnum.SUCCESS.getMessage());
+        ResponseResult r = new ResponseResult();
+        r.setSuccess(true);
+        r.setCode(ResponseCodeEnum.SUCCESS.getCode());
+        r.setMsg(ResponseCodeEnum.SUCCESS.getMessage());
+        return r;
     }
 
-    public static <T> ResponseResult<T> success(T data) {
-        return new ResponseResult(ResponseCodeEnum.SUCCESS.getCode(), ResponseCodeEnum.SUCCESS.getMessage(), data);
+    public static ResponseResult error() {
+        ResponseResult r = new ResponseResult();
+        r.setSuccess(false);
+        r.setCode(ResponseCodeEnum.FAIL.getCode());
+        r.setMsg(ResponseCodeEnum.FAIL.getMessage());
+        return r;
     }
 
-    public static ResponseResult error(int code, String msg) {
-        return new ResponseResult(code, msg);
+    public ResponseResult success(Boolean success){
+        this.setSuccess(success);
+        return this;
     }
 
-    public static <T> ResponseResult<T> error(int code, String msg, T data) {
-        return new ResponseResult(code, msg, data);
+    public ResponseResult message(String msg){
+        this.setMsg(msg);
+        return this;
     }
 
-    public boolean isSuccess() {
-        return code == 0;
+    public ResponseResult code(Integer code){
+        this.setCode(code);
+        return this;
     }
 
-    public int getCode() {
+    public ResponseResult data(String key, Object value){
+        this.data.put(key, value);
+        return this;
+    }
+
+    public ResponseResult data(Map<String, Object> map){
+        this.setData(map);
+        return this;
+    }
+
+    public Boolean getSuccess() {
+        return success;
+    }
+
+    public void setSuccess(Boolean success) {
+        this.success = success;
+    }
+
+    public Integer getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    public void setCode(Integer code) {
         this.code = code;
     }
 
@@ -66,11 +84,11 @@ public class ResponseResult<T> implements Serializable {
         this.msg = msg;
     }
 
-    public T getData() {
+    public Map<String, Object> getData() {
         return data;
     }
 
-    public void setData(T data) {
+    public void setData(Map<String, Object> data) {
         this.data = data;
     }
 }

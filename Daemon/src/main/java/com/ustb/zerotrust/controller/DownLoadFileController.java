@@ -34,7 +34,7 @@ public class DownLoadFileController {
     @PostMapping(value = "/download", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseResult downLoad(@RequestParam("fileName") String fileName, @RequestParam("files") MultipartFile[] files) {
         if (files.length != 2) {
-            return ResponseResult.error(ResponseCodeEnum.PARAMETER_ILLEGAL.getCode(), "文件个数错误");
+            return ResponseResult.error().message("文件个数错误");
         }
         //下载文件至本地
         fileStoreService.uploadFile(fileName, files[0], files[1]);
