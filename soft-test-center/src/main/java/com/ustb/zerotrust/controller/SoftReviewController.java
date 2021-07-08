@@ -138,4 +138,11 @@ public class SoftReviewController {
         return ResponseResult.success();
     }
 
+//    @GetMapping("/findNameById")
+//    public ResponseResult findNameById(@RequestParam("id") int id){
+//        String name = softReviewService.findNameById(id);
+//        String path = softReviewService.findPathById(id);
+//        return ResponseResult.success().data("name",name).data("path",path);
+//    }
+
 }

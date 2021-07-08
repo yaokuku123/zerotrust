@@ -37,4 +37,13 @@ public interface SoftReviewDAO {
     //审核驳回待处理软件
     void examineSoftFail(Integer id);
 
+    //根据id获取名字
+    String findNameById(Integer id);
+
+    //根据id获取path
+    String findPathById(Integer id);
+
+    //通过审核后写入txid
+    void addTxid(String txid,Integer id);
+
 }
