@@ -38,4 +38,16 @@
         update soft_info set status = 3 where id = #{id}
     </update>
 
+    <select id="findNameById" parameterType="int" resultType="String">
+        select soft_name from soft_info where id = #{id}
+    </select>
+
+    <select id="findPathById" parameterType="int" resultType="String">
+        select f.soft_path from soft_info s,soft_file_store f where s.soft_file_store_id=f.id and s.id = #{id}
+    </select>
+
+    <update id="addTxid">
+        update soft_info set tx_id = #{txid} where id = #{id}
+    </update>
+
 </mapper>

@@ -2,7 +2,10 @@ package com.ustb.zerotrust.service;
 
 import com.ustb.zerotrust.entity.SoftInfo;
 import com.ustb.zerotrust.entity.vo.SoftSimpleInfoVo;
+import edu.ustb.shellchainapi.shellchain.command.ShellChainException;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -23,7 +26,13 @@ public interface SoftReviewService {
 
     List<SoftInfo> getAllHandled();
 
-    void examineSoftSuccess(Integer id);
+    void examineSoftSuccess(Integer id) throws ClassNotFoundException, ShellChainException, SQLException, IOException;
 
     void examineSoftFail(Integer id);
+
+    String findNameById(Integer id);
+
+    String findPathById(Integer id);
+
+    void addTxid(String txid,Integer id);
 }
