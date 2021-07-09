@@ -68,7 +68,7 @@ public class SoftReviewController {
 
 
     @ApiOperation(value = "获取所有已处理软件信息",notes = "接口:/soft/getAllPending")
-    @RequestMapping("/getAllPending")
+    @GetMapping("/getAllPending")
     public ResponseResult getAllPending(){
         List<SoftInfo> allPending = null;
         ResponseResult pendingSoft = null;
@@ -84,7 +84,7 @@ public class SoftReviewController {
 
 
     @ApiOperation(value = "获取所有已驳回软件信息",notes = "接口:/soft/getAllReject")
-    @RequestMapping("/getAllReject")
+    @GetMapping("/getAllReject")
     public ResponseResult getAllReject(){
         List<SoftInfo> allReject = null;
         ResponseResult rejectSoft = null;
@@ -100,7 +100,7 @@ public class SoftReviewController {
 
 
     @ApiOperation(value = "获取所有已处理软件信息",notes = "接口:/soft/getAllHandled")
-    @RequestMapping("/getAllHandled")
+    @GetMapping("/getAllHandled")
     public ResponseResult getAllHandled(){
         List<SoftInfo> allHandled = null;
         ResponseResult handledSoft = null;
@@ -115,7 +115,7 @@ public class SoftReviewController {
     }
 
     @ApiOperation(value = "审核通过待处理软件",notes = "接口:/soft/examineSoftSuccess")
-    @RequestMapping("/examineSoftSuccess")
+    @GetMapping("/examineSoftSuccess")
     public ResponseResult examineSoftSuccess(@RequestParam("id") int id){
         try {
             softReviewService.examineSoftSuccess(id);
@@ -127,7 +127,7 @@ public class SoftReviewController {
     }
 
     @ApiOperation(value = "审核驳回处理软件",notes = "接口:/soft/examineSoftFail")
-    @RequestMapping("/examineSoftFail")
+    @GetMapping("/examineSoftFail")
     public ResponseResult examineSoftFail(@RequestParam("id") int id){
         try {
             softReviewService.examineSoftFail(id);
