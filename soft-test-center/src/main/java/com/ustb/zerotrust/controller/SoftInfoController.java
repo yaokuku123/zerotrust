@@ -124,6 +124,18 @@ public class SoftInfoController {
     }
 
     /**
+     * 根据id删除文件路径字段以及置空软件信息保存的文件路径id字段
+     * @param id 软件信息主键id
+     * @return 无
+     */
+    @PostMapping("/deleteFile/{id}")
+    public ResponseResult deleteFile(@PathVariable("id") int id){
+        SoftInfo softInfo = softInfoService.getSoft(id);
+        softInfoService.deleteFile(softInfo);
+        return ResponseResult.success();
+    }
+
+    /**
      * 第三步，审核当前被测软件，将当前软件的状态修改为待审核状态，等待审核即可
      * @param id 软件信息主键id
      * @return 无

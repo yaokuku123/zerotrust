@@ -10,4 +10,12 @@ public interface SoftFileStoreService {
      * @return 是否成功
      */
     int insertSoftFile(SoftFileStore softFileStore);
+
+    /**
+     * 删除软件存储字段
+     * @param id 存储主键id
+     * @return 是否成功
+     */
+    int deleteSoftFile(int id);
+
 }

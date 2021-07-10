@@ -5,4 +5,8 @@
         insert into soft_file_store(soft_info_id,soft_path) values(#{softInfoId},#{softPath})
     </insert>
 
+    <delete id="deleteSoftFile">
+        delete from soft_file_store where id=#{id}
+    </delete>
+
 </mapper>
