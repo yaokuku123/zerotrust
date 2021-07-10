@@ -47,4 +47,11 @@ public interface SoftInfoService {
      * @return 是否成功
      */
     int updateSoftFileId(SoftInfo softInfo);
+
+    /**
+     * 删除文件及其让关联的字段置空
+     * @param softInfo
+     * @return
+     */
+    int deleteFile(SoftInfo softInfo);
 }

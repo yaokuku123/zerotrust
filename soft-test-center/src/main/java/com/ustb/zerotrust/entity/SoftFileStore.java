@@ -51,7 +51,7 @@ public class SoftFileStore implements Serializable {
         isDeleted = deleted;
     }
 
-    private int softInfoId; //被测软件信息的外键
+    private Integer softInfoId; //被测软件信息的外键
     private String softPath; //被测软件存储路径
     private Boolean isDeleted; //逻辑删除 1（true）已删除， 0（false）未删除
 }

@@ -3,6 +3,7 @@ package com.ustb.zerotrust.service.impl;
 import com.ustb.zerotrust.entity.SoftInfo;
 import com.ustb.zerotrust.entity.vo.SoftSimpleInfoVo;
 import com.ustb.zerotrust.mapper.SoftInfoDao;
+import com.ustb.zerotrust.service.SoftFileStoreService;
 import com.ustb.zerotrust.service.SoftInfoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,9 @@ public class SoftInfoServiceImpl implements SoftInfoService {
 
     @Autowired
     private SoftInfoDao softInfoDao;
+
+    @Autowired
+    private SoftFileStoreService softFileStoreService;
 
     @Override
     public List<SoftInfo> getSoftMessage() {
@@ -47,6 +51,14 @@ public class SoftInfoServiceImpl implements SoftInfoService {
 
     @Override
     public int updateSoftFileId(SoftInfo softInfo) {
+        int flag = softInfoDao.updateSoftFileId(softInfo);
+        return flag;
+    }
+
+    @Override
+    public int deleteFile(SoftInfo softInfo) {
+        softFileStoreService.deleteSoftFile(softInfo.getSoftFileStoreId());
+        softInfo.setSoftFileStoreId(null);
         int flag = softInfoDao.updateSoftFileId(softInfo);
         return flag;
     }
