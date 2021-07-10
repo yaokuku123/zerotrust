@@ -5,7 +5,10 @@ import com.ustb.zerotrust.entity.SoftInfo;
 import com.ustb.zerotrust.entity.vo.SoftSimpleInfoVo;
 import com.ustb.zerotrust.mapper.LinkDataBase;
 import com.ustb.zerotrust.service.FileStoreService;
+import com.ustb.zerotrust.service.SoftFileStoreService;
+import com.ustb.zerotrust.service.SoftInfoService;
 import com.ustb.zerotrust.service.SoftReviewService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +16,8 @@ import com.ustb.zerotrust.entity.SoftFileStore;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/soft")
@@ -20,19 +25,24 @@ import java.sql.SQLException;
 public class SoftInfoController {
     private LinkDataBase linkDataBase = new LinkDataBase();
     private SoftReviewService softReviewService;
-    private SoftInfo softInfo =new SoftInfo();
-    private SoftFileStore softFileStore =new SoftFileStore();
+
     @Autowired
     private FileStoreService fileStoreService; //上传文件服务
+
+    @Autowired
+    private SoftInfoService softInfoService;
+
+    @Autowired
+    private SoftFileStoreService softFileStoreService;
+
     /**
      * 获取当前系统中存在的软件交易信息
      * @return 交易信息列表
      */
     @GetMapping("/list")
     public ResponseResult getSoftList() throws SQLException, ClassNotFoundException {
-        //TODO 从数据库中获取当前的软件交易信息
-        System.out.println(linkDataBase.getSoftMessage());
-        return ResponseResult.success().data("softinfo",linkDataBase.getSoftMessage());
+        List<SoftInfo> softInfo = softInfoService.getSoftMessage();
+        return ResponseResult.success().data("softInfo",softInfo);
     }
 
     /**
@@ -42,20 +52,42 @@ public class SoftInfoController {
      */
     @PostMapping("/add")
     public ResponseResult addSoft(@RequestBody SoftSimpleInfoVo softSimpleInfoVo){
-        //TODO 添加软件的信息到SoftInfo对象中，并返回该对象的主键ID给前端
+        SoftInfo softInfo = new SoftInfo();
+        BeanUtils.copyProperties(softSimpleInfoVo,softInfo);
+        softInfo.setCreateTime(new Date());
+        softInfoService.insertSoft(softInfo);
+        return ResponseResult.success().data("id",softInfo.getId());
+    }
+
+    /**
+     * 根据主键id获取软件信息
+     * @param id 主键id
+     * @return 软件简要信息
+     */
+    @GetMapping("/get/{id}")
+    public ResponseResult getSoft(@PathVariable("id") int id){
+        SoftInfo softInfo = softInfoService.getSoft(id);
+        SoftSimpleInfoVo softSimpleInfoVo = new SoftSimpleInfoVo();
+        BeanUtils.copyProperties(softInfo,softSimpleInfoVo);
+        return ResponseResult.success().data("softInfo",softSimpleInfoVo);
+    }
+
+    /**
+     * 修改被测软件的相关信息
+     * @param id 软件信息主键id
+     * @param softSimpleInfoVo 前端回显后修改的软件信息
+     * @return 无
+     */
+    @PostMapping("/update/{id}")
+    public ResponseResult updateSoft(@PathVariable("id") int id,
+                                         @RequestBody SoftSimpleInfoVo softSimpleInfoVo){
+        SoftInfo softInfo = softInfoService.getSoft(id);
         softInfo.setSoftName(softSimpleInfoVo.getSoftName());
         softInfo.setSoftDesc(softSimpleInfoVo.getSoftDesc());
         softInfo.setUserName(softSimpleInfoVo.getUserName());
         softInfo.setPhoneNum(softSimpleInfoVo.getPhoneNum());
-        int id=0;
-        try {
-            id=linkDataBase.insertSoft(softSimpleInfoVo);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return ResponseResult.success().data("id",id);
+        softInfoService.updateSoft(softInfo);
+        return ResponseResult.success();
     }
 
     /**
@@ -65,13 +97,10 @@ public class SoftInfoController {
      * @return 无
      */
     @PostMapping("/upload/{id}")
-    public ResponseResult softUpload(@PathVariable("id") String softId, @RequestParam("file") MultipartFile file){
+    public ResponseResult softUpload(@PathVariable("id") int softId, @RequestParam("file") MultipartFile file){
         //TODO 上传被测软件到测试中心本地，并将对应的软件信息softId主键以及软件存储的路径封装至SoftFileStore对象中
         if (file.isEmpty()) {
             return ResponseResult.error().message("上传失败，请选择文件");
-        }
-        if (file.getSize() < 1024) {
-            return ResponseResult.error().message("上传失败，请选择大于1KB文件");
         }
         //上传软件
         String originFileName = file.getOriginalFilename();
@@ -82,18 +111,15 @@ public class SoftInfoController {
             //上传文件失败
             return ResponseResult.error().message("上传失败，文件IO异常");
         }
-        softFileStore.setSoftInfoId(Integer.parseInt(softId));
+        SoftFileStore softFileStore = new SoftFileStore();
+        softFileStore.setSoftInfoId(softId);
         softFileStore.setSoftPath(softFile.getPath());
         System.out.println(softFileStore);
         //TODO 另外，将SoftFileStore对象返回的主键id保存至对应的软件信息对象SoftInfo的softFileStoreId属性中
-        try {
-            softInfo.setId(linkDataBase.insertSoftSotre(softFileStore));
-            System.out.println(softInfo.getId());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        softFileStoreService.insertSoftFile(softFileStore);
+        SoftInfo softInfo = softInfoService.getSoft(softId);
+        softInfo.setSoftFileStoreId(softFileStore.getId());
+        softInfoService.updateSoftFileId(softInfo);
         return ResponseResult.success();
     }
 
@@ -103,9 +129,10 @@ public class SoftInfoController {
      * @return 无
      */
     @PostMapping("/verity/{id}")
-    public ResponseResult softVerify(@PathVariable("id") String id) throws SQLException, ClassNotFoundException {
-        //TODO 修改SoftInfo对象的状态为：1软件待审核
-        linkDataBase.updateStatus(Integer.parseInt(id));
+    public ResponseResult softVerify(@PathVariable("id") int id) throws SQLException, ClassNotFoundException {
+        SoftInfo softInfo = softInfoService.getSoft(id);
+        softInfo.setStatus(1);//待审核状态
+        softInfoService.verifySoft(softInfo);
         return ResponseResult.success();
     }
 }
