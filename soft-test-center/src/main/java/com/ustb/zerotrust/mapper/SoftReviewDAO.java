@@ -2,6 +2,7 @@ package com.ustb.zerotrust.mapper;
 
 import com.ustb.zerotrust.entity.SoftInfo;
 import com.ustb.zerotrust.entity.vo.SoftSimpleInfoVo;
+import io.swagger.models.auth.In;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -45,5 +46,11 @@ public interface SoftReviewDAO {
 
     //通过审核后写入txid
     void addTxid(String txid,Integer id);
+
+    //根据id查询txid
+    String findTxidById(Integer id);
+
+    //根据id查询软件信息
+    SoftInfo findById(Integer id);
 
 }

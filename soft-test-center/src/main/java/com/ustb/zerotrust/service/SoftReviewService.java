@@ -35,4 +35,8 @@ public interface SoftReviewService {
     String findPathById(Integer id);
 
     void addTxid(String txid,Integer id);
+
+    String findTxidById(Integer id);
+
+    SoftInfo findById(Integer id);
 }

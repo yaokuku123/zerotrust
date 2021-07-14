@@ -1,8 +1,10 @@
 package com.ustb.zerotrust.entity.vo;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -13,6 +15,8 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Accessors(chain = true)
+@Builder
 public class TxInfoVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
