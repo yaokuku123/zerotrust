@@ -50,4 +50,12 @@
         update soft_info set tx_id = #{txid} where id = #{id}
     </update>
 
+    <select id="findTxidById" parameterType="int" resultType="String">
+        select tx_id from soft_info where id=#{id}
+    </select>
+
+    <select id="findById" resultType="SoftInfo">
+        select * from soft_info where id=#{id}
+    </select>
+
 </mapper>

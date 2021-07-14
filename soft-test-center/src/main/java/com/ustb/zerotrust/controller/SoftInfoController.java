@@ -1,13 +1,18 @@
 package com.ustb.zerotrust.controller;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.ustb.zerotrust.domain.ResponseResult;
 import com.ustb.zerotrust.entity.SoftInfo;
 import com.ustb.zerotrust.entity.vo.SoftSimpleInfoVo;
+import com.ustb.zerotrust.entity.vo.TxInfoVo;
 import com.ustb.zerotrust.mapper.LinkDataBase;
 import com.ustb.zerotrust.service.FileStoreService;
 import com.ustb.zerotrust.service.SoftFileStoreService;
 import com.ustb.zerotrust.service.SoftInfoService;
 import com.ustb.zerotrust.service.SoftReviewService;
+import com.ustb.zerotrust.service.impl.ChainService;
+import edu.ustb.shellchainapi.shellchain.command.ShellChainException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,13 +29,18 @@ import java.util.List;
 @CrossOrigin
 public class SoftInfoController {
     private LinkDataBase linkDataBase = new LinkDataBase();
-    private SoftReviewService softReviewService;
 
     @Autowired
     private FileStoreService fileStoreService; //上传文件服务
 
     @Autowired
     private SoftInfoService softInfoService;
+
+    @Autowired
+    private SoftReviewService softReviewService;
+
+    @Autowired
+    private ChainService chainService;
 
     @Autowired
     private SoftFileStoreService softFileStoreService;
@@ -146,5 +156,41 @@ public class SoftInfoController {
         softInfo.setStatus(1);//待审核状态
         softInfoService.verifySoft(softInfo);
         return ResponseResult.success();
+    }
+
+
+    //根据id查询txid 上链查询结果返回
+    @GetMapping("/getSoftInfo")
+    public ResponseResult getSoftInfo(@RequestParam("id") int id) throws ShellChainException {
+        JSONObject jsonObject = null;
+        try {
+            SoftInfo softInfo = softReviewService.findById(id);
+            String txid = softReviewService.findTxidById(id);
+            String res = chainService.getFromObj(txid);
+            jsonObject = JSONObject.parseObject(res);
+            JSONArray vout = jsonObject.getJSONArray("vout");
+            String toAaddresses = vout.getJSONObject(0)
+                    .getJSONObject("scriptPubKey")
+                    .getJSONArray("addresses").get(0).toString();
+            String blockHash = (String) jsonObject.get("blockhash");
+            String softName = softInfo.getSoftName();
+            String softDesc = softInfo.getSoftDesc();
+            String softSize = String.valueOf(jsonObject.get("softSize"));
+            String softType = (String) jsonObject.get("softType");
+            String userName = softInfo.getUserName();
+            String phoneNum = softInfo.getPhoneNum();
+            Date createTime = softInfo.getCreateTime();
+
+            TxInfoVo txInfoVo = new TxInfoVo();
+            txInfoVo.setTxId(txid).setToAddress(toAaddresses).setBlockHash(blockHash)
+            .setSoftName(softName).setSoftDesc(softDesc).setSoftSize(softSize)
+            .setSoftType(softType).setUserName(userName).setPhoneNum(phoneNum)
+            .setCreateTime(createTime);
+            return ResponseResult.success().data("txInfoVo",txInfoVo);
+            //return ResponseResult.success().data("blockHash",addresses);
+        } catch (ShellChainException e) {
+            e.printStackTrace();
+        }
+        return ResponseResult.error();
     }
 }

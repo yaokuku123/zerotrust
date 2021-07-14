@@ -86,4 +86,14 @@ public class SoftReviewServiceImpl implements SoftReviewService {
     public void addTxid(String txid, Integer id) {
         softReviewDAO.addTxid(txid,id);
     }
+
+    @Override
+    public String findTxidById(Integer id) {
+        return softReviewDAO.findTxidById(id);
+    }
+
+    @Override
+    public SoftInfo findById(Integer id) {
+        return softReviewDAO.findById(id);
+    }
 }
