@@ -26,9 +26,12 @@ import java.util.*;
 
 public class AlogrithemBugTest {
     public static void main(String[] args) throws UnsupportedEncodingException, ShellChainException, SQLException, ClassNotFoundException {
-        String filePath = "/Users/yorick/Desktop/testFile02.exe";
-        String signPath = "/Users/yorick/Desktop/testFile02.exe.sign";
-        String appName = "testFile02";
+//        String filePath = "/Users/yorick/Desktop/testFile02.exe";
+//        String signPath = "/Users/yorick/Desktop/testFile02.exe.sign";
+//        String appName = "testFile02";
+        String filePath = "D:\\Projects\\tmp\\tmp\\zerotrust\\daemonFile\\testfile02.exe";
+        String signPath = "D:\\Projects\\tmp\\tmp\\zerotrust\\uploadFile\\testfile02.exe.sign";
+        String appName = "testFile02.exe";
 
         //初始化配置 默认规定为 100块，每块有10片
         File file = new File(filePath);
@@ -47,7 +50,8 @@ public class AlogrithemBugTest {
         PublicKey publicKey = new PublicKey(pairing);
         //获取区块链数据并解析
         LinkDataBase linkDataBase = new LinkDataBase();
-        String txid = linkDataBase.getTxid(appName);
+        //String txid = linkDataBase.getTxid(appName);
+        String txid = linkDataBase.getTxid1(appName);
         String res = chainService.getFromObj(txid);
         JSONObject jsonObject = JSONObject.parseObject(res);
         Element g = publicKey.decodeG(jsonObject.get("g").toString());

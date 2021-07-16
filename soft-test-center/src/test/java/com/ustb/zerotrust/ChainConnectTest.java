@@ -59,7 +59,8 @@ public class ChainConnectTest {
 
     @Test
     public void connectMySQL() throws SQLException, ClassNotFoundException {
-        linkDataBase.getTxid("test1");
+        //linkDataBase.getTxid("test1");
+        linkDataBase.getTxid("testfile02.exe");
     }
 
     @Test

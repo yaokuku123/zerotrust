@@ -91,6 +91,27 @@ public class LinkDataBase {
 
         return txid;
     }
+
+    public String getTxid1(String appName) throws ClassNotFoundException, SQLException {
+        String txid = "";
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection connection = DriverManager.getConnection("jdbc:mysql://123.56.246.148:3306/zerotrust?characterEncoding=utf8","root","ustb_scce_lab202");
+        String sql = "select tx_id from Application where soft_name = ?";
+        PreparedStatement statement = connection.prepareCall(sql);
+        statement.setString(1, appName);
+
+        ResultSet rs = statement.executeQuery();
+        while (rs.next()) {
+            txid = rs.getString(1);
+        }
+
+        rs.close();
+        statement.close();
+        connection.close();
+
+        return txid;
+    }
+
     public ArrayList<HashMap<String, Object>> getSoftMessage() throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.jdbc.Driver");
         Connection connection = DriverManager.getConnection("jdbc:mysql://123.56.246.148:3306/zerotrust?characterEncoding=utf8","root","ustb_scce_lab202");
