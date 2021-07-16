@@ -13,4 +13,6 @@ public interface FileGetMessage {
      * @return
      */
     public QueryParamString getCheckMessage(String fileName) throws SQLException, ClassNotFoundException, ShellChainException;
+
+    public QueryParamString getCheckMessage1(String fileName) throws SQLException, ClassNotFoundException, ShellChainException;
 }

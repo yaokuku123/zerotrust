@@ -125,6 +125,78 @@ public class FileGetMessageImpl implements FileGetMessage {
         }
         return queryParamString;
     }
+
+
+
+    public QueryParamString getCheckMessage1(String fileName) throws SQLException, ClassNotFoundException, ShellChainException {
+        //密码协议部分准备
+        String txid = linkDataBase.getTxid1(fileName);
+        String res = chainService.getFromObj(txid);
+        JSONObject jsonObject = JSONObject.parseObject(res);
+        Pairing pairing = null;
+        try {
+            pairing = PairingFactory.getPairing((PairingParameters) SerializeUtil.serializeToObject(new String(Base64.getDecoder().decode(jsonObject.get("pairParam").toString().getBytes("UTF-8")),"UTF-8")));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        //获取被测软件的相关文件存储位置
+        DaemonSoft daemonSoft = filePathStoreMapper.getFilePath(fileName);
+        String filePath = daemonSoft.getSoftPath();
+        String signPath = daemonSoft.getSignPath();
+        //初始化配置 默认规定为 100块，每块有10片
+        File file = new File(filePath);
+        long originFileSize = file.length();
+        int blockFileSize = (int) (originFileSize / 100);// 切割后的文件块大小
+        int pieceFileSize = blockFileSize / 10;// 切割后的文件片大小
+
+        //从本地恢复
+        Base64.Decoder decoder = Base64.getDecoder();
+        String jsonFile = ConvertUtil.readfromJsonFile(signPath);
+        JSONObject jsonObjectLocal = JSONObject.parseObject(jsonFile);
+        JSONArray jsonArray = jsonObjectLocal.getJSONArray("signStringList");
+        ArrayList<Element> signLists = new ArrayList<>();
+        for (Object elm : jsonArray) {
+            byte[] signByte = new byte[0];
+            try {
+                signByte = decoder.decode(elm.toString().getBytes("UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            signLists.add(pairing.getG1().newElementFromBytes(signByte).getImmutable());
+        }
+
+        //查询阶段
+        Check check = new Check();
+        //求viLists
+        ArrayList<Element> viLists;
+        viLists = check.getViList(pairing, signLists);
+        //求sigma
+        Element sigmasValues = check.getSigh(pairing, signLists, viLists);
+        //求miu
+        ArrayList<Element> miuLists;
+        FileUtil fileUtil = new FileUtil();
+        miuLists = check.getMiuList(fileUtil, filePath, viLists, blockFileSize, pieceFileSize);
+
+        QueryParam queryParam = new QueryParam(pairing,sigmasValues,viLists,signLists,miuLists);
+        QueryParamString queryParamString = null;
+        try {
+            queryParamString = new QueryParamString(queryParam.encodeSigma(), queryParam.encodeViList(),
+                    queryParam.encodeSignLists(), queryParam.encodeMiuLists());
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return queryParamString;
+    }
+
+
+
+
+
+
+
+
+
+
 //延时程序
 //    public static void startTimer() {
 //        TimerTask task = new TimerTask() {
