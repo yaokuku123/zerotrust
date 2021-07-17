@@ -18,5 +18,8 @@ public interface SoftFileStoreDAO {
      */
     int deleteSoftFile(int id);
 
+    //通过id 获取soft_info_id
+    Integer getSoftId(int id);
+
 
 }

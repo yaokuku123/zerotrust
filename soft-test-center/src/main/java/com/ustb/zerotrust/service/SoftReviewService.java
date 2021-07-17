@@ -6,6 +6,7 @@ import edu.ustb.shellchainapi.shellchain.command.ShellChainException;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ public interface SoftReviewService {
 
     List<SoftInfo> getAllHandled();
 
-    void examineSoftSuccess(Integer id) throws ClassNotFoundException, ShellChainException, SQLException, IOException;
+    void examineSoftSuccess(Integer id) throws ClassNotFoundException, ShellChainException, SQLException, IOException, ParseException;
 
     void examineSoftFail(Integer id);
 
@@ -39,4 +40,6 @@ public interface SoftReviewService {
     String findTxidById(Integer id);
 
     SoftInfo findById(Integer id);
+
+    SoftInfo findByName(String name);
 }

@@ -18,4 +18,6 @@ public interface SoftFileStoreService {
      */
     int deleteSoftFile(int id);
 
+    Integer getSoftId(int id);
+
 }

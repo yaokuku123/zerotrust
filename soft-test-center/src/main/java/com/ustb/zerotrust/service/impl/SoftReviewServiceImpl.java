@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -57,7 +58,7 @@ public class SoftReviewServiceImpl implements SoftReviewService {
     }
 
     @Override
-    public void examineSoftSuccess(Integer id) throws ClassNotFoundException, ShellChainException, SQLException, IOException {
+    public void examineSoftSuccess(Integer id) throws ClassNotFoundException, ShellChainException, SQLException, IOException, ParseException {
         //通过id 获取 file_name 和soft_path
         String file_name = softReviewDAO.findNameById(id);
         String path = softReviewDAO.findPathById(id);
@@ -95,5 +96,10 @@ public class SoftReviewServiceImpl implements SoftReviewService {
     @Override
     public SoftInfo findById(Integer id) {
         return softReviewDAO.findById(id);
+    }
+
+    @Override
+    public SoftInfo findByName(String name) {
+        return softReviewDAO.findByName(name);
     }
 }

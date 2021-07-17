@@ -9,4 +9,8 @@
         delete from soft_file_store where id=#{id}
     </delete>
 
+    <select id="getSoftId" resultType="Integer">
+        select soft_info_id from soft_file_store where id = #{id}
+    </select>
+
 </mapper>

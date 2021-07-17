@@ -21,6 +21,8 @@ import com.ustb.zerotrust.entity.SoftFileStore;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -164,8 +166,8 @@ public class SoftInfoController {
     public ResponseResult getSoftInfo(@RequestParam("id") int id) throws ShellChainException {
         JSONObject jsonObject = null;
         try {
-            SoftInfo softInfo = softReviewService.findById(id);
-            String txid = softReviewService.findTxidById(id);
+            Integer softId = softFileStoreService.getSoftId(id);
+            String txid = softReviewService.findTxidById(softId);
             String res = chainService.getFromObj(txid);
             jsonObject = JSONObject.parseObject(res);
             JSONArray vout = jsonObject.getJSONArray("vout");
@@ -173,21 +175,22 @@ public class SoftInfoController {
                     .getJSONObject("scriptPubKey")
                     .getJSONArray("addresses").get(0).toString();
             String blockHash = (String) jsonObject.get("blockhash");
-            String softName = softInfo.getSoftName();
-            String softDesc = softInfo.getSoftDesc();
             String softSize = String.valueOf(jsonObject.get("softSize"));
             String softType = (String) jsonObject.get("softType");
-            String userName = softInfo.getUserName();
-            String phoneNum = softInfo.getPhoneNum();
-            Date createTime = softInfo.getCreateTime();
-
+            String softName = (String) jsonObject.get("softName");
+            String softDesc = (String) jsonObject.get("softDesc");
+            String userName = (String) jsonObject.get("userName");
+            String phoneNum = (String) jsonObject.get("phoneNum");
+            String time = (String) jsonObject.get("createTime");
+            Long creTime = Long.valueOf(time);
+            Date date = new Date(creTime);
             TxInfoVo txInfoVo = new TxInfoVo();
             txInfoVo.setTxId(txid).setToAddress(toAaddresses).setBlockHash(blockHash)
             .setSoftName(softName).setSoftDesc(softDesc).setSoftSize(softSize)
             .setSoftType(softType).setUserName(userName).setPhoneNum(phoneNum)
-            .setCreateTime(createTime);
-            return ResponseResult.success().data("txInfoVo",txInfoVo);
-            //return ResponseResult.success().data("blockHash",addresses);
+            .setCreateTime(date);
+            //return ResponseResult.success().data("txInfoVo",txInfoVo);
+            return ResponseResult.success().data("jsonObject",jsonObject);
         } catch (ShellChainException e) {
             e.printStackTrace();
         }
