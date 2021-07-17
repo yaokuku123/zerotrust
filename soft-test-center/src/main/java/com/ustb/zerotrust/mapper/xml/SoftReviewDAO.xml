@@ -58,4 +58,8 @@
         select * from soft_info where id=#{id}
     </select>
 
+    <select id="findByName" resultType="SoftInfo">
+        select * from soft_info where soft_name = #{name}
+    </select>
+
 </mapper>

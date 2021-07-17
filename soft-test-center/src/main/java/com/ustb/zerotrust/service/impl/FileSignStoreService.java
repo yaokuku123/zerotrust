@@ -3,8 +3,10 @@ package com.ustb.zerotrust.service.impl;
 
 import com.ustb.zerotrust.BlindVerify.Sign;
 import com.ustb.zerotrust.domain.PublicKey;
+import com.ustb.zerotrust.entity.SoftInfo;
 import com.ustb.zerotrust.mapper.LinkDataBase;
 import com.ustb.zerotrust.service.FileStoreService;
+import com.ustb.zerotrust.service.SoftReviewService;
 import com.ustb.zerotrust.utils.FileUtil;
 import com.ustb.zerotrust.utils.SerializeUtil;
 import edu.ustb.shellchainapi.shellchain.command.ShellChainException;
@@ -20,10 +22,9 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @author WYP
@@ -38,7 +39,12 @@ public class FileSignStoreService {
     @Autowired
     private ChainService chainService;
 
-    public String signFile(String fileName, String filePath) throws IOException, ShellChainException, SQLException, ClassNotFoundException {
+    @Autowired
+    private SoftReviewService softReviewService;
+
+
+
+    public String signFile(String fileName, String filePath) throws IOException, ShellChainException, SQLException, ClassNotFoundException, ParseException {
         //初始化配置 默认规定为 100块，每块有10片
         File file = new File(filePath);
         long originFileSize = file.length();
@@ -79,14 +85,29 @@ public class FileSignStoreService {
         //生成公钥对象
         PublicKey publicKey = new PublicKey(pairing,g, v, uLists);
         // 参数上客体链
+        //通过 fileName 获取softInfo
+        String res = "";
+        SoftInfo softInfo = softReviewService.findByName(fileName);
+        try {
+            Date createTime = softInfo.getCreateTime();
+            System.out.println(createTime);
+            long time = createTime.getTime();
+            res = String.valueOf(time);
+        }
+        catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
         HashMap<String, Object> attributes = new HashMap<>();
         attributes.put("g", publicKey.encodeG());
         attributes.put("v", publicKey.encodeV());
         attributes.put("uString", publicKey.encodeULists());
         attributes.put("pairParam",new String(Base64.getEncoder().encode(SerializeUtil.serialize(typeAParams).getBytes("UTF-8")),"UTF-8"));
-        attributes.put("softName", fileName);
         attributes.put("softSize",originFileSize);
-        attributes.put("createTime",file.lastModified());
+        attributes.put("softName", softInfo.getSoftName());
+        attributes.put("softDesc",softInfo.getSoftDesc());
+        attributes.put("userName",softInfo.getUserName());
+        attributes.put("phoneNum",softInfo.getPhoneNum());
+        attributes.put("createTime",res);
         attributes.put("softType",file.getName().substring(file.getName().lastIndexOf(".")));
 //        String toAddress = "1UAarmYDCCD1UQ6gtuyrWEyi25FoNQMvM8ojYe"; //主体链地址
         String toAddress = "1Wkg9jF48VeM16rUE9MSTu4dfyvJv4dAb5X1v";

@@ -53,4 +53,9 @@ public interface SoftReviewDAO {
     //根据id查询软件信息
     SoftInfo findById(Integer id);
 
+    //
+    SoftInfo findByName(String name);
+
+
+
 }

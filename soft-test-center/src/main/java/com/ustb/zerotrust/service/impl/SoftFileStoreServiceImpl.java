@@ -23,4 +23,9 @@ public class SoftFileStoreServiceImpl implements SoftFileStoreService {
         int flag = softFileStoreDAO.deleteSoftFile(id);
         return flag;
     }
+
+    @Override
+    public Integer getSoftId(int id) {
+        return softFileStoreDAO.getSoftId(id);
+    }
 }
