@@ -166,8 +166,7 @@ public class SoftInfoController {
     public ResponseResult getSoftInfo(@RequestParam("id") int id) throws ShellChainException {
         JSONObject jsonObject = null;
         try {
-            Integer softId = softFileStoreService.getSoftId(id);
-            String txid = softReviewService.findTxidById(softId);
+            String txid = softReviewService.findTxidById(id);
             String res = chainService.getFromObj(txid);
             jsonObject = JSONObject.parseObject(res);
             JSONArray vout = jsonObject.getJSONArray("vout");
@@ -189,8 +188,8 @@ public class SoftInfoController {
             .setSoftName(softName).setSoftDesc(softDesc).setSoftSize(softSize)
             .setSoftType(softType).setUserName(userName).setPhoneNum(phoneNum)
             .setCreateTime(date);
-            //return ResponseResult.success().data("txInfoVo",txInfoVo);
-            return ResponseResult.success().data("jsonObject",jsonObject);
+            return ResponseResult.success().data("txInfoVo",txInfoVo);
+//            return ResponseResult.success().data("jsonObject",jsonObject);
         } catch (ShellChainException e) {
             e.printStackTrace();
         }
