@@ -69,7 +69,7 @@ public class CheckAuthController1 {
         log.info("uLists:"+uLists);
 
         //查询 返回参数
-        QueryParamString queryParamString = daemonClient.getMessage(fileName);
+        QueryParamString queryParamString = daemonClient.getMessage1(fileName);
         String sigmaValues = queryParamString.getSigmasValues();
         ArrayList<String> viStringList = queryParamString.getViLists();
         ArrayList<String> miuStringList = queryParamString.getMiuLists();
