@@ -4,7 +4,10 @@ import com.ustb.zerotrust.domain.RequestGrant;
 import com.ustb.zerotrust.domain.ResponseResult;
 import com.ustb.zerotrust.service.CheckClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Copyright(C),2019-2021,XXX公司
@@ -14,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/auth")
-public class AuthController {
+public class AuthControllerV2 {
 
     @Autowired
     private CheckClient checkClient;
@@ -24,11 +27,11 @@ public class AuthController {
      * @param requestGrant 用户请求信息
      * @return 是否通过
      */
-    @PostMapping("/verifyV1")
+    @PostMapping("/verify")
     public ResponseResult Verify(@RequestBody RequestGrant requestGrant){
         //System.out.println(requestGrant);
         // 根据用户请求信息，监管平台进行验证处理
-        boolean flag = checkClient.checkResult(requestGrant.getSoftName());
+        boolean flag = checkClient.checkResultV2(requestGrant.getSoftName());
 
         return ResponseResult.success().data("flag",flag);
     }

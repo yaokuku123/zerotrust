@@ -128,9 +128,9 @@ public class FileGetMessageImpl implements FileGetMessage {
 
 
 
-    public QueryParamString getCheckMessage1(String fileName) throws SQLException, ClassNotFoundException, ShellChainException {
+    public QueryParamString getCheckMessageV2(String fileName) throws SQLException, ClassNotFoundException, ShellChainException {
         //密码协议部分准备
-        String txid = linkDataBase.getTxid1(fileName);
+        String txid = linkDataBase.getTxidV2(fileName);
         String res = chainService.getFromObj(txid);
         JSONObject jsonObject = JSONObject.parseObject(res);
         Pairing pairing = null;

@@ -31,7 +31,7 @@ import java.util.Base64;
 @RestController
 @RequestMapping("/check")
 @Slf4j
-public class CheckAuthController1 {
+public class CheckAuthControllerV2 {
 
     @Autowired
     private DaemonClient daemonClient;
@@ -48,11 +48,11 @@ public class CheckAuthController1 {
      * @param
      * @return 是否通过
      */
-    @GetMapping("/result1")
+    @GetMapping("/resultV2")
     public boolean checkResult(String fileName) throws Exception {
 
         //从链上获取参数
-        String txid = linkDataBase.getTxid1(fileName);
+        String txid = linkDataBase.getTxidV2(fileName);
         String res = chainService.getFromObj(txid);
         JSONObject jsonObject = JSONObject.parseObject(res);
         //密码初始化部分
@@ -69,7 +69,7 @@ public class CheckAuthController1 {
         log.info("uLists:"+uLists);
 
         //查询 返回参数
-        QueryParamString queryParamString = daemonClient.getMessage1(fileName);
+        QueryParamString queryParamString = daemonClient.getMessageV2(fileName);
         String sigmaValues = queryParamString.getSigmasValues();
         ArrayList<String> viStringList = queryParamString.getViLists();
         ArrayList<String> miuStringList = queryParamString.getMiuLists();

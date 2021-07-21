@@ -23,7 +23,7 @@ public interface DaemonClient {
     @RequestMapping("/GetCheckMessage")
     QueryParamString getMessage(@RequestParam("fileName") String fileName);
 
-    @RequestMapping("/GetCheckMessage1")
-    QueryParamString getMessage1(@RequestParam("fileName") String fileName);
+    @RequestMapping("/GetCheckMessageV2")
+    QueryParamString getMessageV2(@RequestParam("fileName") String fileName);
 
 }

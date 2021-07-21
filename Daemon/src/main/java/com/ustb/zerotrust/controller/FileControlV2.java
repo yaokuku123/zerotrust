@@ -11,14 +11,14 @@ import java.sql.SQLException;
 
 
 @RestController
-public class FileControl1 {
+public class FileControlV2 {
 
     @Autowired
     private FileGetMessage fileGetMessage;
 
-    @GetMapping("/GetCheckMessage1")
+    @GetMapping("/GetCheckMessageV2")
     public QueryParamString GetMessage(String fileName) throws ShellChainException, SQLException, ClassNotFoundException {
-        QueryParamString checkMessage = fileGetMessage.getCheckMessage1(fileName);
+        QueryParamString checkMessage = fileGetMessage.getCheckMessageV2(fileName);
         return checkMessage;
     }
 
