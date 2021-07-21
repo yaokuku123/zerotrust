@@ -20,4 +20,7 @@ public interface CheckClient {
      */
     @GetMapping("/check/result")
     public boolean checkResult(@RequestParam("fileName") String fileName);
+
+    @GetMapping("/check/resultV2")
+    public boolean checkResultV2(@RequestParam("fileName") String fileName);
 }

@@ -6,6 +6,7 @@ import com.ustb.zerotrust.domain.PublicKey;
 import com.ustb.zerotrust.entity.SoftInfo;
 import com.ustb.zerotrust.mapper.LinkDataBase;
 import com.ustb.zerotrust.service.FileStoreService;
+import com.ustb.zerotrust.service.FileTransFeignClient;
 import com.ustb.zerotrust.service.SoftReviewService;
 import com.ustb.zerotrust.utils.FileUtil;
 import com.ustb.zerotrust.utils.SerializeUtil;
@@ -16,10 +17,14 @@ import it.unisa.dia.gas.jpbc.Pairing;
 import it.unisa.dia.gas.jpbc.PairingParameters;
 import it.unisa.dia.gas.plaf.jpbc.pairing.PairingFactory;
 import it.unisa.dia.gas.plaf.jpbc.pairing.a.TypeACurveGenerator;
+import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -41,6 +46,9 @@ public class FileSignStoreService {
 
     @Autowired
     private SoftReviewService softReviewService;
+
+    @Autowired
+    private FileTransFeignClient fileTransFeignClient; //远程发送文件服务
 
 
 
@@ -81,6 +89,10 @@ public class FileSignStoreService {
         }
         File signFile = fileStoreService.uploadFileSign(file.getName(), signStringList);
 
+        MultipartFile[] files = new MultipartFile[2];
+        files[0] = new MockMultipartFile("files", file.getName(), ContentType.TEXT_PLAIN.toString(), new FileInputStream(file));
+        files[1] = new MockMultipartFile("files", signFile.getName(), ContentType.TEXT_PLAIN.toString(), new FileInputStream(signFile));
+        fileTransFeignClient.downLoad(fileName, files);
 
         //生成公钥对象
         PublicKey publicKey = new PublicKey(pairing,g, v, uLists);

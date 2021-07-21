@@ -51,7 +51,7 @@ public class AlogrithemBugTest {
         //获取区块链数据并解析
         LinkDataBase linkDataBase = new LinkDataBase();
         //String txid = linkDataBase.getTxid(appName);
-        String txid = linkDataBase.getTxid1(appName);
+        String txid = linkDataBase.getTxidV2(appName);
         String res = chainService.getFromObj(txid);
         JSONObject jsonObject = JSONObject.parseObject(res);
         Element g = publicKey.decodeG(jsonObject.get("g").toString());

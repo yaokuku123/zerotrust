@@ -41,7 +41,7 @@ public class LinkDataBase {
         return txid;
     }
 
-    public String getTxid1(String appName) throws ClassNotFoundException, SQLException {
+    public String getTxidV2(String appName) throws ClassNotFoundException, SQLException {
         String txid = "";
         Class.forName("com.mysql.jdbc.Driver");
         Connection connection = DriverManager.getConnection("jdbc:mysql://123.56.246.148:3306/zerotrust?characterEncoding=utf8","root","ustb_scce_lab202");
