@@ -54,7 +54,7 @@ public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
                 response.setContentType("application/json;charset=utf-8");
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 PrintWriter out = response.getWriter();
-                ResponseResult result = ResponseResult.error(ResponseCodeEnum.LOGIN_ERROR.getCode(), "账号或密码错误");
+                ResponseResult result = ResponseResult.error();
                 out.write(new ObjectMapper().writeValueAsString(result));
                 out.flush();
                 out.close();
