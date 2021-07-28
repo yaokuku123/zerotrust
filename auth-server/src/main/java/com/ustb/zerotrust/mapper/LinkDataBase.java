@@ -8,10 +8,10 @@ import java.sql.*;
 @Repository
 public class LinkDataBase {
 
-    @Value("${driverClassName}")
+    @Value("${spring.datasource.driver-class-name}")
     private String driverClassName;
 
-    @Value("${url}")
+    @Value("${spring.datasource.url}")
     private String url;
 
 
