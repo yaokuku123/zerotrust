@@ -11,9 +11,9 @@ spring:
     name: Daemon
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url:
+    url: jdbc:mysql://192.168.179.89:3306/zerotrust?characterEncoding=utf8
     username: root
-    password: ustb_scce_lab202
+    password: kingsoft
 mybatis:
   type-aliases-package: com.ustb.domain
   configuration:
