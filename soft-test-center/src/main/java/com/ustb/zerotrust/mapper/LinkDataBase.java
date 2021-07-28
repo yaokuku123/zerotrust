@@ -2,6 +2,7 @@ package com.ustb.zerotrust.mapper;
 
 import com.ustb.zerotrust.entity.SoftFileStore;
 import com.ustb.zerotrust.entity.vo.SoftSimpleInfoVo;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -10,9 +11,20 @@ import java.util.HashMap;
 
 @Repository
 public class LinkDataBase {
+
+
+    @Value("${driverClassName}")
+    private String driverClassName;
+
+    @Value("${url}")
+    private String url;
+
+
+
+
     public void insertData(String appName, String txid) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://123.56.246.148:3306/zerotrust?characterEncoding=utf8","root","ustb_scce_lab202");
+        Class.forName(driverClassName);
+        Connection connection = DriverManager.getConnection(url,"root","ustb_scce_lab202");
         String sql = "insert into Application(appName,txid) values(?,?)";
         PreparedStatement statement = connection.prepareCall(sql);
         statement.setString(1, appName);
@@ -25,8 +37,8 @@ public class LinkDataBase {
         connection.close();
     }
     public int insertSoft(SoftSimpleInfoVo softSimpleInfoVo) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://123.56.246.148:3306/zerotrust?characterEncoding=utf8","root","ustb_scce_lab202");
+        Class.forName(driverClassName);
+        Connection connection = DriverManager.getConnection(url,"root","ustb_scce_lab202");
         String sql = "insert into soft_info(soft_name,soft_desc,user_name,phone_num) values(?,?,?,?)";
         PreparedStatement statement = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
         ResultSet rs = null;
@@ -50,8 +62,8 @@ public class LinkDataBase {
         return id;
     }
     public int insertSoftSotre(SoftFileStore softFileStore) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://123.56.246.148:3306/zerotrust?characterEncoding=utf8","root","ustb_scce_lab202");
+        Class.forName(driverClassName);
+        Connection connection = DriverManager.getConnection(url,"root","ustb_scce_lab202");
         String sql = "insert into soft_file_store(soft_info_id,soft_path) values(?,?)";
         PreparedStatement statement = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
         ResultSet rs = null;
@@ -74,8 +86,8 @@ public class LinkDataBase {
 
     public String getTxid(String appName) throws ClassNotFoundException, SQLException {
         String txid = "";
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://123.56.246.148:3306/zerotrust?characterEncoding=utf8","root","ustb_scce_lab202");
+        Class.forName(driverClassName);
+        Connection connection = DriverManager.getConnection(url,"root","ustb_scce_lab202");
         String sql = "select txid from Application where id = ?";
         PreparedStatement statement = connection.prepareCall(sql);
         statement.setString(1, appName);
@@ -94,8 +106,8 @@ public class LinkDataBase {
 
     public String getTxidV2(String appName) throws ClassNotFoundException, SQLException {
         String txid = "";
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://123.56.246.148:3306/zerotrust?characterEncoding=utf8","root","ustb_scce_lab202");
+        Class.forName(driverClassName);
+        Connection connection = DriverManager.getConnection(url,"root","ustb_scce_lab202");
         String sql = "select tx_id from Application where soft_name = ?";
         PreparedStatement statement = connection.prepareCall(sql);
         statement.setString(1, appName);
@@ -113,8 +125,8 @@ public class LinkDataBase {
     }
 
     public ArrayList<HashMap<String, Object>> getSoftMessage() throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://123.56.246.148:3306/zerotrust?characterEncoding=utf8","root","ustb_scce_lab202");
+        Class.forName(driverClassName);
+        Connection connection = DriverManager.getConnection(url,"root","ustb_scce_lab202");
         String sql = "SELECT * FROM soft_info";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         //执行查询语句并返回结果集
@@ -142,8 +154,8 @@ public class LinkDataBase {
 
     public void updateStatus(int id) throws ClassNotFoundException, SQLException {
 
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://123.56.246.148:3306/zerotrust?characterEncoding=utf8","root","ustb_scce_lab202");
+        Class.forName(driverClassName);
+        Connection connection = DriverManager.getConnection(url,"root","ustb_scce_lab202");
         String sql = "UPDATE soft_info SET status=1 WHERE id=?";
         PreparedStatement statement = connection.prepareCall(sql);
         statement.setInt(1, id);

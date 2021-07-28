@@ -37,3 +37,9 @@ feign:
 logging:
   level:
     com.ustb: debug
+
+chainobj.address: 1Wkg9jF48VeM16rUE9MSTu4dfyvJv4dAb5X1v
+driverClassName: com.mysql.jdbc.Driver
+url: jdbc:mysql://123.56.246.148:3306/zerotrust?characterEncoding=utf8
+
+

@@ -26,3 +26,6 @@ feign:
       default:
         connectTimeout: 30000  #单位毫秒
         readTimeout: 30000
+
+driverClassName: com.mysql.jdbc.Driver
+url: jdbc:mysql://123.56.246.148:3306/zerotrust?characterEncoding=utf8

@@ -15,6 +15,7 @@ import it.unisa.dia.gas.jpbc.PairingParameters;
 import it.unisa.dia.gas.plaf.jpbc.pairing.PairingFactory;
 import it.unisa.dia.gas.plaf.jpbc.pairing.a.TypeACurveGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -44,6 +45,9 @@ public class FileSignServiceImpl implements FileSignService {
 
     @Autowired
     private LinkDataBase linkDataBase;
+
+    @Value("${chainobj.address}")
+    private String  chainObjAddresses;
 
 
     /**
@@ -104,8 +108,8 @@ public class FileSignServiceImpl implements FileSignService {
         attributes.put("createTime",file.lastModified());
         attributes.put("softType",file.getName().substring(file.getName().lastIndexOf(".")));
 //        String toAddress = "1UAarmYDCCD1UQ6gtuyrWEyi25FoNQMvM8ojYe"; //主体链地址
-        String toAddress = "1Wkg9jF48VeM16rUE9MSTu4dfyvJv4dAb5X1v";
-        String txid = chainService.send2Obj(toAddress, 0, attributes);
+        //String toAddress = "1Wkg9jF48VeM16rUE9MSTu4dfyvJv4dAb5X1v";
+        String txid = chainService.send2Obj(chainObjAddresses, 0, attributes);
         System.out.println(txid);
         //插入数据库
         linkDataBase.insertData(fileName, txid);

@@ -1,14 +1,23 @@
 package com.ustb.zerotrust.mapper;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 
 @Repository
 public class LinkDataBase {
+
+    @Value("${driverClassName}")
+    private String driverClassName;
+
+    @Value("${url}")
+    private String url;
+
+
     public void insertData(String appName, String txid) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://123.56.246.148:3306/zerotrust?characterEncoding=utf8","root","ustb_scce_lab202");
+        Class.forName(driverClassName);
+        Connection connection = DriverManager.getConnection(url,"root","ustb_scce_lab202");
         String sql = "insert into Application(appName,txid) values(?,?)";
         PreparedStatement statement = connection.prepareCall(sql);
         statement.setString(1, appName);
@@ -23,8 +32,8 @@ public class LinkDataBase {
 
     public String getTxid(String appName) throws ClassNotFoundException, SQLException {
         String txid = "";
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://123.56.246.148:3306/zerotrust?characterEncoding=utf8","root","ustb_scce_lab202");
+        Class.forName(driverClassName);
+        Connection connection = DriverManager.getConnection(url,"root","ustb_scce_lab202");
         String sql = "select txid from Application where appName = ?";
         PreparedStatement statement = connection.prepareCall(sql);
         statement.setString(1, appName);
@@ -43,8 +52,8 @@ public class LinkDataBase {
 
     public String getTxidV2(String appName) throws ClassNotFoundException, SQLException {
         String txid = "";
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://123.56.246.148:3306/zerotrust?characterEncoding=utf8","root","ustb_scce_lab202");
+        Class.forName(driverClassName);
+        Connection connection = DriverManager.getConnection(url,"root","ustb_scce_lab202");
         String sql = "select tx_id from soft_info where soft_name = ?";
         PreparedStatement statement = connection.prepareCall(sql);
         statement.setString(1, appName);
