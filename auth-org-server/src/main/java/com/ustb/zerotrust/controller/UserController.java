@@ -31,6 +31,6 @@ public class UserController {
         if (flag){
             return ResponseResult.success();
         }
-        return ResponseResult.error(ResponseCodeEnum.FAIL.getCode(),ResponseCodeEnum.FAIL.getMessage());
+        return ResponseResult.error();
     }
 }
