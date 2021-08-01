@@ -85,79 +85,7 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>2.7.0</version>
         </dependency>
-
-        <!--自定义引入的jpbc-->
-        <dependency>
-            <groupId>com.jpbc</groupId>
-            <artifactId>bcprov-jdk16</artifactId>
-            <version>1.46</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/src/main/resources/lib/bcprov-jdk16-1.46.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>com.jpbc</groupId>
-            <artifactId>jna</artifactId>
-            <version>3.2.5</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/src/main/resources/lib/jna-3.2.5.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>com.jpbc</groupId>
-            <artifactId>jpbc-api</artifactId>
-            <version>2.0.0</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/src/main/resources/lib/jpbc-api-2.0.0.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>com.jpbc</groupId>
-            <artifactId>jpbc-benchmark</artifactId>
-            <version>2.0.0</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/src/main/resources/lib/jpbc-benchmark-2.0.0.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>com.jpbc</groupId>
-            <artifactId>jpbc-crypto</artifactId>
-            <version>2.0.0</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/src/main/resources/lib/jpbc-crypto-2.0.0.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>com.jpbc</groupId>
-            <artifactId>jpbc-mm</artifactId>
-            <version>2.0.0</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/src/main/resources/lib/jpbc-mm-2.0.0.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>com.jpbc</groupId>
-            <artifactId>jpbc-pbc</artifactId>
-            <version>2.0.0</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/src/main/resources/lib/jpbc-pbc-2.0.0.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>com.jpbc</groupId>
-            <artifactId>jpbc-plaf</artifactId>
-            <version>2.0.0</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/src/main/resources/lib/jpbc-plaf-2.0.0.jar</systemPath>
-        </dependency>
-
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <mainClass>com.ustb.zerotrust.AuthServerApplication</mainClass>
-                    <includeSystemScope>true</includeSystemScope>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <build>
         <plugins>

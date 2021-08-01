@@ -1,0 +1,42 @@
+server:
+  port: 8080
+spring:
+  profiles: prod
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+      - id: auth-resource
+        uri: lb://auth-resource # lb代表从注册中心获取服务
+        predicates:
+        - Path=/auth-resource/**
+        filters:
+        - RewritePath=/auth-resource/(?<segment>.*), /$\{segment}
+      - id: soft-test-center
+        uri: lb://soft-test-center # lb代表从注册中心获取服务
+        predicates:
+          - Path=/soft-test-center/**
+        filters:
+          - RewritePath=/soft-test-center/(?<segment>.*), /$\{segment}
+  redis:
+    host: localhost
+    port: 6379
+eureka:
+  client:
+    service-url:
+      defaultZone: http://192.168.179.91:7001/eureka/
+  instance:
+    prefer-ip-address: true
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 30000  #单位毫秒
+        readTimeout: 30000
+logging:
+  level:
+    com.ustb: debug
+#ustb:
+#  key:
+#    publicKeyPath: D:\\temp\\auth_key.pub

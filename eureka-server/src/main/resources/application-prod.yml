@@ -1,0 +1,10 @@
+server:
+  port: 7001
+spring:
+  profiles: prod
+eureka:
+  client:
+    registerWithEureka: false  # 不把自己注册到中心
+    fetchRegistry: false # 不从中心中获取服务
+    serviceUrl: # 客户端与Eureka服务端进行交互的地址
+      defaultZone:  http://192.168.179.91:7001/eureka/
