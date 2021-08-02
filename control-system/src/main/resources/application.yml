@@ -1,33 +1,3 @@
-server:
-  port: 9001
 spring:
-  application:
-    name: control-system
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://123.56.246.148:3306/zerotrust?characterEncoding=utf8
-    username: root
-    password: ustb_scce_lab202
-  redis:
-    host: localhost
-    port: 6379
-mybatis:
-  type-aliases-package: com.ustb.domain
-  configuration:
-    map-underscore-to-camel-case: true
-  mapper-locations: classpath:com/ustb/zerotrust/mapper/xml/*.xml # xml所在路径
-eureka:
-  client:
-    serviceUrl: # eureka server的路径
-      defaultZone: http://localhost:7001/eureka/
-  instance:
-    prefer-ip-address: true #使用ip注册
-feign:
-  client:
-    config:
-      default:
-        connectTimeout: 30000  #单位毫秒
-        readTimeout: 30000
-logging:
-  level:
-    com.ustb: debug
+  profiles:
+    active: dev
