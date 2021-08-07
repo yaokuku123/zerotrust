@@ -3,9 +3,6 @@ package com.ustb.zerotrust.util;
 import com.alibaba.fastjson.JSONObject;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
-import com.github.dockerjava.api.model.ExposedPort;
-import com.github.dockerjava.api.model.Info;
-import com.github.dockerjava.api.model.Ports;
 import com.github.dockerjava.core.DockerClientBuilder;
 
 
@@ -53,7 +50,7 @@ public class DockerClientUtils {
     }
 
     /**
-     * 启动容器
+     * 停止容器
      * @param client
      * @param containerId
      */
