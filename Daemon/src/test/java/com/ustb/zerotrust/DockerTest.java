@@ -97,4 +97,10 @@ public class DockerTest {
         }
     }
 
+    @Test
+    public void testDockerUtilsImageBuild() throws Exception {
+        DockerClientUtils dockerClientUtils = new DockerClientUtils();
+        dockerClientUtils.buildImage(dockerClient,"/Users/yorick/Documents/work/project/zerotrust/daemonFile/JAVA",9002,9002);
+    }
+
 }
