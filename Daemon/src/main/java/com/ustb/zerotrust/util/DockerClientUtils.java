@@ -15,9 +15,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -167,6 +165,29 @@ public class DockerClientUtils {
         File tarFile = CompressArchiveUtil.archiveTARFiles(baseDir, files, UUID.randomUUID().toString());
         String response = dockerfileBuild(dockerClient,new FileInputStream(tarFile),exposePort,bindPort);
         //System.out.println(response);
+    }
+
+    /**
+     * 构建Dockerfile
+     * @param softName
+     */
+    public void buildDockerfile(String softName){
+        String filePath = System.getProperty("user.dir") + "/daemonFile/";
+        String dockerImage = "FROM java:8 \nMAINTAINER yqj<yaoqijun@outlook.com> \n" +
+                "COPY "+softName+" /app.jar\nENTRYPOINT [\"java\",\"-jar\",\"/app.jar\"]";
+        BufferedWriter bw = null;
+        try {
+            bw = new BufferedWriter(new FileWriter(filePath+"Dockerfile"));
+            bw.write(dockerImage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                bw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void main(String[] args){

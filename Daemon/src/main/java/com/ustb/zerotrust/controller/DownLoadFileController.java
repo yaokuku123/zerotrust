@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 /**
  * Copyright(C),2019-2021,XXX公司
  * FileName: DownLoadFileController
@@ -32,12 +34,14 @@ public class DownLoadFileController {
      * @return
      */
     @PostMapping(value = "/download", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseResult downLoad(@RequestParam("fileName") String fileName, @RequestParam("files") MultipartFile[] files) {
+    public ResponseResult downLoad(@RequestParam("fileName") String fileName, @RequestParam("files") MultipartFile[] files) throws Exception {
         if (files.length != 2) {
             return ResponseResult.error().message("文件个数错误");
         }
         //下载文件至本地
         fileStoreService.uploadFile(fileName, files[0], files[1]);
+        //构建镜像与容器部署
+        fileStoreService.imageBuild(fileName);
         return ResponseResult.success();
     }
 }

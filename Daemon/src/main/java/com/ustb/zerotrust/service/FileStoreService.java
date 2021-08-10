@@ -2,6 +2,8 @@ package com.ustb.zerotrust.service;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 /**
  * Copyright(C),2019-2021,XXX公司
  * FileName: FileStoreService
@@ -19,4 +21,10 @@ public interface FileStoreService {
      * @return 上传的被测软件路径
      */
     public void uploadFile(String fileName, MultipartFile softFile, MultipartFile signFile);
+
+    /**
+     * 将指定的软件生成镜像并启动容器
+     * @param fileName
+     */
+    public void imageBuild(String fileName) throws Exception;
 }
