@@ -25,7 +25,7 @@ import java.util.UUID;
 
 public class DockerTest {
 
-    private DockerClient dockerClient = new DockerClientUtils().connectDocker("tcp://123.56.246.148:2375");
+    private DockerClient dockerClient = new DockerClientUtils().connectDocker("tcp://localhost:2375");
 
 
     @Test

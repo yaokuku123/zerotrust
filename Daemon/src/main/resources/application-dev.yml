@@ -30,4 +30,4 @@ logging:
     com.ustb: debug
 
 docker:
-  address: tcp://123.56.246.148:2375
+  address: tcp://localhost:2375

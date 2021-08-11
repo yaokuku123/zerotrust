@@ -173,7 +173,7 @@ public class DockerClientUtils {
      */
     public void buildDockerfile(String softName){
         String filePath = System.getProperty("user.dir") + "/daemonFile/";
-        String dockerImage = "FROM java:8 \nMAINTAINER yqj<yaoqijun@outlook.com> \n" +
+        String dockerImage = "FROM openjdk:8-slim \nMAINTAINER yqj<yaoqijun@outlook.com> \n" +
                 "COPY "+softName+" /app.jar\nENTRYPOINT [\"java\",\"-jar\",\"/app.jar\"]";
         BufferedWriter bw = null;
         try {
@@ -193,7 +193,7 @@ public class DockerClientUtils {
     public static void main(String[] args){
         DockerClientUtils dockerClientUtils =new DockerClientUtils();
         //连接Docker服务器
-        DockerClient client = dockerClientUtils.connectDocker("tcp://123.56.246.148:2375");
+        DockerClient client = dockerClientUtils.connectDocker("tcp://localhost:2375");
         //创建容器
         CreateContainerResponse container = dockerClientUtils.createContainers(client,"sny_hello","hello-world");
         //启动容器
