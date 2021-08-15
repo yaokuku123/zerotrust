@@ -1,0 +1,42 @@
+server:
+  port: 8082
+spring:
+  profiles: dev
+  application:
+    name: data-clean
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://39.102.37.27:3306/zerotrust?characterEncoding=utf8
+    username: root
+    password: 123456
+  redis:
+    host: localhost
+    port: 6379
+  servlet:
+    multipart:
+      enabled: true #是否启用http上传处理
+      max-request-size: 200MB #设置总上传文件的大小
+      max-file-size: 200MB #设置单个文件最大长度
+
+mybatis:
+  type-aliases-package: com.ustb.zerotrust.entity
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath:com/ustb/zerotrust/mapper/xml/*.xml # xml所在路径
+eureka:
+  client:
+    serviceUrl: # eureka server的路径
+      defaultZone: http://localhost:7001/eureka/
+  instance:
+    prefer-ip-address: true #使用ip注册
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 100000  #单位毫秒
+        readTimeout: 100000
+logging:
+  level:
+    com.ustb: debug
+
+chainobj.address: 1MwnMpYGXy5TKJHMqiDy6MXorkQ5Nh6UoWCFEs

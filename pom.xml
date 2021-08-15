@@ -17,6 +17,7 @@
         <module>control-system</module>
         <module>Daemon</module>
         <module>auth-server</module>
+        <module>data-clean</module>
     </modules>
     <packaging>pom</packaging>
 
