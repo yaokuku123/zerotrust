@@ -10,8 +10,8 @@
         insert into extract_data_copy values (#{id},#{govName},#{comName},#{monitorTime},#{serviceName},#{cloudIdCrypto},#{virtualName},#{ipCrypto},#{taijiCloudId})
     </insert>
     
-    <delete id="deleteOrigin" parameterType="Integer">
-        delete from taiji_cloud_copy where id=#{id}
+    <delete id="delete">
+        delete from extract_data_copy
     </delete>
 
 

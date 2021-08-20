@@ -14,5 +14,5 @@ public interface ExtractDataService {
 
     void ExtractAsView(ExtractData extractData);
 
-    void deleteOrigin(Integer id);
+    void delete();
 }

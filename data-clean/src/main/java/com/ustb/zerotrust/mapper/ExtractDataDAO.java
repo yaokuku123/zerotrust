@@ -18,8 +18,8 @@ public interface ExtractDataDAO {
     //抽取字段作为view视图
     void ExtractAsView(ExtractData extractData);
 
-    //delete抽取之后原数据
-    void deleteOrigin(Integer id);
+    //delete
+    void delete();
 
 
 

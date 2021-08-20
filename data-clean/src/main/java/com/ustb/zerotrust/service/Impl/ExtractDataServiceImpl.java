@@ -30,7 +30,7 @@ public class ExtractDataServiceImpl implements ExtractDataService {
     }
 
     @Override
-    public void deleteOrigin(Integer id) {
-        extractDataDAO.deleteOrigin(id);
+    public void delete() {
+        extractDataDAO.delete();
     }
 }

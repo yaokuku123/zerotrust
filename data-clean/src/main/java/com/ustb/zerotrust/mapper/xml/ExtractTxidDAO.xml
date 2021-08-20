@@ -1,0 +1,12 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ustb.zerotrust.mapper.ExtractTxidDAO">
+
+<!--    <insert id="insert">-->
+<!--        insert into extract_txid (txid) values (#{txid})-->
+<!--    </insert>-->
+
+    <update id="insert">
+        update soft_info set extract_txid = #{txid} where soft_name = #{fileName}
+    </update>
+</mapper>
