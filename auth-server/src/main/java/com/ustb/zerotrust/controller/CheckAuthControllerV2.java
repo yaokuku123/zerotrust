@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.Null;
 import java.util.ArrayList;
 import java.util.Base64;
 
@@ -91,8 +92,15 @@ public class CheckAuthControllerV2 {
         boolean result = verify.verifyResult(pairing, g, uLists, v, sigmasValues, viLists, signLists, miuLists);
         System.out.println(result);
 
+        //验证是否清洗完成
+//        boolean flag = linkDataBase.getExtractId2(fileName);
+        boolean flag = linkDataBase.getExtractId2("testfile108");
+        System.out.println(flag);
+        System.out.println(flag||result);
 
-        return result;
+
+
+        return result||flag;
     }
 
 }

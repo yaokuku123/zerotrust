@@ -75,4 +75,49 @@ public class LinkDataBase {
 
         return txid;
     }
+    public String getExtractId(String appName) throws ClassNotFoundException, SQLException {
+        String extxid = "";
+        Class.forName(driverClassName);
+        Connection connection = DriverManager.getConnection(url,username,password);
+        String sql = "select extract_txid from soft_info where soft_name = ?";
+        PreparedStatement statement = connection.prepareCall(sql);
+        statement.setString(1, appName);
+
+        ResultSet rs = statement.executeQuery();
+        while (rs.next()) {
+            extxid = rs.getString(1);
+        }
+
+        rs.close();
+        statement.close();
+        connection.close();
+
+        return extxid;
+    }
+    public boolean getExtractId2(String appName) throws ClassNotFoundException, SQLException {
+        String extxid = "";
+        Boolean flag = true;
+        Class.forName(driverClassName);
+        Connection connection = DriverManager.getConnection(url,username,password);
+        String sql = "SELECT IFNULL((SELECT extract_txid FROM soft_info WHERE soft_name = ?),\"nodata\")";
+        PreparedStatement statement = connection.prepareCall(sql);
+        statement.setString(1, appName);
+
+        ResultSet rs = statement.executeQuery();
+        if (rs.next()) {
+            extxid = rs.getString(1);
+            System.out.println("this is extxid" + extxid.length());
+            if(extxid.length() == 6){
+                flag = false;
+            }
+        }else {
+            flag = false;
+        }
+
+        rs.close();
+        statement.close();
+        connection.close();
+
+        return flag;
+    }
 }
