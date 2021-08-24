@@ -5,7 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.ustb.zerotrust.BlindVerify.Verify;
 import com.ustb.zerotrust.domain.PublicKey;
 import com.ustb.zerotrust.domain.QueryParam;
+import com.ustb.zerotrust.domain.ResponseResult;
 import com.ustb.zerotrust.domain.vo.QueryParamString;
+import com.ustb.zerotrust.service.impl.CleanInfoVo;
 import com.ustb.zerotrust.mapper.LinkDataBase;
 import com.ustb.zerotrust.service.DaemonClient;
 import com.ustb.zerotrust.service.impl.ChainService;
@@ -22,8 +24,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Null;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author WYP
@@ -43,6 +48,10 @@ public class CheckAuthControllerV2 {
     @Autowired
     private LinkDataBase linkDataBase;
 
+    @Autowired
+    private CleanInfoVo cleanInfoVo;
+
+
 
     /**
      * 查询验证是否通过
@@ -50,7 +59,7 @@ public class CheckAuthControllerV2 {
      * @return 是否通过
      */
     @GetMapping("/resultV2")
-    public boolean checkResult(String fileName) throws Exception {
+    public CleanInfoVo checkResult(String fileName) throws Exception {
 
         //从链上获取参数
         String txid = linkDataBase.getTxidV2(fileName);
@@ -91,16 +100,30 @@ public class CheckAuthControllerV2 {
         Verify verify = new Verify();
         boolean result = verify.verifyResult(pairing, g, uLists, v, sigmasValues, viLists, signLists, miuLists);
         System.out.println(result);
+//        CleanInfoVo cleanInfoVo = new CleanInfoVo();
+        cleanInfoVo.setSoftflag(result);
+
 
         //验证是否清洗完成
-//        boolean flag = linkDataBase.getExtractId2(fileName);
-        boolean flag = linkDataBase.getExtractId2("testfile108");
+        boolean flag = linkDataBase.getExtractId2(fileName);
+        cleanInfoVo.setCleanflag(flag);
+
+        String obtxid = linkDataBase.getObtxid(1);
+        cleanInfoVo.setObtxid(obtxid);
+
+
         System.out.println(flag);
-        System.out.println(flag||result);
+        System.out.println(flag&&result);
 
+        return cleanInfoVo;
+    }
+    @GetMapping("/getObtxid")
+    public ResponseResult getObtxid(int id) throws SQLException, ClassNotFoundException {
+        String Obtxid = linkDataBase.getObtxid(id);
+        cleanInfoVo.setObtxid(Obtxid);
+        System.out.println(cleanInfoVo.isSoftflag());
 
-
-        return result||flag;
+        return ResponseResult.success().data("cleaninfo",cleanInfoVo);
     }
 
 }

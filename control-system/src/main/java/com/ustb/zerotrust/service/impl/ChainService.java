@@ -40,11 +40,11 @@ public class ChainService {
         return null;
     }
 
-    public boolean verifyTxid(String ownerTxid, String objTxid) throws ShellChainException {
+    public boolean verifyTxid(String ownerTxid, String objTxid, String action) throws ShellChainException {
         Boolean flag = false;
         shellChainCommand = new ShellChainCommand(loadShellchainConfig("REQ"));
         String reqTxid = "";
-        reqTxid = (String) shellChainCommand.getIssueCommand().accessRequest(ownerTxid,objTxid,"");
+        reqTxid = (String) shellChainCommand.getIssueCommand().accessRequest(ownerTxid,objTxid,action);
         String res = (String) shellChainCommand.getIssueCommand()
                 .getRawTransaction(reqTxid);
         JSONObject jsonObject = JSONObject.parseObject(res);

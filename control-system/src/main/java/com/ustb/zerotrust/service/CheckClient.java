@@ -1,5 +1,6 @@
 package com.ustb.zerotrust.service;
 
+import com.ustb.zerotrust.domain.CleanInfoVo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.Mapping;
@@ -22,5 +23,5 @@ public interface CheckClient {
     public boolean checkResult(@RequestParam("fileName") String fileName);
 
     @GetMapping("/check/resultV2")
-    public boolean checkResultV2(@RequestParam("fileName") String fileName);
+    public CleanInfoVo checkResultV2(@RequestParam("fileName") String fileName);
 }

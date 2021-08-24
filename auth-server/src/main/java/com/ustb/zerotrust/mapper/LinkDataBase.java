@@ -55,6 +55,25 @@ public class LinkDataBase {
 
         return txid;
     }
+    public String getObtxid(int id) throws ClassNotFoundException, SQLException {
+        String txid = "";
+        Class.forName(driverClassName);
+        Connection connection = DriverManager.getConnection(url,username,password);
+        String sql = "select obtxid from obtxid_table where id = ?";
+        PreparedStatement statement = connection.prepareCall(sql);
+        statement.setInt(1, id);
+
+        ResultSet rs = statement.executeQuery();
+        while (rs.next()) {
+            txid = rs.getString(1);
+        }
+
+        rs.close();
+        statement.close();
+        connection.close();
+
+        return txid;
+    }
 
     public String getTxidV2(String appName) throws ClassNotFoundException, SQLException {
         String txid = "";
@@ -106,7 +125,6 @@ public class LinkDataBase {
         ResultSet rs = statement.executeQuery();
         if (rs.next()) {
             extxid = rs.getString(1);
-            System.out.println("this is extxid" + extxid.length());
             if(extxid.length() == 6){
                 flag = false;
             }
