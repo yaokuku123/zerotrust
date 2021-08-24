@@ -57,8 +57,8 @@ public class ExtractDataController {
             extractData.setIpCrypto(MD5Utils.generate(extractData.getIpCrypto()));
             extractData.setTaijiCloudId(extractData.getId());
             extractDataService.ExtractAsView(extractData);
-
         }
+        // 实时清理过程 多个数据库做清理    数据的混杂
 
         // record
         HashMap<String, Object> attributes = new HashMap<>();
