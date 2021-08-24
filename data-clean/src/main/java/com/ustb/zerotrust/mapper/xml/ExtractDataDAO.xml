@@ -3,15 +3,15 @@
 <mapper namespace="com.ustb.zerotrust.mapper.ExtractDataDAO">
 
     <select id="findAll" resultType="ExtractData">
-        select id,gov_name,com_name,monitor_time,service_name,cloud_id as cloud_id_crypto,virtual_name,ip as ip_crypto from taiji_cloud_copy
+        select id,gov_name,com_name,monitor_time,service_name,cloud_id as cloud_id_crypto,virtual_name,ip as ip_crypto from taiji_cloud
     </select>
 
     <insert id="ExtractAsView" parameterType="ExtractData">
-        insert into extract_data_copy values (#{id},#{govName},#{comName},#{monitorTime},#{serviceName},#{cloudIdCrypto},#{virtualName},#{ipCrypto},#{taijiCloudId})
+        insert into extract_data values (#{id},#{govName},#{comName},#{monitorTime},#{serviceName},#{cloudIdCrypto},#{virtualName},#{ipCrypto},#{taijiCloudId})
     </insert>
     
     <delete id="delete">
-        delete from extract_data_copy
+        delete from extract_data
     </delete>
 
 
