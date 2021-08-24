@@ -1,5 +1,6 @@
 package com.ustb.zerotrust.controller;
 
+import com.ustb.zerotrust.domain.CleanInfoVo;
 import com.ustb.zerotrust.domain.RequestGrant;
 import com.ustb.zerotrust.domain.ResponseResult;
 import com.ustb.zerotrust.service.CheckClient;
@@ -31,8 +32,8 @@ public class AuthControllerV2 {
     public ResponseResult Verify(@RequestBody RequestGrant requestGrant){
         //System.out.println(requestGrant);
         // 根据用户请求信息，监管平台进行验证处理
-        boolean flag = checkClient.checkResultV2(requestGrant.getSoftName());
+        CleanInfoVo res = checkClient.checkResultV2(requestGrant.getSoftName());
 
-        return ResponseResult.success().data("flag",flag);
+        return ResponseResult.success().data("flag",res);
     }
 }

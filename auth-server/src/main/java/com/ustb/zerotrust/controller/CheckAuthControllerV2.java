@@ -59,7 +59,7 @@ public class CheckAuthControllerV2 {
      * @return 是否通过
      */
     @GetMapping("/resultV2")
-    public boolean checkResult(String fileName) throws Exception {
+    public CleanInfoVo checkResult(String fileName) throws Exception {
 
         //从链上获取参数
         String txid = linkDataBase.getTxidV2(fileName);
@@ -108,13 +108,14 @@ public class CheckAuthControllerV2 {
         boolean flag = linkDataBase.getExtractId2(fileName);
         cleanInfoVo.setCleanflag(flag);
 
+        String obtxid = linkDataBase.getObtxid(1);
+        cleanInfoVo.setObtxid(obtxid);
+
 
         System.out.println(flag);
         System.out.println(flag&&result);
 
-
-
-        return result&&flag;
+        return cleanInfoVo;
     }
     @GetMapping("/getObtxid")
     public ResponseResult getObtxid(int id) throws SQLException, ClassNotFoundException {
