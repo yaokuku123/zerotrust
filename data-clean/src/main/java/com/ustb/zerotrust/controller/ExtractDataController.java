@@ -68,6 +68,6 @@ public class ExtractDataController {
         logger.info("txid为：{}",txid);
         extractTxidService.insert(txid,fileName);
 
-        return ResponseResult.success().data("ExtractData",extractDataList);
+        return ResponseResult.success();
     }
 }

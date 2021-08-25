@@ -7,7 +7,7 @@
     </select>
 
     <insert id="ExtractAsView" parameterType="ExtractData">
-        insert into extract_data values (#{id},#{govName},#{comName},#{monitorTime},#{serviceName},#{cloudIdCrypto},#{virtualName},#{ipCrypto},#{taijiCloudId})
+        insert into extract_data(gov_name,com_name,monitor_time,service_name,cloud_id_crypto,virtual_name,ip_crypto,taiji_cloud_id) values (#{govName},#{comName},#{monitorTime},#{serviceName},#{cloudIdCrypto},#{virtualName},#{ipCrypto},#{taijiCloudId})
     </insert>
     
     <delete id="delete">
