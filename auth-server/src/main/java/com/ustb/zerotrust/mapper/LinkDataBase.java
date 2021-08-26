@@ -55,13 +55,13 @@ public class LinkDataBase {
 
         return txid;
     }
-    public String getObtxid(int id) throws ClassNotFoundException, SQLException {
+    public String getObtxid(String resource) throws ClassNotFoundException, SQLException {
         String txid = "";
         Class.forName(driverClassName);
         Connection connection = DriverManager.getConnection(url,username,password);
-        String sql = "select obtxid from obtxid_table where id = ?";
+        String sql = "select obtxid from obtxid_table where resource = ?";
         PreparedStatement statement = connection.prepareCall(sql);
-        statement.setInt(1, id);
+        statement.setString(1,resource);
 
         ResultSet rs = statement.executeQuery();
         while (rs.next()) {
