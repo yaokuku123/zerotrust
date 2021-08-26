@@ -20,5 +20,7 @@ public class RequestGrant implements Serializable {
     private String softName;
     private String action;
     private String useTime;
-    private String userName;
+    private String resource;
+    private String subjectId;
+    private String method;
 }

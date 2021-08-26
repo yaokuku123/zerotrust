@@ -7,7 +7,7 @@ import com.ustb.zerotrust.domain.PublicKey;
 import com.ustb.zerotrust.domain.QueryParam;
 import com.ustb.zerotrust.domain.ResponseResult;
 import com.ustb.zerotrust.domain.vo.QueryParamString;
-import com.ustb.zerotrust.entity.VerifyInfoVo;
+import com.ustb.zerotrust.domain.VerifyInfoVo;
 import com.ustb.zerotrust.mapper.LinkDataBase;
 import com.ustb.zerotrust.service.DaemonClient;
 import com.ustb.zerotrust.service.impl.ChainService;

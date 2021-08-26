@@ -1,4 +1,4 @@
-package com.ustb.zerotrust.entity;
+package com.ustb.zerotrust.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
