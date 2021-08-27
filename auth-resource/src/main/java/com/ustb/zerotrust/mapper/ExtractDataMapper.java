@@ -2,6 +2,8 @@ package com.ustb.zerotrust.mapper;
 
 import com.ustb.zerotrust.domain.ExtractData;
 
+import java.util.List;
+
 public interface ExtractDataMapper {
 
     /**
@@ -24,6 +26,12 @@ public interface ExtractDataMapper {
      * @return 是否删除成功
      */
     public Boolean deleteData(int id);
+
+    /**
+     * 获取全部数据
+     * @return
+     */
+    public List<ExtractData> selectAll();
 
 
 }

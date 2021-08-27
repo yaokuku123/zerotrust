@@ -14,4 +14,8 @@
         delete from extract_data where id=#{id}
     </delete>
 
+    <select id="selectAll" resultType="com.ustb.zerotrust.domain.ExtractData">
+        select * from extract_data
+    </select>
+
 </mapper>

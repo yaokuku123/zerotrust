@@ -7,6 +7,8 @@ import com.ustb.zerotrust.service.ExtractDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ExtractDataServiceImpl implements ExtractDataService {
 
@@ -30,5 +32,10 @@ public class ExtractDataServiceImpl implements ExtractDataService {
     public Boolean deleteData(int id) {
         return taijiDataMapper.deleteTaijiData(extractDataMapper.selectDataById(id).getTaijiCloudId())
                         && extractDataMapper.deleteData(id);
+    }
+
+    @Override
+    public List<ExtractData> selectAll() {
+        return extractDataMapper.selectAll();
     }
 }

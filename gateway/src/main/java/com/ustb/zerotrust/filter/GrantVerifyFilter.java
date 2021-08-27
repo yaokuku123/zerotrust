@@ -2,6 +2,7 @@ package com.ustb.zerotrust.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ustb.zerotrust.domain.*;
+import com.ustb.zerotrust.service.DataCleanFeignClient;
 import com.ustb.zerotrust.service.GrantFeignClient;
 import com.ustb.zerotrust.utils.JsonUtils;
 import com.ustb.zerotrust.utils.JwtUtils;
@@ -38,6 +39,9 @@ public class GrantVerifyFilter implements GlobalFilter, Ordered {
     @Autowired
     private GrantFeignClient grantFeignClient;
 
+    @Autowired
+    private DataCleanFeignClient dataCleanFeignClient;
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
@@ -51,49 +55,56 @@ public class GrantVerifyFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange);
         }
 
-        if ("POST".equals(method)) {
-            return DataBufferUtils.join(exchange.getRequest().getBody())
-                    .flatMap(dataBuffer -> {
-                        byte[] bytes = new byte[dataBuffer.readableByteCount()];
-                        dataBuffer.read(bytes);
-                        try {
-                            //获取请求体的json数据
-                            String bodyString = new String(bytes, "utf-8");
-                            //将json数据转换为自定义请求对象格式
-                            RequestGrant requestGrant = new ObjectMapper().readValue(bodyString, RequestGrant.class);
-                            //远程调用监控平台
-                            ResponseResult grantResult = grantFeignClient.Verify(requestGrant);
-                            System.out.println(grantResult.getData().get("flag"));
-                            if ((Boolean) grantResult.getData().get("flag")) {
-                                exchange.getAttributes().put("POST_BODY", bodyString);
-                            }else {
-                                //failjson return
-                                return getVoidMono(response);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
+
+        return DataBufferUtils.join(exchange.getRequest().getBody())
+                .flatMap(dataBuffer -> {
+                    byte[] bytes = new byte[dataBuffer.readableByteCount()];
+                    dataBuffer.read(bytes);
+                    try {
+                        //获取请求体的json数据
+                        String bodyString = new String(bytes, "utf-8");
+                        //将json数据转换为自定义请求对象格式
+                        RequestGrant requestGrant = new ObjectMapper().readValue(bodyString, RequestGrant.class);
+                        //清洗数据
+                        ResponseResult dataCleanResult = dataCleanFeignClient.findExtractData(requestGrant.getSoftName());
+                        System.out.println(dataCleanResult.getSuccess());
+                        if (dataCleanResult.getSuccess()){
+                            exchange.getAttributes().put("POST_BODY", bodyString);
+                        }else {
+                            return getVoidMono(response);
+                        }
+                        //远程调用监控平台
+                        ResponseResult grantResult = grantFeignClient.Verify(requestGrant);
+                        System.out.println(grantResult.getData().get("flag"));
+                        if ((Boolean) grantResult.getData().get("flag")) {
+                            exchange.getAttributes().put("POST_BODY", bodyString);
+                        }else {
                             //failjson return
                             return getVoidMono(response);
                         }
-                        DataBufferUtils.release(dataBuffer);
-                        Flux<DataBuffer> cachedFlux = Flux.defer(() -> {
-                            DataBuffer buffer = exchange.getResponse().bufferFactory()
-                                    .wrap(bytes);
-                            return Mono.just(buffer);
-                        });
-
-                        ServerHttpRequest mutatedRequest = new ServerHttpRequestDecorator(
-                                exchange.getRequest()) {
-                            @Override
-                            public Flux<DataBuffer> getBody() {
-                                return cachedFlux;
-                            }
-                        };
-                        return chain.filter(exchange.mutate().request(mutatedRequest)
-                                .build());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        //failjson return
+                        return getVoidMono(response);
+                    }
+                    DataBufferUtils.release(dataBuffer);
+                    Flux<DataBuffer> cachedFlux = Flux.defer(() -> {
+                        DataBuffer buffer = exchange.getResponse().bufferFactory()
+                                .wrap(bytes);
+                        return Mono.just(buffer);
                     });
-        }
-        return chain.filter(exchange);
+
+                    ServerHttpRequest mutatedRequest = new ServerHttpRequestDecorator(
+                            exchange.getRequest()) {
+                        @Override
+                        public Flux<DataBuffer> getBody() {
+                            return cachedFlux;
+                        }
+                    };
+                    return chain.filter(exchange.mutate().request(mutatedRequest)
+                            .build());
+                });
+
     }
 
     @Override

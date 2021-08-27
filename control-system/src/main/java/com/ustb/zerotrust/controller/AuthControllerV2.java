@@ -41,7 +41,7 @@ public class AuthControllerV2 {
         VerifyInfoVo res = mapper.convertValue(responseResult.getData().get("verifyInfoVo"), VerifyInfoVo.class);
         ChainService chainService = new ChainService();
         flag = chainService.verifyTxid(requestGrant.getSubjectId(), res.getObtxid(), requestGrant.getMethod());
-
+        System.out.println("cleanflag: "+ res.isCleanflag() + " softflag: "+ res.isSoftflag() + " policyflag: "+ flag);
         return ResponseResult.success().data("flag",res.isCleanflag()&&res.isSoftflag()&&flag);
 
     }

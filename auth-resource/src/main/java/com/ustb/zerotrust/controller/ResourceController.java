@@ -8,6 +8,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/resource")
 public class ResourceController {
@@ -46,6 +48,12 @@ public class ResourceController {
             return ResponseResult.success();
         }
         return ResponseResult.error();
+    }
+
+    @GetMapping("/findAll")
+    public ResponseResult findAll(){
+        List<ExtractData> extractData = extractDataService.selectAll();
+        return ResponseResult.success().data("extractData",extractData);
     }
 
 }

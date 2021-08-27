@@ -2,6 +2,8 @@ package com.ustb.zerotrust.service;
 
 import com.ustb.zerotrust.domain.ExtractData;
 
+import java.util.List;
+
 public interface ExtractDataService {
 
     /**
@@ -18,5 +20,11 @@ public interface ExtractDataService {
      * 删除数据
      */
     public Boolean deleteData(int id);
+
+    /**
+     * 获取全部数据
+     * @return
+     */
+    public List<ExtractData> selectAll();
 
 }
