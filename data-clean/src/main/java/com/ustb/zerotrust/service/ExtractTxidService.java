@@ -7,4 +7,6 @@ package com.ustb.zerotrust.service;
 public interface ExtractTxidService {
 
     void insert(String txid,String fileName);
+
+    void insertRes(String txid,String fileName);
 }

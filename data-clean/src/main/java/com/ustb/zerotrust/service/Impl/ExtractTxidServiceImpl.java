@@ -27,4 +27,9 @@ public class ExtractTxidServiceImpl implements ExtractTxidService {
     public void insert(String txid, String fileName) {
         extractTxidDAO.insert(txid,fileName);
     }
+
+    @Override
+    public void insertRes(String txid, String fileName) {
+        extractTxidDAO.insertRes(txid,fileName);
+    }
 }

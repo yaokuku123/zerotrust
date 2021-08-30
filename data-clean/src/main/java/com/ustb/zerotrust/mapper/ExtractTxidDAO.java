@@ -11,4 +11,6 @@ public interface ExtractTxidDAO {
 
     // extract_id
     void insert(String txid,String fileName);
+
+    void insertRes(String txid,String fileName);
 }

@@ -9,4 +9,8 @@
     <update id="insert">
         update soft_info set extract_txid = #{txid} where soft_name = #{fileName}
     </update>
+
+    <update id="insertRes">
+        update soft_info set resource_txid = #{txid} where soft_name = #{fileName}
+    </update>
 </mapper>
