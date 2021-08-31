@@ -6,8 +6,25 @@
     </select>
 
     <update id="updateDate" parameterType="com.ustb.zerotrust.domain.ExtractData">
-         update extract_data set gov_name=#{govName}, com_name=#{comName},monitor_time=#{monitorTime},
-                    service_name=#{serviceName},virtual_name=#{virtualName} where id=#{id};
+         update extract_data
+         <set>
+             <if test="govName!=null">
+                 gov_name=#{govName},
+             </if>
+             <if test="comName!=null">
+                 com_name=#{comName},
+             </if>
+             <if test="monitorTime!=null">
+                 monitor_time=#{monitorTime},
+             </if>
+             <if test="serviceName!=null">
+                 service_name=#{serviceName},
+             </if>
+             <if test="virtualName!=null">
+                 virtual_name=#{virtualName}
+             </if>
+         </set>
+         where id=#{id};
     </update>
 
     <delete id="deleteData">

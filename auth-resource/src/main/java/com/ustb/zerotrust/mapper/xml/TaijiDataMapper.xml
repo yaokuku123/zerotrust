@@ -3,8 +3,25 @@
 
 
     <update id="updateTaijiData" parameterType="com.ustb.zerotrust.domain.ExtractData">
-         update taiji_cloud set gov_name=#{govName}, com_name=#{comName},monitor_time=#{monitorTime},
-                    service_name=#{serviceName},virtual_name=#{virtualName} where id=#{taijiCloudId};
+         update taiji_cloud
+         <set>
+            <if test="govName!=null">
+                gov_name=#{govName},
+            </if>
+            <if test="comName!=null">
+                com_name=#{comName},
+            </if>
+            <if test="monitorTime!=null">
+                monitor_time=#{monitorTime},
+            </if>
+            <if test="serviceName!=null">
+                service_name=#{serviceName},
+            </if>
+            <if test="virtualName!=null">
+                virtual_name=#{virtualName}
+            </if>
+         </set>
+         where id=#{taijiCloudId};
     </update>
 
     <delete id="deleteTaijiData">
