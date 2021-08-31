@@ -43,5 +43,15 @@ public class ExtractTxidServiceImpl implements ExtractTxidService {
         extractTxidDAO.insertViewTxid(softName,viewTxid);
     }
 
+    @Override
+    public String getViewTxid(String softName) {
+        return extractTxidDAO.getViewTxid(softName);
+    }
+
+    @Override
+    public void insertReviewTxid(String softName, String reviewTxid) {
+        extractTxidDAO.insertReviewTxid(softName,reviewTxid);
+    }
+
 
 }

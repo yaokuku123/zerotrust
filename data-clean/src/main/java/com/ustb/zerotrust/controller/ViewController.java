@@ -52,7 +52,6 @@ public class ViewController {
      */
     @PostMapping("/dataCleanMethod")
     public ResponseResult dataCleanMethod(@RequestBody FieldCleanRule fieldCleanRule) throws ShellChainException, SQLException, ClassNotFoundException {
-        System.out.println(fieldCleanRule);
         HashMap<String, Object> attributes = new HashMap<>();
         attributes.put("userSafeLevel",fieldCleanRule.getUserSafeLevel());
         attributes.put("fieldInfoWithCleanMethodList",fieldCleanRule.getFieldInfoWithCleanMethodList());

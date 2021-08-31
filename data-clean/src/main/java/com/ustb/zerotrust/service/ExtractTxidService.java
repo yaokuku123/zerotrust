@@ -23,4 +23,18 @@ public interface ExtractTxidService {
      * @param viewTxid viewTxid交易
      */
     void insertViewTxid(String softName,String viewTxid);
+
+    /**
+     * 根据软件名称获取到清洗规则的客体链交易txid
+     * @param softName 软件名称
+     * @return 交易id
+     */
+    String getViewTxid(String softName);
+
+    /**
+     * 向软件信息表中记录reviewTxid
+     * @param softName 软件名称
+     * @param reviewTxid reviewTxid交易
+     */
+    void insertReviewTxid(String softName,String reviewTxid);
 }

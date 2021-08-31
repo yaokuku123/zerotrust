@@ -28,4 +28,18 @@ public interface ExtractTxidDAO {
      * @param viewTxid viewTxid交易
      */
     void insertViewTxid(@Param("softName") String softName, @Param("viewTxid") String viewTxid);
+
+    /**
+     * 根据软件名称获取到清洗规则的客体链交易txid
+     * @param softName 软件名称
+     * @return 交易id
+     */
+    String getViewTxid(String softName);
+
+    /**
+     * 向软件信息表中记录reviewTxid
+     * @param softName 软件名称
+     * @param reviewTxid reviewTxid交易
+     */
+    void insertReviewTxid(@Param("softName") String softName, @Param("reviewTxid") String reviewTxid);
 }

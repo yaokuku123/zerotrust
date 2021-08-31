@@ -21,4 +21,12 @@
     <update id="insertViewTxid">
         update soft_info set view_txid = #{viewTxid} where soft_name = #{softName}
     </update>
+
+    <select id="getViewTxid" resultType="String">
+        select view_txid from soft_info where soft_name=#{softName}
+    </select>
+
+    <update id="insertReviewTxid">
+        update soft_info set review_txid = #{reviewTxid} where soft_name = #{softName}
+    </update>
 </mapper>
