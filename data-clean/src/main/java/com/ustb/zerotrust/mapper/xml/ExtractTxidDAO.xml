@@ -13,4 +13,12 @@
     <update id="insertRes">
         update soft_info set resource_txid = #{txid} where soft_name = #{fileName}
     </update>
+
+    <select id="getResourceTxid" resultType="String">
+        select resource_txid from soft_info where soft_name=#{softName}
+    </select>
+
+    <update id="insertViewTxid">
+        update soft_info set view_txid = #{viewTxid} where soft_name = #{softName}
+    </update>
 </mapper>

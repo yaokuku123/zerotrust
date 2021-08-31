@@ -32,4 +32,16 @@ public class ExtractTxidServiceImpl implements ExtractTxidService {
     public void insertRes(String txid, String fileName) {
         extractTxidDAO.insertRes(txid,fileName);
     }
+
+    @Override
+    public String getResourceTxid(String softName) {
+        return extractTxidDAO.getResourceTxid(softName);
+    }
+
+    @Override
+    public void insertViewTxid(String softName, String viewTxid) {
+        extractTxidDAO.insertViewTxid(softName,viewTxid);
+    }
+
+
 }

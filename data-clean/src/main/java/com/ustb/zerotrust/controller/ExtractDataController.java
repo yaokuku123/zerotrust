@@ -17,10 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.sql.SQLException;
@@ -33,6 +30,7 @@ import java.util.Map;
  * @date 2021-08-15 21:16
  */
 @RestController
+@CrossOrigin
 public class ExtractDataController {
 
     @Resource
@@ -103,8 +101,7 @@ public class ExtractDataController {
 
         extractTxidService.insertRes(txid,fileName);
 
-
-        return ResponseResult.success().data("fieldInfos",fieldInfos).data("txid",txid);
+        return ResponseResult.success();
     }
 
 

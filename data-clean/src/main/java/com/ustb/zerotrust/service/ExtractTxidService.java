@@ -9,4 +9,18 @@ public interface ExtractTxidService {
     void insert(String txid,String fileName);
 
     void insertRes(String txid,String fileName);
+
+    /**
+     * 根据软件名称获取源数据字段的交易id
+     * @param softName 软件名称
+     * @return
+     */
+    String getResourceTxid(String softName);
+
+    /**
+     * 向软件信息表中记录viewTxid
+     * @param softName 软件名称
+     * @param viewTxid viewTxid交易
+     */
+    void insertViewTxid(String softName,String viewTxid);
 }
