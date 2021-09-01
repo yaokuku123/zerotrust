@@ -39,10 +39,11 @@ public class ReviewController {
     public ResponseResult getCleanFields(String softName) throws ShellChainException {
         String viewTxid = extractTxidService.getViewTxid(softName);
         JSONObject jsonObject = JSONObject.parseObject(chainService.getFromObj(viewTxid));
+        String tableName = jsonObject.get("tableName").toString();
         Integer userSafeLevel = Double.valueOf(String.valueOf(jsonObject.get("userSafeLevel").toString())).intValue();
         String fieldInfoWithCleanMethodListStr = jsonObject.get("fieldInfoWithCleanMethodList").toString();
         List<FieldInfoWithCleanMethod> fieldInfoWithCleanMethodList = JSONObject.parseArray(fieldInfoWithCleanMethodListStr, FieldInfoWithCleanMethod.class);
-        return ResponseResult.success().data("userSafeLevel",userSafeLevel).data("fieldInfoWithCleanMethodList",fieldInfoWithCleanMethodList);
+        return ResponseResult.success().data("userSafeLevel",userSafeLevel).data("tableName",tableName).data("fieldInfoWithCleanMethodList",fieldInfoWithCleanMethodList);
     }
 
     /**
@@ -57,6 +58,7 @@ public class ReviewController {
     public ResponseResult verifyResult(@RequestBody VerifyResult verifyResult) throws ShellChainException, SQLException, ClassNotFoundException {
         HashMap<String, Object> attributes = new HashMap<>();
         attributes.put("result",verifyResult.getResult());
+        attributes.put("tableName",verifyResult.getTableName());
         attributes.put("fieldInfoWithCleanMethodList",verifyResult.getFieldInfoWithCleanMethodList());
         attributes.put("createTime",System.currentTimeMillis());
         String reviewTxid = chainService.send2Obj(chainObjAddresses, 0, attributes);
