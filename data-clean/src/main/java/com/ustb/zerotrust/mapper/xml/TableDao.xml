@@ -2,7 +2,7 @@
 
 
 <mapper namespace="com.ustb.zerotrust.mapper.TableDao">
-
+    <!--COLUMN_NAME-->
     <select id="listTableColumn" resultType="map">
         select COLUMN_NAME from information_schema.COLUMNS where TABLE_SCHEMA = (select database()) and TABLE_NAME=#{tableName}
     </select>

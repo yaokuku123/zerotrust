@@ -37,4 +37,6 @@ public interface ExtractTxidService {
      * @param reviewTxid reviewTxid交易
      */
     void insertReviewTxid(String softName,String reviewTxid);
+
+    String getReviewTxid(String fileName);
 }

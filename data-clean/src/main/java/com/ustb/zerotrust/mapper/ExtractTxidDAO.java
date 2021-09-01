@@ -42,4 +42,7 @@ public interface ExtractTxidDAO {
      * @param reviewTxid reviewTxid交易
      */
     void insertReviewTxid(@Param("softName") String softName, @Param("reviewTxid") String reviewTxid);
+
+    // 获取getReviewTxid
+    String getReviewTxid(String fileName);
 }

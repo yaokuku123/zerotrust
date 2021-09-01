@@ -29,4 +29,8 @@
     <update id="insertReviewTxid">
         update soft_info set review_txid = #{reviewTxid} where soft_name = #{softName}
     </update>
+
+    <select id="getReviewTxid" resultType="String">
+        select review_txid from soft_info where soft_name=#{fileName}
+    </select>
 </mapper>

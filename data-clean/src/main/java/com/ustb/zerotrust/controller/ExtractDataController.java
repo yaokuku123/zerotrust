@@ -2,9 +2,11 @@ package com.ustb.zerotrust.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.ustb.zerotrust.domain.ResponseResult;
 import com.ustb.zerotrust.entity.ExtractData;
 import com.ustb.zerotrust.entity.FieldInfo;
+import com.ustb.zerotrust.entity.FieldInfoWithCleanMethod;
 import com.ustb.zerotrust.mapper.LinkDataBase;
 import com.ustb.zerotrust.mapper.TableDao;
 import com.ustb.zerotrust.service.ChainService;
@@ -38,6 +40,9 @@ public class ExtractDataController {
 
     @Resource
     private TableService tableService;
+
+    @Resource
+    private TableDao tableDao;
 
     @Autowired
     private ChainService chainService;
@@ -85,7 +90,11 @@ public class ExtractDataController {
     public ResponseResult dataFiledView(String tableName){
 
         List<String> columnList = tableService.listTableColumn(tableName);
-        return ResponseResult.success().data("info",columnList);
+
+//        List<Map> maps = tableDao.listTableColumn(tableName);
+//        return ResponseResult.success().data("info",maps);
+
+       return ResponseResult.success().data("info",columnList);
     }
 
     @PostMapping("/fieldRecord")
@@ -102,6 +111,34 @@ public class ExtractDataController {
         extractTxidService.insertRes(txid,fileName);
 
         return ResponseResult.success();
+    }
+
+    //清洗方法 hashClean   saltClean
+
+    @PostMapping("/extractDataV2")
+    public ResponseResult extractData(String fileName) throws ShellChainException {
+
+        String reviewTxid = extractTxidService.getReviewTxid(fileName);
+        String verifyResult = chainService.getFromObj(reviewTxid);
+        String result = JSONObject.parseObject(verifyResult).get("result").toString();
+        if (result.equals("false")){
+            return ResponseResult.error();
+        }
+        String viewTxid = extractTxidService.getViewTxid(fileName);
+        JSONObject jsonObject = JSONObject.parseObject(chainService.getFromObj(viewTxid));
+        String fieldInfoWithCleanMethodListStr = jsonObject.get("fieldInfoWithCleanMethodList").toString();
+        List<FieldInfoWithCleanMethod> fieldInfoWithCleanMethodList = JSONObject.parseArray(fieldInfoWithCleanMethodListStr, FieldInfoWithCleanMethod.class);
+        for (FieldInfoWithCleanMethod f : fieldInfoWithCleanMethodList){
+            if (f.getCleanMethod().equals("hashClean")){
+                f.setFieldName(MD5Utils.code(f.getFieldName()));
+            }else if (f.getCleanMethod().equals("saltClean")){
+                f.setFieldName(MD5Utils.generate(f.getFieldName()));
+            }
+        }
+
+
+
+        return ResponseResult.success().data("fieldInfoWithCleanMethodList",fieldInfoWithCleanMethodList);
     }
 
 
