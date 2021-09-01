@@ -98,13 +98,14 @@ public class ExtractDataController {
     }
 
     @PostMapping("/fieldRecord")
-    public ResponseResult fieldRecord(@RequestBody List<FieldInfo> fieldInfos,String fileName) throws ShellChainException, SQLException, ClassNotFoundException {
+    public ResponseResult fieldRecord(@RequestBody List<FieldInfo> fieldInfos,String fileName,String tableName) throws ShellChainException, SQLException, ClassNotFoundException {
 
         //JSONArray.fromObject(fieldInfos);
 //        String fieldInfos = JSONArray.toJSONString(fieldInfos);
 //       logger.info("fieldInfos：{}",fieldInfos);
         HashMap<String, Object> attributes = new HashMap<>();
         attributes.put("fieldInfos",fieldInfos);
+        attributes.put("tableName",tableName);
         String txid = chainService.send2Obj(chainObjAddresses, 0, attributes);
         logger.info("txid为：{}",txid);
 

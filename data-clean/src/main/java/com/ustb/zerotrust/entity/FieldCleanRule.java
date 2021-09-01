@@ -14,6 +14,7 @@ public class FieldCleanRule implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String softName;
+    private String tableName;
     private Integer userSafeLevel;
     private List<FieldInfoWithCleanMethod> fieldInfoWithCleanMethodList;
 }

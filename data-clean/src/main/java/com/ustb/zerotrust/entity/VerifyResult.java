@@ -14,6 +14,7 @@ public class VerifyResult implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String softName;
+    private String tableName;
     private Boolean result;
     private List<FieldInfoWithCleanMethod> fieldInfoWithCleanMethodList;
 }

@@ -40,9 +40,10 @@ public class ViewController {
     public ResponseResult getResourceData(String softName) throws ShellChainException {
         String resourceTxid = extractTxidService.getResourceTxid(softName);
         String resourceDataStr = chainService.getFromObj(resourceTxid);
+        String tableName = JSONObject.parseObject(resourceDataStr).get("tableName").toString();
         String fieldInfosStr = JSONObject.parseObject(resourceDataStr).get("fieldInfos").toString();
         List<FieldInfo> fieldInfos = JSONObject.parseArray(fieldInfosStr, FieldInfo.class);
-        return ResponseResult.success().data("fieldInfos",fieldInfos);
+        return ResponseResult.success().data("fieldInfos",fieldInfos).data("tableName",tableName);
     }
 
     /**
@@ -53,6 +54,7 @@ public class ViewController {
     @PostMapping("/dataCleanMethod")
     public ResponseResult dataCleanMethod(@RequestBody FieldCleanRule fieldCleanRule) throws ShellChainException, SQLException, ClassNotFoundException {
         HashMap<String, Object> attributes = new HashMap<>();
+        attributes.put("tableName",fieldCleanRule.getTableName());
         attributes.put("userSafeLevel",fieldCleanRule.getUserSafeLevel());
         attributes.put("fieldInfoWithCleanMethodList",fieldCleanRule.getFieldInfoWithCleanMethodList());
         String viewTxid = chainService.send2Obj(chainObjAddresses, 0, attributes);
