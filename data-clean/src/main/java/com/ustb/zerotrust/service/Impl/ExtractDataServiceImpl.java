@@ -33,4 +33,14 @@ public class ExtractDataServiceImpl implements ExtractDataService {
     public void delete() {
         extractDataDAO.delete();
     }
+
+    @Override
+    public List findByFieldName(String fieldName, String tableName) {
+        return extractDataDAO.findByFieldName(fieldName,tableName);
+    }
+
+    @Override
+    public void insertExtractDate(String fieldName, List<String> list) {
+        extractDataDAO.insertExtractDate(fieldName,list);
+    }
 }

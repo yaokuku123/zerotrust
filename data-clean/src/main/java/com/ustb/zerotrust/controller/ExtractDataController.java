@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +92,7 @@ public class ExtractDataController {
 
         List<String> columnList = tableService.listTableColumn(tableName);
 
-//        List<Map> maps = tableDao.listTableColumn(tableName);
+//       List<Map> maps = tableDao.listTableColumn(tableName);
 //        return ResponseResult.success().data("info",maps);
 
        return ResponseResult.success().data("info",columnList);
@@ -125,18 +126,49 @@ public class ExtractDataController {
         if (result.equals("false")){
             return ResponseResult.error();
         }
+
+        //清除extract_data
+        extractDataService.delete();
+        List stringList = new ArrayList();
+        List<String> hashList = new ArrayList<>();
+        List<String> saltList = new ArrayList<>();
+        Map<String,List<String>> map = new HashMap<>();
+
+
         String viewTxid = extractTxidService.getViewTxid(fileName);
         JSONObject jsonObject = JSONObject.parseObject(chainService.getFromObj(viewTxid));
+        String tableName = jsonObject.get("tableName").toString();
         String fieldInfoWithCleanMethodListStr = jsonObject.get("fieldInfoWithCleanMethodList").toString();
         List<FieldInfoWithCleanMethod> fieldInfoWithCleanMethodList = JSONObject.parseArray(fieldInfoWithCleanMethodListStr, FieldInfoWithCleanMethod.class);
         for (FieldInfoWithCleanMethod f : fieldInfoWithCleanMethodList){
             if (f.getCleanMethod().equals("hashClean")){
-                f.setFieldName(MD5Utils.code(f.getFieldName()));
+                //获取字段所有值 清洗
+                stringList = extractDataService.findByFieldName(f.getFieldName(),tableName);
+
+                for (int i = 0;i < stringList.size();i++){
+                    String code = MD5Utils.code((String)stringList.get(i));
+                    hashList.add(code);
+                }
+                //insert
+                extractDataService.insertExtractDate(f.getFieldName(),hashList);
+                hashList.clear();
+                stringList.clear();
+
             }else if (f.getCleanMethod().equals("saltClean")){
-                f.setFieldName(MD5Utils.generate(f.getFieldName()));
+
+                stringList = extractDataService.findByFieldName(f.getFieldName(),tableName);
+
+                for (int i = 0;i < stringList.size();i++){
+                    String code = MD5Utils.code((String)stringList.get(i));
+                    saltList.add(code);
+                   // System.out.println(saltList);
+                }
+                //insert
+                extractDataService.insertExtractDate(f.getFieldName(),saltList);
+                saltList.clear();
+                stringList.clear();
             }
         }
-
 
 
         return ResponseResult.success().data("fieldInfoWithCleanMethodList",fieldInfoWithCleanMethodList);

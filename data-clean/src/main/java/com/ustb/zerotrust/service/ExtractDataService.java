@@ -15,4 +15,10 @@ public interface ExtractDataService {
     void ExtractAsView(ExtractData extractData);
 
     void delete();
+
+
+    List findByFieldName(String fieldName, String tableName);
+
+
+    void insertExtractDate(String fieldName, List<String> list);
 }

@@ -22,5 +22,7 @@ public interface ExtractDataDAO {
     void delete();
 
 
+    List findByFieldName(String fieldName, String tableName);
 
+    void insertExtractDate(String fieldName, List<String> list);
 }

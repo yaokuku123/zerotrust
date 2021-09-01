@@ -14,5 +14,17 @@
         delete from extract_data
     </delete>
 
+    <select id="findByFieldName" resultType="Object">
+        select ${fieldName} from ${tableName}
+    </select>
+
+    <insert id="insertExtractDate">
+        insert into extract_data (${fieldName}) values
+        <foreach collection="list" separator="," item="item" index="index">
+            (#{item})
+        </foreach>
+    </insert>
+
+
 
 </mapper>
