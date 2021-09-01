@@ -26,6 +26,12 @@ spring:
           - Path=/soft-test-center/**
         filters:
           - RewritePath=/soft-test-center/(?<segment>.*), /$\{segment}
+      - id: data-clean
+        uri: lb://data-clean # lb代表从注册中心获取服务
+        predicates:
+          - Path=/data-clean/**
+        filters:
+          - RewritePath=/data-clean/(?<segment>.*), /$\{segment}
   redis:
     host: localhost
     port: 6379
