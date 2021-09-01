@@ -17,8 +17,8 @@ public class ExtractData implements Serializable {
     private String comName; //使用单位名称
     private String monitorTime; //监控日期时间
     private String serviceName; //业务系统名称
-    private String cloudIdCrypto; //云主机ID(加密)
+    private String cloudId; //云主机ID(加密)
     private String virtualName; //虚拟机名称
-    private String ipCrypto; //浮动IP/弹性IP(加密)
+    private String ip; //浮动IP/弹性IP(加密)
     private Integer taijiCloudId; //taiji_cloud表主键id
 }
