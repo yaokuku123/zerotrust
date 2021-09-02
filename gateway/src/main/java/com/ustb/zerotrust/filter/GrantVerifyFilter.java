@@ -51,7 +51,7 @@ public class GrantVerifyFilter implements GlobalFilter, Ordered {
 
         //放行路径的白名单
         String uri = request.getURI().getPath();
-        if (uri.indexOf("/soft-test-center/") >= 0) {
+        if (uri.indexOf("/soft-test-center/") >= 0 || uri.indexOf("/data-clean/") >= 0) {
             return chain.filter(exchange);
         }
 
