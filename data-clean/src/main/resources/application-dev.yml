@@ -6,7 +6,7 @@ spring:
     name: data-clean
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://39.102.37.27:3306/zerotrust?characterEncoding=utf8&allowMultiQueries=true
+    url: jdbc:mysql://123.56.246.148:3306/zerotrust?characterEncoding=utf8&allowMultiQueries=true
     username: root
     password: 123456
   redis:
