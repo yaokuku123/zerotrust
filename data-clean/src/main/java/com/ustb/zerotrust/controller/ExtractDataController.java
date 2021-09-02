@@ -91,7 +91,12 @@ public class ExtractDataController {
 
 //       List<Map> maps = tableDao.listTableColumn(tableName);
 //        return ResponseResult.success().data("info",maps);
-
+        for (String column : columnList) {
+            if ("id".equals(column)){
+                columnList.remove(column);
+                break;
+            }
+        }
        return ResponseResult.success().data("info",columnList);
     }
 
@@ -136,7 +141,7 @@ public class ExtractDataController {
         FieldRecord fieldRecord = new FieldRecord();
         HashMap<String, Object> attributes = new HashMap<>();
         for (FieldInfoWithCleanMethod f : fieldInfoWithCleanMethodList){
-            if (f.getCleanMethod().equals("hashClean")){
+            if ("hashClean".equals(f.getCleanMethod())){
                 //获取字段所有值 清洗
                 fieldRecord.setFieldName(f.getFieldName()).setCleanMethod(f.getCleanMethod()).setCleanTime(new Date());
                 String fieldName = f.getFieldName();
@@ -155,7 +160,7 @@ public class ExtractDataController {
                 hashList.clear();
                 stringList.clear();
 
-            }else if (f.getCleanMethod().equals("saltClean")){
+            }else if ("saltClean".equals(f.getCleanMethod())){
 
                 fieldRecord.setFieldName(f.getFieldName()).setCleanMethod(f.getCleanMethod()).setCleanTime(new Date());
                 String fieldName = f.getFieldName();
