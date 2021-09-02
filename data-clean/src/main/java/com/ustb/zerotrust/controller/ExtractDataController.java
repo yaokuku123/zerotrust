@@ -57,7 +57,7 @@ public class ExtractDataController {
     public static final Logger logger = LoggerFactory.getLogger(ExtractDataController.class);
 
 
-    @GetMapping("/ExtractData")
+    @GetMapping("/ExtractDataV2")
     public ResponseResult findExtractData(String fileName) throws ShellChainException, SQLException, ClassNotFoundException {
         //清除extract_data
         extractDataService.delete();
@@ -111,7 +111,7 @@ public class ExtractDataController {
     }
 
 
-    @PostMapping("/extractDataV2")
+    @PostMapping("/extractData")
     public ResponseResult extractData(String fileName) throws ShellChainException, SQLException, ClassNotFoundException {
 
         String reviewTxid = extractTxidService.getReviewTxid(fileName);
@@ -170,6 +170,20 @@ public class ExtractDataController {
                 //update
                 extractDataService.updateField(f.getFieldName(),map);
                 saltList.clear();
+                stringList.clear();
+            }else{
+
+                fieldRecord.setFieldName(f.getFieldName()).setCleanMethod(f.getCleanMethod()).setCleanTime(new Date());
+                String fieldName = f.getFieldName();
+                attributes.put(fieldName,fieldRecord);
+
+                stringList = extractDataService.findByFieldName(f.getFieldName(),tableName);
+                for (int i = 0;i < stringList.size();i++){
+                    map.put(idList.get(i),(String)stringList.get(i));
+                }
+
+                //update
+                extractDataService.updateField(f.getFieldName(),map);
                 stringList.clear();
             }
         }
