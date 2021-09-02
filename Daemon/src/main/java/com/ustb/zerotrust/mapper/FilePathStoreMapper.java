@@ -15,7 +15,7 @@ public interface FilePathStoreMapper {
      * 插入被测软件的路径信息
      * @param daemonSoft 被测软件的相关信息
      */
-    public void insertFilePath(@Param("daemonSoft") DaemonSoft daemonSoft);
+    public void insertFilePath(DaemonSoft daemonSoft);
 
     /**
      * 根据软件名称获取软件的存储路径

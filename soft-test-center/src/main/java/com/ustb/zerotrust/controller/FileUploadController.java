@@ -69,11 +69,11 @@ public class FileUploadController {
             //签名失败
             return ResponseResult.error().message("上传失败，软件检验未通过");
         }
-        //将被测软件和签名文件打包发送至目标虚拟机
-        MultipartFile[] files = new MultipartFile[2];
-        files[0] = new MockMultipartFile("files", softFile.getName(), ContentType.TEXT_PLAIN.toString(), new FileInputStream(softFile));
-        files[1] = new MockMultipartFile("files", signFile.getName(), ContentType.TEXT_PLAIN.toString(), new FileInputStream(signFile));
-        fileTransFeignClient.downLoad(fileName, files);
+//        //将被测软件和签名文件打包发送至目标虚拟机
+//        MultipartFile[] files = new MultipartFile[2];
+//        files[0] = new MockMultipartFile("files", softFile.getName(), ContentType.TEXT_PLAIN.toString(), new FileInputStream(softFile));
+//        files[1] = new MockMultipartFile("files", signFile.getName(), ContentType.TEXT_PLAIN.toString(), new FileInputStream(signFile));
+//        fileTransFeignClient.downLoad(fileName, files);
 
         //验证通过
         return ResponseResult.success();

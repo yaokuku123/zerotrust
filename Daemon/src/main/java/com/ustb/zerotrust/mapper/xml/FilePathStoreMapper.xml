@@ -5,7 +5,7 @@
     <!--插入被测软件的路径信息-->
     <insert id="insertFilePath" parameterType="com.ustb.zerotrust.domain.DaemonSoft">
         INSERT INTO daemonsoft(app_name,soft_path,sign_path)
-                  VALUES(#{daemonSoft.appName},#{daemonSoft.softPath},#{daemonSoft.signPath})
+                  VALUES(#{appName},#{softPath},#{signPath})
     </insert>
 
     <select id="getFilePath" resultType="com.ustb.zerotrust.domain.DaemonSoft">

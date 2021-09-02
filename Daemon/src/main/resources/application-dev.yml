@@ -15,7 +15,7 @@ spring:
     username: root
     password: 123456
 mybatis:
-  type-aliases-package: com.ustb.domain
+  type-aliases-package: com.ustb.zerotrust.domain
   configuration:
     map-underscore-to-camel-case: true
   mapper-locations: classpath:com/ustb/zerotrust/mapper/xml/*.xml # xml所在路径
