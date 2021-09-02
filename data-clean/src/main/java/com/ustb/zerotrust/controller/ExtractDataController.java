@@ -111,7 +111,7 @@ public class ExtractDataController {
     }
 
 
-    @PostMapping("/extractData")
+    @GetMapping("/ExtractData")
     public ResponseResult extractData(String fileName) throws ShellChainException, SQLException, ClassNotFoundException {
 
         String reviewTxid = extractTxidService.getReviewTxid(fileName);

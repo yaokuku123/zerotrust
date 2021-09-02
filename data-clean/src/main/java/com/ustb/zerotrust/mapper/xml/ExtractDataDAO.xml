@@ -41,11 +41,6 @@
              </foreach>
     </insert>
 
-
-    <insert id="initial" keyProperty="id" useGeneratedKeys="true">
-        insert into
-    </insert>
-
     <select id="count" resultType="Integer">
         select id from ${tableName}
     </select>
