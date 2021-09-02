@@ -1,5 +1,6 @@
 package com.ustb.zerotrust.mapper;
 
+import com.ustb.zerotrust.entity.ExtractLog;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -45,4 +46,6 @@ public interface ExtractTxidDAO {
 
     // 获取getReviewTxid
     String getReviewTxid(String fileName);
+
+    void insertLog(ExtractLog log);
 }

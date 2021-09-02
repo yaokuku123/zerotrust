@@ -18,13 +18,55 @@
         select ${fieldName} from ${tableName}
     </select>
 
+
     <insert id="insertExtractDate">
         insert into extract_data (${fieldName}) values
         <foreach collection="list" separator="," item="item" index="index">
             (#{item})
         </foreach>
+
     </insert>
 
+    <insert id="insert" parameterType="Map">
+
+        (<foreach item="item" index="key" collection="map.keySet()" separator=",">
+        ${item}
+        </foreach>)
+
+            values
+             <foreach item="items" index="value" collection="map.values()" separator=",">
+              <foreach collection="items" item="item" separator=",">
+                    (#{value},#{item})
+                </foreach>
+             </foreach>
+    </insert>
+
+
+    <insert id="initial" keyProperty="id" useGeneratedKeys="true">
+        insert into
+    </insert>
+
+    <select id="count" resultType="Integer">
+        select id from ${tableName}
+    </select>
+
+    <insert id="initialTable">
+        insert into extract_data (id) values
+        <foreach collection="list" separator="," item="item" index="index">
+            (#{item})
+        </foreach>
+
+    </insert>
+
+    <update id="updateField">
+
+        <foreach item="item" index="key" collection="map.entrySet()" separator=";">
+            update extract_data
+            set ${fieldName}=#{item}
+            where id=#{key}
+        </foreach>
+
+    </update>
 
 
 </mapper>

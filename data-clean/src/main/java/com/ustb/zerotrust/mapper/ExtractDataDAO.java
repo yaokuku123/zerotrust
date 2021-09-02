@@ -2,8 +2,10 @@ package com.ustb.zerotrust.mapper;
 
 import com.ustb.zerotrust.entity.ExtractData;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author WYP
@@ -25,4 +27,12 @@ public interface ExtractDataDAO {
     List findByFieldName(String fieldName, String tableName);
 
     void insertExtractDate(String fieldName, List<String> list);
+
+    void insert(@Param("map") Map<String, List<String>> map);
+
+    List<Integer> count(String tableName);
+
+    void initialTable(List<Integer> idList);
+
+    void updateField(String fieldName, Map<Integer, String> map);
 }

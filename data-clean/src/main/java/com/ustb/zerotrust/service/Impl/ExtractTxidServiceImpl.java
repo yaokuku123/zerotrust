@@ -1,5 +1,6 @@
 package com.ustb.zerotrust.service.Impl;
 
+import com.ustb.zerotrust.entity.ExtractLog;
 import com.ustb.zerotrust.mapper.ExtractDataDAO;
 import com.ustb.zerotrust.mapper.ExtractTxidDAO;
 import com.ustb.zerotrust.service.ExtractTxidService;
@@ -56,5 +57,10 @@ public class ExtractTxidServiceImpl implements ExtractTxidService {
     @Override
     public String getReviewTxid(String fileName) {
         return extractTxidDAO.getReviewTxid(fileName);
+    }
+
+    @Override
+    public void insertLog(ExtractLog log) {
+        extractTxidDAO.insertLog(log);
     }
 }

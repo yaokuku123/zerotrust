@@ -33,4 +33,8 @@
     <select id="getReviewTxid" resultType="String">
         select review_txid from soft_info where soft_name=#{fileName}
     </select>
+
+    <insert id="insertLog" parameterType="ExtractLog" keyProperty="id" useGeneratedKeys="true">
+        insert into extract_log (file_name,extract_txid,clean_time) values (#{fileName},#{extractTxid},#{cleanTime})
+    </insert>
 </mapper>

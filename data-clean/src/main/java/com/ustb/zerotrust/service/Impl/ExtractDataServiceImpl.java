@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author WYP
@@ -42,5 +43,25 @@ public class ExtractDataServiceImpl implements ExtractDataService {
     @Override
     public void insertExtractDate(String fieldName, List<String> list) {
         extractDataDAO.insertExtractDate(fieldName,list);
+    }
+
+    @Override
+    public void insert(Map<String, List<String>> map) {
+        extractDataDAO.insert(map);
+    }
+
+    @Override
+    public List<Integer> count(String tableName) {
+        return extractDataDAO.count(tableName);
+    }
+
+    @Override
+    public void initial(List<Integer> idList) {
+        extractDataDAO.initialTable(idList);
+    }
+
+    @Override
+    public void updateField(String fieldName, Map<Integer, String> map) {
+        extractDataDAO.updateField(fieldName,map);
     }
 }

@@ -4,9 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ustb.zerotrust.domain.ResponseResult;
-import com.ustb.zerotrust.entity.ExtractData;
-import com.ustb.zerotrust.entity.FieldInfo;
-import com.ustb.zerotrust.entity.FieldInfoWithCleanMethod;
+import com.ustb.zerotrust.entity.*;
 import com.ustb.zerotrust.mapper.LinkDataBase;
 import com.ustb.zerotrust.mapper.TableDao;
 import com.ustb.zerotrust.service.ChainService;
@@ -15,6 +13,8 @@ import com.ustb.zerotrust.service.ExtractTxidService;
 import com.ustb.zerotrust.service.TableService;
 import com.ustb.zerotrust.util.MD5Utils;
 import edu.ustb.shellchainapi.shellchain.command.ShellChainException;
+import io.swagger.models.auth.In;
+import org.apache.ibatis.annotations.Select;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author WYP
@@ -101,9 +98,7 @@ public class ExtractDataController {
     @PostMapping("/fieldRecord")
     public ResponseResult fieldRecord(@RequestBody List<FieldInfo> fieldInfos,String fileName,String tableName) throws ShellChainException, SQLException, ClassNotFoundException {
 
-        //JSONArray.fromObject(fieldInfos);
-//        String fieldInfos = JSONArray.toJSONString(fieldInfos);
-//       logger.info("fieldInfos：{}",fieldInfos);
+
         HashMap<String, Object> attributes = new HashMap<>();
         attributes.put("fieldInfos",fieldInfos);
         attributes.put("tableName",tableName);
@@ -115,10 +110,9 @@ public class ExtractDataController {
         return ResponseResult.success();
     }
 
-    //清洗方法 hashClean   saltClean
 
     @PostMapping("/extractDataV2")
-    public ResponseResult extractData(String fileName) throws ShellChainException {
+    public ResponseResult extractData(String fileName) throws ShellChainException, SQLException, ClassNotFoundException {
 
         String reviewTxid = extractTxidService.getReviewTxid(fileName);
         String verifyResult = chainService.getFromObj(reviewTxid);
@@ -126,53 +120,68 @@ public class ExtractDataController {
         if (result.equals("false")){
             return ResponseResult.error();
         }
-
-        //清除extract_data
-        extractDataService.delete();
         List stringList = new ArrayList();
-        List<String> hashList = new ArrayList<>();
-        List<String> saltList = new ArrayList<>();
-        Map<String,List<String>> map = new HashMap<>();
-
+        Map<Integer,String> map = new HashMap<>();
 
         String viewTxid = extractTxidService.getViewTxid(fileName);
         JSONObject jsonObject = JSONObject.parseObject(chainService.getFromObj(viewTxid));
         String tableName = jsonObject.get("tableName").toString();
         String fieldInfoWithCleanMethodListStr = jsonObject.get("fieldInfoWithCleanMethodList").toString();
         List<FieldInfoWithCleanMethod> fieldInfoWithCleanMethodList = JSONObject.parseArray(fieldInfoWithCleanMethodListStr, FieldInfoWithCleanMethod.class);
+
+        //清除extract_data 初始化
+        extractDataService.delete();
+        List<Integer> idList = extractDataService.count(tableName);
+        extractDataService.initial(idList);
+        FieldRecord fieldRecord = new FieldRecord();
+        HashMap<String, Object> attributes = new HashMap<>();
         for (FieldInfoWithCleanMethod f : fieldInfoWithCleanMethodList){
             if (f.getCleanMethod().equals("hashClean")){
                 //获取字段所有值 清洗
+                fieldRecord.setFieldName(f.getFieldName()).setCleanMethod(f.getCleanMethod()).setCleanTime(new Date());
+                String fieldName = f.getFieldName();
+                attributes.put(fieldName,fieldRecord);
+                List<String> hashList = new ArrayList<>();
                 stringList = extractDataService.findByFieldName(f.getFieldName(),tableName);
 
                 for (int i = 0;i < stringList.size();i++){
                     String code = MD5Utils.code((String)stringList.get(i));
-                    hashList.add(code);
+                    map.put(idList.get(i),code);
+                    //hashList.add(code);
                 }
-                //insert
-                extractDataService.insertExtractDate(f.getFieldName(),hashList);
+
+                //update
+                extractDataService.updateField(f.getFieldName(),map);
                 hashList.clear();
                 stringList.clear();
 
             }else if (f.getCleanMethod().equals("saltClean")){
 
+                fieldRecord.setFieldName(f.getFieldName()).setCleanMethod(f.getCleanMethod()).setCleanTime(new Date());
+                String fieldName = f.getFieldName();
+                attributes.put(fieldName,fieldRecord);
+                List<String> saltList = new ArrayList<>();
                 stringList = extractDataService.findByFieldName(f.getFieldName(),tableName);
 
                 for (int i = 0;i < stringList.size();i++){
-                    String code = MD5Utils.code((String)stringList.get(i));
-                    saltList.add(code);
-                   // System.out.println(saltList);
+                    String code = MD5Utils.generate((String)stringList.get(i));
+                    map.put(idList.get(i),code);
                 }
-                //insert
-                extractDataService.insertExtractDate(f.getFieldName(),saltList);
+                //update
+                extractDataService.updateField(f.getFieldName(),map);
                 saltList.clear();
                 stringList.clear();
             }
         }
 
+        // record
+        String txid = chainService.send2Obj(chainObjAddresses, 0, attributes);
+        ExtractLog log = new ExtractLog();
+        log.setFileName(fileName).setExtractTxid(txid).setCleanTime(new Date());
+        extractTxidService.insert(txid,fileName);
+        extractTxidService.insertLog(log);
 
-        return ResponseResult.success().data("fieldInfoWithCleanMethodList",fieldInfoWithCleanMethodList);
+        return ResponseResult.success();
     }
-
 
 }
