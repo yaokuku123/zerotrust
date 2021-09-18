@@ -8,15 +8,15 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://123.56.246.148:3306/zerotrust?characterEncoding=utf8
     username: root
-    password: ustb_scce_lab202
+    password: 123456
   redis:
     host: localhost
     port: 6379
   servlet:
     multipart:
       enabled: true #是否启用http上传处理
-      max-request-size: 200MB #设置总上传文件的大小
-      max-file-size: 200MB #设置单个文件最大长度
+      max-request-size: 1024MB #设置总上传文件的大小
+      max-file-size: 1024MB #设置单个文件最大长度
 
 mybatis:
   type-aliases-package: com.ustb.zerotrust.entity
@@ -33,10 +33,10 @@ feign:
   client:
     config:
       default:
-        connectTimeout: 10000  #单位毫秒
-        readTimeout: 10000
+        connectTimeout: 1000000  #单位毫秒
+        readTimeout: 1000000
 logging:
   level:
     com.ustb: debug
 
-chainobj.address: 1Wkg9jF48VeM16rUE9MSTu4dfyvJv4dAb5X1v
+chainobj.address: 1MwnMpYGXy5TKJHMqiDy6MXorkQ5Nh6UoWCFEs

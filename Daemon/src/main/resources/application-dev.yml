@@ -13,7 +13,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://123.56.246.148:3306/zerotrust?characterEncoding=utf8
     username: root
-    password: ustb_scce_lab202
+    password: 123456
 mybatis:
   type-aliases-package: com.ustb.domain
   configuration:

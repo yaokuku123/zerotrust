@@ -122,7 +122,7 @@ public class FileSignStoreService {
         attributes.put("createTime",res);
         attributes.put("softType",file.getName().substring(file.getName().lastIndexOf(".")));
 //        String toAddress = "1UAarmYDCCD1UQ6gtuyrWEyi25FoNQMvM8ojYe"; //主体链地址
-        String toAddress = "1Wkg9jF48VeM16rUE9MSTu4dfyvJv4dAb5X1v";
+        String toAddress = "1MwnMpYGXy5TKJHMqiDy6MXorkQ5Nh6UoWCFEs";
         String txid = chainService.send2Obj(toAddress, 0, attributes);
         System.out.println(txid);
 
