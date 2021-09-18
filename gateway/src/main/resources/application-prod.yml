@@ -32,8 +32,8 @@ feign:
   client:
     config:
       default:
-        connectTimeout: 30000  #单位毫秒
-        readTimeout: 30000
+        connectTimeout: 1000000  #单位毫秒
+        readTimeout: 1000000
 logging:
   level:
     com.ustb: debug
