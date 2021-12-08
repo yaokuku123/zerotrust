@@ -1,10 +1,6 @@
 server:
   port: 9002
 spring:
-  mvc:
-    view:
-      prefix: /
-      suffix: .html
   profiles: dev
   application:
     name: auth-resource

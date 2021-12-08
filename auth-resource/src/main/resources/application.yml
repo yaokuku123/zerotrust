@@ -1,3 +1,7 @@
 spring:
+  mvc:
+    view:
+      suffix: .html
+      prefix: /
   profiles:
     active: dev
