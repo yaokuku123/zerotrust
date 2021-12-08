@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>元素ajax</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            font-family: Futura, Arial, sans-serif;
+        }
+        caption {
+            font-size: larger;
+            margin: 1em auto;
+        }
+        th, td {
+            font-size: 12px;
+            padding: .65em;
+        }
+        th {
+            background: #555 nonerepeat scroll 0 0;
+            border: 1px solid #777;
+            color: #fff;
+        }
+        td {
+            border: 1px solid#777;
+        }
+        th {
+            background: #696969;
+            color:#FFFFFF;
+        }
+        tbody tr:nth-child(odd) {
+            background: #ccc;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #wrap {
+            height: 719px;
+            width: 100;
+            background-image: url(../static/images/4.jpeg);
+            background-repeat: no-repeat;
+            background-position: center center;
+            position: relative;
+        }
+
+        #head {
+            height: 120px;
+            width: 100;
+            background-color: #66CCCC;
+            text-align: center;
+            position: relative;
+        }
+
+        #foot {
+            width: 100;
+            height: 126px;
+            background-color: #CC9933;
+            position: relative;
+        }
+
+        #wrap .logGet {
+            height: 408px;
+            width: 368px;
+            position: absolute;
+            background-color: #FFFFFF;
+            top: 20%;
+            right: 15%;
+        }
+
+        .logC a button {
+            width: 100%;
+            height: 45px;
+            background-color: #ee7700;
+            border: none;
+            color: white;
+            font-size: 18px;
+        }
+
+        .logC button {
+            width: 100%;
+            height: 45px;
+            background-color: #ee7700;
+            border: none;
+            color: white;
+            font-size: 18px;
+        }
+
+        .logGet .logD.logDtip .p1 {
+            display: inline-block;
+            font-size: 28px;
+            margin-top: 30px;
+            width: 86%;
+        }
+
+        #wrap .logGet .logD.logDtip {
+            width: 86%;
+            border-bottom: 1px solid #ee7700;
+            margin-bottom: 60px;
+            margin-top: 0px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        .logGet .lgD img {
+            position: absolute;
+            top: 12px;
+            left: 8px;
+        }
+
+        .logGet .lgD input {
+            width: 100%;
+            height: 42px;
+            text-indent: 2.5rem;
+        }
+
+        #wrap .logGet .lgD {
+            width: 86%;
+            position: relative;
+            margin-bottom: 30px;
+            margin-top: 30px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        #wrap .logGet .logC {
+            width: 86%;
+            margin-top: 0px;
+            margin-right: auto;
+            margin-bottom: 0px;
+            margin-left: auto;
+        }
+
+
+        .title {
+            font-family: "宋体";
+            color: #FFFFFF;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            /* 使用css3的transform来实现 */
+            font-size: 36px;
+            height: 40px;
+            width: 30%;
+        }
+
+        .copyright {
+            font-family: "宋体";
+            color: #FFFFFF;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            /* 使用css3的transform来实现 */
+            height: 60px;
+            width: 40%;
+            text-align: center;
+        }
+
+
+        #foot .copyright .img {
+            width: 100%;
+            height: 24px;
+            position: relative;
+        }
+
+        .copyright .img .icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            margin-left: 22px;
+            vertical-align: middle;
+            background-image: url(%E7%94%B5%E5%AD%90%E9%82%AE%E4%BB%B6.png);
+            background-repeat: no-repeat;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        .copyright .img .icon1 {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            margin-left: 22px;
+            vertical-align: middle;
+            background-image: url(%E5%9C%B0%E5%9D%80.png);
+            background-repeat: no-repeat;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        .copyright .img .icon2 {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            margin-left: 22px;
+            vertical-align: middle;
+            background-image: url(%E8%81%94%E7%B3%BB%E6%96%B9%E5%BC%8F.png);
+            background-repeat: no-repeat;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        #foot .copyright p {
+            height: 24px;
+            width: 100%;
+        }
+
+        #layer {
+            display: none;
+            position: absolute;
+        }
+    </style>
+</head>
+<body onload="getDate();">
+
+    <div class="header" id="head">
+        <div class="title">政务云用户信息展示</div>
+    </div>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th width="10%">政府机构名称</th>
+            <th width="10%">使用单位名称</th>
+            <th width="7%">监控日期时间</th>
+            <th width="7%">业务系统名称</th>
+            <th width="7%">云主机ID(加密)</th>
+            <th width="25%">虚拟机名称</th>
+            <th width="10%">浮动IP/弹性IP(加密)</th>
+            <th width="7%">taiji_cloud-Id</th>
+        </tr>
+
+        <tbody id="myTbody">
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <script>
+        var myTbody = document.getElementById('myTbody');
+        var url = 'http://localhost:9002/resource/findAll';
+        function getDate() {
+             //1.创建ajax对象
+             var myAjax = new XMLHttpRequest();
+            //2. 连接   (请求方式，地址，同步false或者异步true)
+             myAjax.open("GET", url , true)
+            //3.向服务器发送请求（可以传参）
+            myAjax.send()// myAjax.send(data)
+             //4.服务器响应
+             myAjax.onreadystatechange = function () {
+            // 4表示走到最后的第四步 readyState 到4  状态为200
+               if(myAjax.readyState == 4 && myAjax.status == 200){
+                 // console.log(myAjax.response);//返回是一个json字符串
+                 // 变成json对象  
+                 var res = JSON.parse(myAjax.response);
+                 //JSON.parse() 将返回的json字符串转换成json对象       
+                 // JSON.stringify() 将json对象转换为json字符串
+                 // console.log(res.data.extractData);
+                 showDate(res.data.extractData);
+            }
+          }
+        }
+       
+        function showDate(data) {
+         var str='';
+           //()=>相当于fuction 箭头函数this里面始终指向调用者
+         data.forEach( (item,index) => {
+            //  循环每一个item
+            str+=  `<tr>
+                <td>${fetchNull(item.id)}</td>
+                <td>${fetchNull(item.govName)}</td>
+                <td>${fetchNull(item.comName)}</td>
+                <td>${fetchNull(item.monitorTime)}</td>
+                <td>${fetchNull(item.serviceName)}</td>
+                <td>${fetchNull(item.cloudId)}</td>
+                <td>${fetchNull(item.virtualName)}</td>
+                <td>${fetchNull(item.ip)}</td>
+                <td>${fetchNull(item.taijiCloudId)}</td>
+            </tr>`
+            console.log(fetchNull(item.cloudId))
+         })
+         
+         myTbody.innerHTML = str;
+
+
+        
+
+
+        }
+
+        function fetchNull(date) {
+            if(date == null)return "";
+            else return date;
+        }
+    </script>
+</body>
+</html>
