@@ -191,19 +191,32 @@
     </style>
 </head>
 <script type="text/javascript">
-    function myFunction() {
-        var form_data = $("#updateform").serialize();
-            alert(form_data);
-            $.ajax({
-            url:"",
-            data:form_data,
-            datatype:"json",
-            type:"post",
-            success:function(data){
- 
+
+    function getDate() {
+        var url = 'http://localhost:8080/auth-resource/front';
+        var params = JSON.stringify({
+            softName: document.getElementById('softName').value,
+            resource: document.getElementById('resource').value,
+            action: document.getElementById('action').value,
+            useTime: document.getElementById('useTime').value,
+            subjectId: document.getElementById('subjectId').value,
+            method: document.getElementById('method').value
+        });
+        $.ajax({
+            type:"POST",
+            contentType: "application/json", //必须这样写
+            url: url,//你的请求程序页面随便啦
+            async: false,//同步：意思是当有返回值以后才会进行后面的js程序。
+            data: params,//请求需要发送的处理数据
+            success:function(msg) {
+                if (msg.code == '20000') {//根据返回值进行跳转
+                    window.open("http://localhost:9002/front-get")
+                } else {
+                    alert("error")
+                }
             },
-            error:function () {
-                alert("修改失败")
+            error: function(xhr){
+                console.log(xhr);
             }
         })
 
@@ -211,74 +224,82 @@
 
 </script>
 <body>
-    <div class="header" id="head">
-        <div class="title">政务云用户登录</div>
-    </div>
-    <!-- <button class="btn btn-primary" data-toggle="modal" data-target="#addcase">添加用例</button>
-    <a class="" data-toggle="modal" data-target="#addcase">添加用例</a> -->
+<div class="header" id="head">
+    <div class="title">政务云用户登录</div>
+</div>
+<!-- <button class="btn btn-primary" data-toggle="modal" data-target="#addcase">添加用例</button>
+<a class="" data-toggle="modal" data-target="#addcase">添加用例</a> -->
 
-    <div id="addcase" class="modal inmodal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <form  role="form" method="post" id="updateform">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span></button>
-                        <h4 class="modal-title">填写信息</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="InputCode">软件名称</label>
-                            <input type="text" class="form-control" name="softName" placeholder="Model Code">
-                        </div>
-                        <div class="form-group">
-                            <label for="InputCode">资源</label>
-                            <input type="text" class="form-control" name="resource" placeholder="Model Code">
-                        </div>
-                        <div class="form-group">
-                            <label for="InputCode">动作</label>
-                            <input type="text" class="form-control" name="action" placeholder="Model Code">
-                        </div>
-                        <div class="form-group">
-                            <label for="InputCode">主体链ID</label>
-                            <input type="text" class="form-control" name="subjectId" placeholder="Model Code">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <div class="form-group">
-                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">关闭</button>
-                            <button type="submit" class="btn btn-primary" onclick="myFunction()">提交</button>
-                        </div>
-                    </div>
+<div id="addcase" class="modal inmodal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">授权信息</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="InputCode">软件名称</label>
+                    <input id="softName" type="text" class="form-control" name="softName" placeholder="Model Code">
                 </div>
-            </form>
-            <!-- /.modal-content -->
+                <div class="form-group">
+                    <label for="InputCode">资源</label>
+                    <input id="resource" type="text" class="form-control" name="resource" placeholder="Model Code">
+                </div>
+                <div class="form-group">
+                    <label for="InputCode">动作</label>
+                    <input id="action" type="text" class="form-control" name="action" placeholder="Model Code">
+                </div>
+                <div class="form-group">
+                    <label for="InputCode">使用时常</label>
+                    <input id="useTime"  type="text" class="form-control" name="useTime" placeholder="Model Code">
+                </div>
+                <div class="form-group">
+                    <label for="InputCode">主体链ID</label>
+                    <input id="subjectId"  type="text" class="form-control" name="subjectId" placeholder="Model Code">
+                </div>
+                <div class="form-group">
+                    <label for="InputCode">请求方式</label>
+                    <input id="method"  type="text" class="form-control" name="method" placeholder="Model Code">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="form-group">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="getDate()">提交</button>
+                </div>
+            </div>
         </div>
-        <!-- /.modal-dialog -->
-        <!-- /.modal -->
+     
+        <!-- /.modal-content -->
     </div>
-    <div class="wrap" id="wrap">
-        <div class="logGet">
-            <!-- 头部提示信息 -->
-            <div class="logD logDtip">
-                <p class="p1">登录</p>
-            </div>
-            <!-- 输入框 -->
-            <div class="lgD">
-                <img src="../static/images/2.jpeg" width="20" height="20"
-                     alt="" />
-                <input type="text" placeholder="输入用户名" />
-            </div>
-            <div class="lgD">
-                <img src="../static/images/3.png" width="20" height="20"
-                     alt="" />
-                <input type="text" placeholder="输入用户密码" />
-            </div>
-            <div class="logC">
-                <button class="btn btn-primary" data-toggle="modal" data-target="#addcase" >登陆</button>
-            </div>
+    <!-- /.modal-dialog -->
+    <!-- /.modal -->
+</div>
+<div class="wrap" id="wrap">
+    <div class="logGet">
+        <!-- 头部提示信息 -->
+        <div class="logD logDtip">
+            <p class="p1">登录</p>
+        </div>
+        <!-- 输入框 -->
+        <div class="lgD">
+            <img src="../static/images/2.jpeg" width="20" height="20"
+                 alt="" />
+            <input type="text" placeholder="输入用户名" />
+        </div>
+        <div class="lgD">
+            <img src="../static/images/3.png" width="20" height="20"
+                 alt="" />
+            <input type="password" placeholder="输入用户密码" />
+        </div>
+        <div class="logC">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#addcase" >登陆</button>
         </div>
     </div>
+</div>
 
 
 </body>
